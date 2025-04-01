@@ -1,0 +1,17 @@
+{
+  "name": "@vf/engine",
+  "version": "1.0.0",
+  "description": "核心渲染引擎",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc -w"
+  },
+  "dependencies": {
+    "@vf/structure": "workspace:*"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.4"
+  }
+}

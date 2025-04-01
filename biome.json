@@ -1,0 +1,37 @@
+{
+  "$schema": "https://biomejs.dev/schemas/1.9.4/schema.json",
+  "organizeImports": {
+    "enabled": true
+  },
+  "formatter": {
+    "formatWithErrors": false,
+    "indentStyle": "space",
+    "indentWidth": 2,
+    "lineWidth": 120,
+    "language": "typescript",
+    "typescript": {
+      "formatter": {
+        "semicolons": "always",
+        "quoteStyle": "double",
+        "jsxQuoteStyle": "double"
+      }
+    },
+    "overrides": [
+      {
+        "language": "vue",
+        "formatter": {
+          "indentStyle": "space",
+          "lineWidth": 80
+        }
+      }
+    ]
+  },
+  "linter": {
+    "enabled": true,
+    "rules": {
+      "recommended": true
+    }
+  },
+  "include": ["**/*.{js,ts,vue}"],
+  "exclude": ["node_modules", "dist"]
+}
