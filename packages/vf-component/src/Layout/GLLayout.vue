@@ -23,9 +23,6 @@ import {
 import type {
     ComponentContainer,
     Json,
-    RowOrColumnItemConfig,
-    StackItemConfig,
-    ComponentItemConfig,
     ResolvedComponentItemConfig,
     LogicalZIndex,
     ResolvedLayoutConfig
@@ -35,10 +32,8 @@ import {
     VirtualLayout,
 } from "golden-layout";
 import GLComponent from "./GLComponent.vue";
+import { ContentType, ContentItemType } from './type'
 
-
-type ContentItemType = Array<RowOrColumnItemConfig | StackItemConfig | ComponentItemConfig>;
-type ContentType = Array<ContentItemType>;
 
 let GLayout: VirtualLayout;
 
@@ -86,7 +81,7 @@ const addComponent = (componentType: string, componentMap: any) => {
     return index;
 };
 
-const addGLComponent = async (componentType: string, title: string) => {
+const addGLComponent = async (componentType: string, title: string): Promise<void> => {
     if (componentType.length === 0) {
         throw new Error("addGLComponent: Component's type is empty");
     }
@@ -251,3 +246,13 @@ defineExpose({
     getLayoutConfig,
 });
 </script>
+
+<style>
+@import 'golden-layout/dist/css/goldenlayout-base.css';
+@import 'golden-layout/dist/css/themes/goldenlayout-light-theme.css';
+@import 'golden-layout/dist/css/themes/goldenlayout-dark-theme.css';
+
+.lm_header .lm_tabs {
+    margin-top: 2px;
+}
+</style>
