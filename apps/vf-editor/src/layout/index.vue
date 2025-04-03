@@ -13,7 +13,7 @@
     <main class="main">
         <side-bar/>
         <div class="layout">
-            <layout-container ref="GLayoutRoot" class="GLayout"></layout-container>
+            <!-- <layout-container ref="GLayoutRoot" class="GLayout"></layout-container> -->
         </div>
     </main>
     <footer class="footer">
