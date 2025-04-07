@@ -1,7 +1,32 @@
+<!--
+ * @Author: wuyifan 1208097313@qq.com
+ * @Date: 2025-04-08 00:09:15
+ * @LastEditors: wuyifan 1208097313@qq.com
+ * @LastEditTime: 2025-04-08 01:07:36
+ * @FilePath: /vf-studio/apps/vf-editor/src/components/RibbonMenu.vue
+ * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+-->
 <template>
     <ribbon-menu v-model="activeName" @tab-click="handleClick">
         <ribbon-tab label="Static" name="static">
-            content 1
+                <ribbon-group label="Vistas">
+                    <ribbon-button @click="handleOpenSideBar" :class="{ 'active': openSidebar }">
+                        <ribbon-icon class="indira-icono-agregar-serie" :style="{ fontSize: '30px' }" />
+                        <ribbon-caption>{{ 'herramientas.series' }}</ribbon-caption>
+                    </ribbon-button>
+                </ribbon-group>
+                <ribbon-group label="Vistas">
+                    <ribbon-button @click="handleOpenSideBar" :class="{ 'active': openSidebar }">
+                        <ribbon-icon class="indira-icono-agregar-serie" :style="{ fontSize: '30px' }" />
+                        <ribbon-caption>{{ 'herramientas.series' }}</ribbon-caption>
+                    </ribbon-button>
+                </ribbon-group>
+                <ribbon-group label="Vistas">
+                    <ribbon-button @click="handleOpenSideBar" :class="{ 'active': openSidebar }">
+                        <ribbon-icon class="indira-icono-agregar-serie" :style="{ fontSize: '30px' }" />
+                        <ribbon-caption>{{ 'herramientas.series' }}</ribbon-caption>
+                    </ribbon-button>
+                </ribbon-group>
         </ribbon-tab>
         <ribbon-tab label="Herramientas" name="herramientas">
             content 2
@@ -19,7 +44,11 @@
 import { ref } from 'vue';
 import {
     RibbonMenu,
-    RibbonTab
+    RibbonTab,
+    RibbonGroup,
+    RibbonButton,
+    RibbonCaption,
+    RibbonIcon
 } from '@vf/component'
 // 狀態管理
 const activeTabRibbon = ref('section-one')

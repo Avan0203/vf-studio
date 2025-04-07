@@ -59,4 +59,10 @@ $prefix: "ribbon";
     overflow: hidden;
     flex-grow: 1;
   }
+
+  .#{$prefix}-group{
+    &-title {
+      
+    }
+  }
 }
