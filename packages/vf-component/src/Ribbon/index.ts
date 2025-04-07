@@ -17,6 +17,7 @@ import RibbonIcon from './RibbonIcon.vue';
 import RibbonCaption from './RibbonCaption.vue';
 import RibbonDividerGroup from './RibbonDividerGroup.vue';
 import RibbonToggleGroup from './RibbonToggleGroup.vue';
+import RibbonTab from './RibbonTab.vue';
 
 export {
     RibbonMenu,
@@ -29,5 +30,6 @@ export {
     RibbonIcon,
     RibbonCaption,
     RibbonDividerGroup,
-    RibbonToggleGroup
+    RibbonToggleGroup,
+    RibbonTab,
 }

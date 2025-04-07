@@ -1,25 +1,65 @@
-<!--
- * @Author: wuyifan0203 1208097313@qq.com
- * @Date: 2025-04-03 10:25:04
- * @LastEditors: wuyifan0203 1208097313@qq.com
- * @LastEditTime: 2025-04-03 10:53:06
- * @FilePath: \VF-Editor\packages\vf-component\src\Ribbon\RibbonMenu.vue
- * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
--->
 <template>
-    <nav class="ribbon-menu" v-bind="$attrs">
-      <slot></slot>
+    <nav class="ribbon-menu">
+        <div class="ribbon-header">
+            <div class="ribbon-header-wrap">
+                <div v-for="({ label, name }) in labelOptions" :key="name" 
+                    @click="() => tabClick(name)"
+                    class="ribbon-tab-item" 
+                    :class="{
+                        'ribbon-tab-item-active': name === currentName
+                    }">
+                    {{ label }}
+                </div>
+            </div>
+        </div>
+        <div class="ribbon-content">
+            <div 
+            v-for="(component, index) in defaults" 
+            :key="index" 
+            class="ribbon-content-pane" 
+            :style="{
+                display: component.props.name === currentName ? 'block' : 'none'
+            }">
+                <component :is="component"></component>
+            </div>
+        </div>
     </nav>
-  </template>
-  
-  <script setup lang="ts">
-  import { onMounted } from 'vue';
-  
-  onMounted(() => {
-    console.log('%creact-ribbonmenu-js v1.1.1', 'background: #339955; padding: 4px; font-weight: bold; color: white');
-  });
-  </script>
-  
-  <style >
-  @import './style.css';
-  </style>
+</template>
+
+<script lang="ts" setup>
+
+const currentName = defineModel();
+
+defineOptions({
+    type: 'RibbonMenu',
+});
+
+const emit = defineEmits(['tab-click']);
+
+const slots = defineSlots();
+const defaults = slots.default?.();
+
+
+defaults.forEach((slot: any) => {
+    if (slot.type.type !== 'RibbonTab') {
+        throw new Error('tabs必须是tab')
+    }
+})
+const labelOptions = defaults.map((slot: any) => {
+    return {
+        label: slot.props.label,
+        name: slot.props.name
+    }
+})
+
+const tabClick = (name: string) => {
+    currentName.value = name;
+    emit('tab-click', name);
+}
+
+</script>
+
+
+<style lang="scss">
+@use './ribbon.scss'
+</style>
