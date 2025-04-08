@@ -2,10 +2,8 @@
     <nav class="ribbon-menu">
         <div class="ribbon-header">
             <div class="ribbon-header-wrap">
-                <div v-for="({ label, name }) in labelOptions" :key="name" 
-                    @click="() => tabClick(name)"
-                    class="ribbon-tab-item" 
-                    :class="{
+                <div v-for="({ label, name }) in labelOptions" :key="name" @click="() => tabClick(name)"
+                    class="ribbon-tab-item" :class="{
                         'ribbon-tab-item-active': name === currentName
                     }">
                     {{ label }}
@@ -13,14 +11,12 @@
             </div>
         </div>
         <div class="ribbon-content">
-            <div 
-            v-for="(component, index) in defaults" 
-            :key="index" 
-            class="ribbon-content-pane" 
-            :style="{
+            <div v-for="(component, index) in defaults" :key="index" class="ribbon-content-pane" :style="{
                 display: component.props.name === currentName ? 'block' : 'none'
             }">
-                <component :is="component"></component>
+                <div class="ribbon-content-component-wrap">
+                    <component :is="component"></component>
+                </div>
             </div>
         </div>
     </nav>
