@@ -57,5 +57,5 @@ const tabClick = (name: string) => {
 
 
 <style lang="scss">
-@use './ribbon.scss'
+@use './style.scss'
 </style>

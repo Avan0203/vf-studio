@@ -12,6 +12,7 @@
 
 <script lang="ts" setup>
 import 'golden-layout/dist/css/goldenlayout-base.css';
+import '../public/iconfont.css';
 import Layout from "@/layout/index.vue";
 
 </script>

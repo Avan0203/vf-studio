@@ -2,7 +2,7 @@
  * @Author: wuyifan 1208097313@qq.com
  * @Date: 2025-04-08 00:09:15
  * @LastEditors: wuyifan0203 1208097313@qq.com
- * @LastEditTime: 2025-04-08 10:36:56
+ * @LastEditTime: 2025-04-09 17:17:42
  * @FilePath: /vf-studio/apps/vf-editor/src/components/RibbonMenu.vue
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
 -->
@@ -10,34 +10,28 @@
     <ribbon-menu v-model="activeName" @tab-click="handleClick">
         <ribbon-tab label="Static" name="static">
                 <ribbon-group label="Vistas">
-                    <ribbon-button @click="handleOpenSideBar" :class="{ 'active': openSidebar }">
-                        <ribbon-icon class="indira-icono-agregar-serie" :style="{ fontSize: '30px' }" />
-                        <ribbon-caption>{{ 'herramientas.series' }}</ribbon-caption>
+                    <ribbon-button @click="handleOpenSideBar" icon="f-iconfont f-transform">
+                        transform
                     </ribbon-button>
-                    <ribbon-button @click="handleOpenSideBar" :class="{ 'active': openSidebar }">
-                        <ribbon-icon class="indira-icono-agregar-serie" :style="{ fontSize: '30px' }" />
-                        <ribbon-caption>{{ 'herramientas.series' }}</ribbon-caption>
+                    <ribbon-button @click="handleOpenSideBar" icon="f-iconfont f-sousuo">
+                        sousuo
                     </ribbon-button>
-                    <ribbon-button @click="handleOpenSideBar" :class="{ 'active': openSidebar }">
-                        <ribbon-icon class="indira-icono-agregar-serie" :style="{ fontSize: '30px' }" />
-                        <ribbon-caption>{{ 'herramientas.series' }}</ribbon-caption>
+                    <ribbon-button @click="handleOpenSideBar" icon="f-iconfont f-camera" :disabled="true">
+                        camera
                     </ribbon-button>
-                    <ribbon-button @click="handleOpenSideBar" :class="{ 'active': openSidebar }">
-                        <ribbon-icon class="indira-icono-agregar-serie" :style="{ fontSize: '30px' }" />
-                        <ribbon-caption>{{ 'herramientas.series' }}</ribbon-caption>
-                    </ribbon-button>
-                </ribbon-group>
-                <ribbon-group label="Vistas">
-                    <ribbon-button @click="handleOpenSideBar" :class="{ 'active': openSidebar }">
-                        <ribbon-icon class="indira-icono-agregar-serie" :style="{ fontSize: '30px' }" />
-                        <ribbon-caption>{{ 'herramientas.series' }}</ribbon-caption>
+                    <ribbon-button @click="handleOpenSideBar">
+                        <template #icon>
+                            <i class="f-iconfont f-move" style="font-size: 20px;"></i>
+                        </template>
+                        move
                     </ribbon-button>
                 </ribbon-group>
                 <ribbon-group label="Vistas">
                     <ribbon-button @click="handleOpenSideBar" :class="{ 'active': openSidebar }">
-                        <ribbon-icon class="indira-icono-agregar-serie" :style="{ fontSize: '30px' }" />
-                        <ribbon-caption>{{ 'herramientas.series' }}</ribbon-caption>
                     </ribbon-button>
+                </ribbon-group>
+                <ribbon-group label="Vistas">
+                    <ribbon-button @click="handleOpenSideBar" type="icon" icon="f-iconfont f-ruler" />
                 </ribbon-group>
         </ribbon-tab>
         <ribbon-tab label="Herramientas" name="herramientas">
@@ -59,8 +53,6 @@ import {
     RibbonTab,
     RibbonGroup,
     RibbonButton,
-    RibbonCaption,
-    RibbonIcon
 } from '@vf/component'
 // 狀態管理
 const activeTabRibbon = ref('section-one')
@@ -79,7 +71,7 @@ const toggleTapRibbon = (tabId) => {
 }
 
 const handleOpenSideBar = () => {
-    openSidebar.value = !openSidebar.value
+    console.log('button click');
 }
 
 const handleOpenLayout = () => {

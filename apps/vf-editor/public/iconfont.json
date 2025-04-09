@@ -1,0 +1,254 @@
+{
+  "id": "4242393",
+  "name": "F-Editor",
+  "font_family": "f-iconfont",
+  "css_prefix_text": "f-",
+  "description": "icon for F-Editor",
+  "glyphs": [
+    {
+      "icon_id": "37334795",
+      "name": "相机",
+      "font_class": "camera",
+      "unicode": "ee35",
+      "unicode_decimal": 60981
+    },
+    {
+      "icon_id": "1066656",
+      "name": "Light",
+      "font_class": "light",
+      "unicode": "e68a",
+      "unicode_decimal": 59018
+    },
+    {
+      "icon_id": "1479298",
+      "name": "ic_transform",
+      "font_class": "ic_transform",
+      "unicode": "ea3d",
+      "unicode_decimal": 59965
+    },
+    {
+      "icon_id": "1727425",
+      "name": "206搜索",
+      "font_class": "sousuo",
+      "unicode": "e8ba",
+      "unicode_decimal": 59578
+    },
+    {
+      "icon_id": "4354248",
+      "name": "图表-折线图",
+      "font_class": "tubiao-zhexiantu",
+      "unicode": "eb96",
+      "unicode_decimal": 60310
+    },
+    {
+      "icon_id": "4354255",
+      "name": "形状-椭圆形",
+      "font_class": "xingzhuang-tuoyuanxing",
+      "unicode": "eb99",
+      "unicode_decimal": 60313
+    },
+    {
+      "icon_id": "4354256",
+      "name": "形状-三角形",
+      "font_class": "xingzhuang-sanjiaoxing",
+      "unicode": "eb9a",
+      "unicode_decimal": 60314
+    },
+    {
+      "icon_id": "4525180",
+      "name": "布满视图",
+      "font_class": "ziyuan",
+      "unicode": "e610",
+      "unicode_decimal": 58896
+    },
+    {
+      "icon_id": "4890385",
+      "name": "图片",
+      "font_class": "shangchuantupian",
+      "unicode": "e6e9",
+      "unicode_decimal": 59113
+    },
+    {
+      "icon_id": "5387735",
+      "name": "眼睛_隐藏",
+      "font_class": "yanjing_yincang",
+      "unicode": "eb45",
+      "unicode_decimal": 60229
+    },
+    {
+      "icon_id": "5387736",
+      "name": "眼睛_显示",
+      "font_class": "yanjing_xianshi",
+      "unicode": "eb46",
+      "unicode_decimal": 60230
+    },
+    {
+      "icon_id": "6986715",
+      "name": "3d-rotation",
+      "font_class": "d-rotation",
+      "unicode": "e87b",
+      "unicode_decimal": 59515
+    },
+    {
+      "icon_id": "6988243",
+      "name": "transform",
+      "font_class": "transform",
+      "unicode": "ebe5",
+      "unicode_decimal": 60389
+    },
+    {
+      "icon_id": "10483896",
+      "name": "01_collection",
+      "font_class": "_collection",
+      "unicode": "e60c",
+      "unicode_decimal": 58892
+    },
+    {
+      "icon_id": "10905244",
+      "name": "平移",
+      "font_class": "move",
+      "unicode": "e616",
+      "unicode_decimal": 58902
+    },
+    {
+      "icon_id": "11121373",
+      "name": "过滤器",
+      "font_class": "guolvqi",
+      "unicode": "e627",
+      "unicode_decimal": 58919
+    },
+    {
+      "icon_id": "11399584",
+      "name": "简单模型",
+      "font_class": "jiandanmoxing",
+      "unicode": "e639",
+      "unicode_decimal": 58937
+    },
+    {
+      "icon_id": "11891862",
+      "name": "combination",
+      "font_class": "combination",
+      "unicode": "e67d",
+      "unicode_decimal": 59005
+    },
+    {
+      "icon_id": "11976080",
+      "name": "导入",
+      "font_class": "zu",
+      "unicode": "e617",
+      "unicode_decimal": 58903
+    },
+    {
+      "icon_id": "12331658",
+      "name": "导出",
+      "font_class": "daochu1",
+      "unicode": "e666",
+      "unicode_decimal": 58982
+    },
+    {
+      "icon_id": "12665977",
+      "name": "ruler",
+      "font_class": "ruler",
+      "unicode": "e630",
+      "unicode_decimal": 58928
+    },
+    {
+      "icon_id": "15739173",
+      "name": "材质",
+      "font_class": "caizhi",
+      "unicode": "e647",
+      "unicode_decimal": 58951
+    },
+    {
+      "icon_id": "15790781",
+      "name": "icon_2d",
+      "font_class": "icon_2d",
+      "unicode": "e679",
+      "unicode_decimal": 59001
+    },
+    {
+      "icon_id": "15797085",
+      "name": "【视图】剖切盒",
+      "font_class": "shitupouqiehe",
+      "unicode": "e654",
+      "unicode_decimal": 58964
+    },
+    {
+      "icon_id": "15797086",
+      "name": "【视图】线框",
+      "font_class": "shituxiankuang",
+      "unicode": "e655",
+      "unicode_decimal": 58965
+    },
+    {
+      "icon_id": "15885466",
+      "name": "【视图】透视",
+      "font_class": "shitutoushi",
+      "unicode": "e662",
+      "unicode_decimal": 58978
+    },
+    {
+      "icon_id": "16731284",
+      "name": "缩放",
+      "font_class": "suofang",
+      "unicode": "e60d",
+      "unicode_decimal": 58893
+    },
+    {
+      "icon_id": "17345106",
+      "name": "引擎_旋转视图",
+      "font_class": "yinqing_xuanzhuanshitu",
+      "unicode": "e659",
+      "unicode_decimal": 58969
+    },
+    {
+      "icon_id": "17654816",
+      "name": "截图",
+      "font_class": "jietu1",
+      "unicode": "e636",
+      "unicode_decimal": 58934
+    },
+    {
+      "icon_id": "23645074",
+      "name": "3D",
+      "font_class": "a-3D",
+      "unicode": "e632",
+      "unicode_decimal": 58930
+    },
+    {
+      "icon_id": "24325484",
+      "name": "导入",
+      "font_class": "daoru",
+      "unicode": "ee34",
+      "unicode_decimal": 60980
+    },
+    {
+      "icon_id": "33112943",
+      "name": "A-模型库",
+      "font_class": "A-moxingku",
+      "unicode": "e611",
+      "unicode_decimal": 58897
+    },
+    {
+      "icon_id": "33112982",
+      "name": "B-斜视图",
+      "font_class": "B-xieshitu",
+      "unicode": "e613",
+      "unicode_decimal": 58899
+    },
+    {
+      "icon_id": "35171473",
+      "name": "模型2",
+      "font_class": "moxing2",
+      "unicode": "e860",
+      "unicode_decimal": 59488
+    },
+    {
+      "icon_id": "35306426",
+      "name": "-_缩放",
+      "font_class": "-_suofang",
+      "unicode": "e6d0",
+      "unicode_decimal": 59088
+    }
+  ]
+}
