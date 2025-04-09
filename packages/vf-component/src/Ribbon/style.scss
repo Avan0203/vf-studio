@@ -56,6 +56,7 @@ $prefix: "ribbon";
     align-items: center;
     .#{$prefix}-header-wrap {
       overflow: hidden;
+      height: 22px;
       margin-bottom: -1px;
       position: relative;
       display: flex;
@@ -126,6 +127,7 @@ $prefix: "ribbon";
   &-common {
     padding: 4px 8px;
     height: 100%;
+    margin: 0 2px;
     .#{$prefix}-button-icon-warp {
       display: block;
     }
@@ -137,7 +139,22 @@ $prefix: "ribbon";
     }
   }
 
+  &-row {
+    font-size: 14px;
+    line-height: 14px;
+    .#{$prefix}-button-icon-warp {
+  
+    }
+
+    .#{$prefix}-button-icon {
+      font-size: 14px;
+      line-height: 14px;
+      text-align: center;
+    }
+  }
+
   &-label {
+    font-size: 12px;
     display: block;
   }
 

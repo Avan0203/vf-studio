@@ -1,8 +1,8 @@
 <!--
  * @Author: wuyifan 1208097313@qq.com
  * @Date: 2025-04-08 00:09:15
- * @LastEditors: wuyifan0203 1208097313@qq.com
- * @LastEditTime: 2025-04-09 17:17:42
+ * @LastEditors: wuyifan 1208097313@qq.com
+ * @LastEditTime: 2025-04-10 01:13:52
  * @FilePath: /vf-studio/apps/vf-editor/src/components/RibbonMenu.vue
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
 -->
@@ -23,14 +23,15 @@
                         <template #icon>
                             <i class="f-iconfont f-move" style="font-size: 20px;"></i>
                         </template>
-                        move
+                        Move
                     </ribbon-button>
                 </ribbon-group>
                 <ribbon-group label="Vistas">
-                    <ribbon-button @click="handleOpenSideBar" :class="{ 'active': openSidebar }">
+                    <ribbon-button @click="handleOpenSideBar" type="row" icon="f-iconfont f-light">
+                        Light
                     </ribbon-button>
                 </ribbon-group>
-                <ribbon-group label="Vistas">
+                <ribbon-group label="Operation">
                     <ribbon-button @click="handleOpenSideBar" type="icon" icon="f-iconfont f-ruler" />
                 </ribbon-group>
         </ribbon-tab>
@@ -55,27 +56,11 @@ import {
     RibbonButton,
 } from '@vf/component'
 // 狀態管理
-const activeTabRibbon = ref('section-one')
 const openSidebar = ref(false)
-const layout = ref({ id: null, active: false })
-const category = ref({ active: false })
-const widthGroupControls = ref('auto')
-
 const activeName = ref('static');
-
-// 方法
-const toggleTapRibbon = (tabId) => {
-    if (activeTabRibbon.value !== tabId) {
-        activeTabRibbon.value = tabId
-    }
-}
 
 const handleOpenSideBar = () => {
     console.log('button click');
-}
-
-const handleOpenLayout = () => {
-    layout.value.active = !layout.value.active
 }
 
 const handleClick = () => {
@@ -83,7 +68,4 @@ const handleClick = () => {
 }
 
 // 工具方法
-const clickButton = (id) => {
-    // 實現按鈕點擊邏輯
-}
 </script>
