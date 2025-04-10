@@ -10,10 +10,12 @@ import RibbonMenu from './RibbonMenu.vue';
 import RibbonGroup from './RibbonGroup.vue';
 import RibbonButton from './RibbonButton.vue';
 import RibbonTab from './RibbonTab.vue';
+import RibbonButtonGroup from './RibbonButtonGroup.vue';
 
 export {
     RibbonMenu,
     RibbonGroup,
     RibbonButton,
+    RibbonButtonGroup,
     RibbonTab,
 }

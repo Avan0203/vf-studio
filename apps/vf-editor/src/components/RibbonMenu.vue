@@ -1,39 +1,50 @@
 <!--
  * @Author: wuyifan 1208097313@qq.com
  * @Date: 2025-04-08 00:09:15
- * @LastEditors: wuyifan 1208097313@qq.com
- * @LastEditTime: 2025-04-10 01:13:52
- * @FilePath: /vf-studio/apps/vf-editor/src/components/RibbonMenu.vue
+ * @LastEditors: wuyifan0203 1208097313@qq.com
+ * @LastEditTime: 2025-04-10 18:12:55
+ * @FilePath: \VF-Editor\apps\vf-editor\src\components\RibbonMenu.vue
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
 -->
 <template>
     <ribbon-menu v-model="activeName" @tab-click="handleClick">
         <ribbon-tab label="Static" name="static">
-                <ribbon-group label="Vistas">
-                    <ribbon-button @click="handleOpenSideBar" icon="f-iconfont f-transform">
-                        transform
-                    </ribbon-button>
-                    <ribbon-button @click="handleOpenSideBar" icon="f-iconfont f-sousuo">
-                        sousuo
-                    </ribbon-button>
-                    <ribbon-button @click="handleOpenSideBar" icon="f-iconfont f-camera" :disabled="true">
-                        camera
-                    </ribbon-button>
-                    <ribbon-button @click="handleOpenSideBar">
-                        <template #icon>
-                            <i class="f-iconfont f-move" style="font-size: 20px;"></i>
-                        </template>
-                        Move
-                    </ribbon-button>
-                </ribbon-group>
-                <ribbon-group label="Vistas">
-                    <ribbon-button @click="handleOpenSideBar" type="row" icon="f-iconfont f-light">
-                        Light
-                    </ribbon-button>
-                </ribbon-group>
-                <ribbon-group label="Operation">
-                    <ribbon-button @click="handleOpenSideBar" type="icon" icon="f-iconfont f-ruler" />
-                </ribbon-group>
+            <ribbon-group label="Vistas">
+                <ribbon-button @click="handleOpenSideBar" icon="f-iconfont f-transform" name="transform">
+                    transform
+                </ribbon-button>
+                <ribbon-button @click="handleOpenSideBar" icon="f-iconfont f-sousuo" name="search">
+                    sousuo
+                </ribbon-button>
+                <ribbon-button @click="handleOpenSideBar" icon="f-iconfont f-camera" :disabled="true" name="camera">
+                    camera
+                </ribbon-button>
+                <ribbon-button @click="handleOpenSideBar" name="move">
+                    <template #icon>
+                        <i class="f-iconfont f-move" style="font-size: 20px;"></i>
+                    </template>
+                    Move
+                </ribbon-button>
+            </ribbon-group>
+            <ribbon-group label="Vistas">
+                <ribbon-button @click="handleOpenSideBar" type="row" icon="f-iconfont f-light" name="light">
+                    Light
+                </ribbon-button>
+                <ribbon-button @click="handleOpenSideBar" type="row" icon="f-iconfont f-zu" name="group">
+                    import
+                </ribbon-button>
+                <ribbon-button @click="handleOpenSideBar" type="row" icon="f-iconfont f-caizhi" name="material">
+                    material
+                </ribbon-button>
+            </ribbon-group>
+            <ribbon-group label="Operation">
+                <ribbon-button-group :mode="'multiple'">
+                    <ribbon-button @click="handleOpenSideBar" type="icon" icon="f-iconfont f-ruler" name="ruler" />
+                    <ribbon-button @click="handleOpenSideBar" type="icon" icon="f-iconfont f-ruler" name="ruler1" />
+                    <ribbon-button @click="handleOpenSideBar" type="icon" icon="f-iconfont f-ruler" name="ruler2" />
+                    <ribbon-button @click="handleOpenSideBar" type="icon" icon="f-iconfont f-ruler" name="ruler3" />
+                </ribbon-button-group>
+            </ribbon-group>
         </ribbon-tab>
         <ribbon-tab label="Herramientas" name="herramientas">
             content 2
@@ -54,16 +65,17 @@ import {
     RibbonTab,
     RibbonGroup,
     RibbonButton,
+    RibbonButtonGroup
 } from '@vf/component'
 // 狀態管理
 const openSidebar = ref(false)
 const activeName = ref('static');
 
-const handleOpenSideBar = () => {
-    console.log('button click');
+const handleOpenSideBar = (e, name) => {
+    console.log('button click', name, e);
 }
 
-const handleClick = () => {
+const handleClick = (e) => {
     console.log('click', activeName.value);
 }
 

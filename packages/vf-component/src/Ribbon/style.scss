@@ -140,10 +140,12 @@ $prefix: "ribbon";
   }
 
   &-row {
-    font-size: 14px;
-    line-height: 14px;
-    .#{$prefix}-button-icon-warp {
-  
+    padding: 4px 8px;
+    font-size: 12px;
+
+    .#{$prefix}-button-icon-wrap {
+      display: inline-block;
+      margin-right: 4px;
     }
 
     .#{$prefix}-button-icon {
@@ -151,11 +153,20 @@ $prefix: "ribbon";
       line-height: 14px;
       text-align: center;
     }
+
+    .#{$prefix}-button-label {
+      display: inline-block;
+    }
   }
 
   &-label {
     font-size: 12px;
     display: block;
+  }
+
+  .active {
+    color: var(--active-text-color);
+    background-color: var(--active-bg-color);
   }
 
   &:hover {
