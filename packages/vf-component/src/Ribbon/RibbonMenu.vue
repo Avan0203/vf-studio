@@ -1,5 +1,13 @@
+<!--
+ * @Author: wuyifan0203 1208097313@qq.com
+ * @Date: 2025-04-03 10:25:04
+ * @LastEditors: wuyifan0203 1208097313@qq.com
+ * @LastEditTime: 2025-04-11 15:27:12
+ * @FilePath: \VF-Editor\packages\vf-component\src\Ribbon\RibbonMenu.vue
+ * Copyright (c) 2024 by wuyifan email: 1208097313@qq.com, All Rights Reserved.
+-->
 <template>
-    <nav class="ribbon-menu">
+    <nav class="ribbon-menu" v-bind="$attrs">
         <div class="ribbon-header">
             <div class="ribbon-header-wrap">
                 <div v-for="({ label, name }) in labelOptions" :key="name" @click="() => tabClick(name)"

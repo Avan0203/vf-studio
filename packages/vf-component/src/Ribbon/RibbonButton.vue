@@ -32,7 +32,7 @@ const props = defineProps({
 const emit = defineEmits(['click']);
 const buttonGroup = inject<null | any>('buttonGroup', null);
 const isActive = computed(() => {
-  return buttonGroup?.activeButton.value.includes(props.name) ?? false
+  return buttonGroup?.active.value.includes(props.name) ?? false
 });
 
 function handleClick(e: MouseEvent) {

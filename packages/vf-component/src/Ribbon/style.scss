@@ -4,11 +4,14 @@ $prefix: "ribbon";
   /* Light Theme */
   --active-text-color: #4093ff;
   --active-bg-color: #ffffff;
+  --active-color: rgba(13, 118, 255, 0.2);
+  --active-border-color: #3973be;
   --bg-color: #f5f5f5;
   --text-color: #333333;
   --border-color: #dcdcdc;
   --disabled-color: #999999;
   --hover-color: rgba(64, 147, 255, 0.08); /* 新增 hover 颜色 */
+  --hover-border-color: #4093ff;
 
   /* Dark Theme */
   --dark-active-text-color: #66a3ff;
@@ -120,7 +123,8 @@ $prefix: "ribbon";
 
 .#{$prefix}-button {
   height: auto;
-  border: unset;
+  border:1px solid transparent;
+  box-sizing: border-box;
   background-color: var(--active-bg-color);
   cursor: pointer;
 
@@ -164,16 +168,21 @@ $prefix: "ribbon";
     display: block;
   }
 
-  .active {
-    color: var(--active-text-color);
-    background-color: var(--active-bg-color);
-  }
 
   &:hover {
+    color: var(--active-text-color);
     background-color: var(--hover-color);
+    border: 1px solid var(--hover-border-color); 
   }
   &:disabled {
     color: var(--disabled-color);
     cursor: not-allowed;
   }
 }
+
+  .active {
+    color: var(--active-text-color);
+    background-color: var(--active-color);
+    border: 1px solid var(--active-border-color);
+  }
+

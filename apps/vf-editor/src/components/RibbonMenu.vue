@@ -2,12 +2,12 @@
  * @Author: wuyifan 1208097313@qq.com
  * @Date: 2025-04-08 00:09:15
  * @LastEditors: wuyifan0203 1208097313@qq.com
- * @LastEditTime: 2025-04-10 18:12:55
+ * @LastEditTime: 2025-04-11 15:25:35
  * @FilePath: \VF-Editor\apps\vf-editor\src\components\RibbonMenu.vue
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
 -->
 <template>
-    <ribbon-menu v-model="activeName" @tab-click="handleClick">
+    <ribbon-menu v-model="activeName" @tab-click="handleClick" style="height: 96px;">
         <ribbon-tab label="Static" name="static">
             <ribbon-group label="Vistas">
                 <ribbon-button @click="handleOpenSideBar" icon="f-iconfont f-transform" name="transform">
@@ -37,12 +37,18 @@
                     material
                 </ribbon-button>
             </ribbon-group>
-            <ribbon-group label="Operation">
+            <ribbon-group label="multiple / single select">
                 <ribbon-button-group :mode="'multiple'">
                     <ribbon-button @click="handleOpenSideBar" type="icon" icon="f-iconfont f-ruler" name="ruler" />
                     <ribbon-button @click="handleOpenSideBar" type="icon" icon="f-iconfont f-ruler" name="ruler1" />
                     <ribbon-button @click="handleOpenSideBar" type="icon" icon="f-iconfont f-ruler" name="ruler2" />
                     <ribbon-button @click="handleOpenSideBar" type="icon" icon="f-iconfont f-ruler" name="ruler3" />
+                </ribbon-button-group>
+                <ribbon-button-group :mode="'single'">
+                    <ribbon-button @click="handleOpenSideBar" type="icon" icon="f-iconfont f-zu" name="zu" />
+                    <ribbon-button @click="handleOpenSideBar" type="icon" icon="f-iconfont f-zu" name="zu1" />
+                    <ribbon-button @click="handleOpenSideBar" type="icon" icon="f-iconfont f-zu" name="zu2" />
+                    <ribbon-button @click="handleOpenSideBar" type="icon" icon="f-iconfont f-zu" name="zu3" />
                 </ribbon-button-group>
             </ribbon-group>
         </ribbon-tab>

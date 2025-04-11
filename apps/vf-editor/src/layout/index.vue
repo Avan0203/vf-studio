@@ -2,7 +2,7 @@
  * @Author: wuyifan0203 1208097313@qq.com
  * @Date: 2025-04-01 18:13:15
  * @LastEditors: wuyifan0203 1208097313@qq.com
- * @LastEditTime: 2025-04-09 17:28:41
+ * @LastEditTime: 2025-04-11 15:25:58
  * @FilePath: \VF-Editor\apps\vf-editor\src\layout\index.vue
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE>
 -->
@@ -51,11 +51,6 @@ defineExpose({
     display: flex;
     flex-direction: column;
     height: 100vh;
-
-    /* 全屏高度 */
-    .header {
-        height: 94px;
-    }
 
     .main {
         flex: 1;
