@@ -11,6 +11,7 @@ import RibbonGroup from './RibbonGroup.vue';
 import RibbonButton from './RibbonButton.vue';
 import RibbonTab from './RibbonTab.vue';
 import RibbonButtonGroup from './RibbonButtonGroup.vue';
+import RibbonDropDownMenu from './RibbonDropDownMenu.vue';
 
 export {
     RibbonMenu,
@@ -18,4 +19,5 @@ export {
     RibbonButton,
     RibbonButtonGroup,
     RibbonTab,
+    RibbonDropDownMenu
 }

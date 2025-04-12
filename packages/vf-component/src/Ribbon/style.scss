@@ -123,10 +123,27 @@ $prefix: "ribbon";
 
 .#{$prefix}-button {
   height: auto;
-  border:1px solid transparent;
+  border: 1px solid transparent;
   box-sizing: border-box;
   background-color: var(--active-bg-color);
   cursor: pointer;
+
+  &-drop-down-menu{
+    position: relative;
+    &::after{
+      content: "";
+      display: block;
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      width: 0;
+      height: 0;
+      border-style: solid;
+      border-width: 0 0 4px 4px;
+      border-color: transparent transparent var(--text-color) transparent;
+      z-index: 1;
+    }
+  }
 
   &-common {
     padding: 4px 8px;
@@ -168,11 +185,10 @@ $prefix: "ribbon";
     display: block;
   }
 
-
   &:hover {
     color: var(--active-text-color);
     background-color: var(--hover-color);
-    border: 1px solid var(--hover-border-color); 
+    border: 1px solid var(--hover-border-color);
   }
   &:disabled {
     color: var(--disabled-color);
@@ -180,9 +196,22 @@ $prefix: "ribbon";
   }
 }
 
-  .active {
-    color: var(--active-text-color);
-    background-color: var(--active-color);
-    border: 1px solid var(--active-border-color);
-  }
+.#{$prefix}-drop-down-menu-button::after {
+  content: "";
+  display: block;
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 0 0 4px 4px;
+  border-color: transparent transparent var(--dropdownToggleColor) transparent;
+  z-index: 1;
+}
 
+.active {
+  color: var(--active-text-color);
+  background-color: var(--active-color);
+  border: 1px solid var(--active-border-color);
+}

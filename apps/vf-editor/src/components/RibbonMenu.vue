@@ -51,6 +51,9 @@
                     <ribbon-button @click="handleOpenSideBar" type="icon" icon="f-iconfont f-zu" name="zu3" />
                 </ribbon-button-group>
             </ribbon-group>
+            <ribbon-group label="dropdown menu">
+                <ribbon-drop-down-menu name="drop1" icon="f-iconfont f-zu" type="common" />
+            </ribbon-group>
         </ribbon-tab>
         <ribbon-tab label="Herramientas" name="herramientas">
             content 2
@@ -71,7 +74,8 @@ import {
     RibbonTab,
     RibbonGroup,
     RibbonButton,
-    RibbonButtonGroup
+    RibbonButtonGroup,
+    RibbonDropDownMenu
 } from '@vf/component'
 // 狀態管理
 const openSidebar = ref(false)
