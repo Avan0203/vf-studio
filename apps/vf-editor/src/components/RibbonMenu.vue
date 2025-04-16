@@ -2,7 +2,7 @@
  * @Author: wuyifan 1208097313@qq.com
  * @Date: 2025-04-08 00:09:15
  * @LastEditors: wuyifan0203 1208097313@qq.com
- * @LastEditTime: 2025-04-11 15:25:35
+ * @LastEditTime: 2025-04-16 18:19:46
  * @FilePath: \VF-Editor\apps\vf-editor\src\components\RibbonMenu.vue
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
 -->
@@ -52,7 +52,16 @@
                 </ribbon-button-group>
             </ribbon-group>
             <ribbon-group label="dropdown menu">
-                <ribbon-drop-down-menu name="drop1" icon="f-iconfont f-zu" type="common" />
+                <ribbon-drop-down-menu name="drop1" icon="f-iconfont f-zu" type="common" label="drop1">
+                    <ribbon-drop-down-menu-item name="drop1-1">1-1</ribbon-drop-down-menu-item>
+                    <ribbon-drop-down-menu-item name="drop1-2">1-2</ribbon-drop-down-menu-item>
+                    <ribbon-drop-down-menu-item name="drop1-3">1-3</ribbon-drop-down-menu-item>
+                </ribbon-drop-down-menu>
+                <ribbon-drop-down-menu name="drop1" icon="f-iconfont f-zu" type="common" disabled>
+                    <ribbon-drop-down-menu-item name="drop1-1">1-1</ribbon-drop-down-menu-item>
+                    <ribbon-drop-down-menu-item name="drop1-2">1-2</ribbon-drop-down-menu-item>
+                    <ribbon-drop-down-menu-item name="drop1-3">1-3</ribbon-drop-down-menu-item>
+                </ribbon-drop-down-menu>
             </ribbon-group>
         </ribbon-tab>
         <ribbon-tab label="Herramientas" name="herramientas">
@@ -75,7 +84,8 @@ import {
     RibbonGroup,
     RibbonButton,
     RibbonButtonGroup,
-    RibbonDropDownMenu
+    RibbonDropDownMenu,
+    RibbonDropDownMenuItem,
 } from '@vf/component'
 // 狀態管理
 const openSidebar = ref(false)

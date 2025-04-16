@@ -128,9 +128,9 @@ $prefix: "ribbon";
   background-color: var(--active-bg-color);
   cursor: pointer;
 
-  &-drop-down-menu{
+  &-dropdown-menu {
     position: relative;
-    &::after{
+    &::after {
       content: "";
       display: block;
       position: absolute;
@@ -196,22 +196,33 @@ $prefix: "ribbon";
   }
 }
 
-.#{$prefix}-drop-down-menu-button::after {
-  content: "";
-  display: block;
-  position: absolute;
-  bottom: 0;
-  right: 0;
-  width: 0;
-  height: 0;
-  border-style: solid;
-  border-width: 0 0 4px 4px;
-  border-color: transparent transparent var(--dropdownToggleColor) transparent;
-  z-index: 1;
+.#{$prefix}-dropdown-menu-button ::after {
+    content: "";
+    display: block;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 0 0 4px 4px;
+    border-color: transparent transparent var(--dropdownToggleColor) transparent;
+    z-index: 1;
 }
 
+.#{$prefix}-dropdown-submenu {
+  padding: 0;
+  margin: 0;
+  border: 1px solid var(--border-color);
+  list-style: none;
+}
 .active {
   color: var(--active-text-color);
   background-color: var(--active-color);
   border: 1px solid var(--active-border-color);
+}
+
+.disabled {
+  color: var(--disabled-color);
+  cursor: not-allowed;
 }
