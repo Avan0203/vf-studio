@@ -1,30 +1,23 @@
 <template>
-    <teleport to="body">
-        <transition>
-            <ul 
-            class="ribbon-dropdown-submenu" 
-            :style="{
-                position: 'fixed',
-                left: position.left + 'px',
-                top: position.top + 'px'
-            }">
-                <slot></slot>
-            </ul>
-        </transition>
-    </teleport>
+    <ul class="ribbon-dropdown-submenu" :style="{
+        position: 'fixed',
+        left: position.left + 'px',
+        top: position.top + 'px'
+    }">
+        <slot></slot>
+    </ul>
 </template>
 
 <script setup lang="ts">
-import {  PropType } from 'vue';
+import { PropType } from 'vue';
 defineOptions({
-  type: 'RibbonDropDownSubMenu'
+    name: 'RibbonDropDownSubMenu'
 })
-
 
 defineProps({
     position: {
-        type: Object as PropType<{left: number, top: number}>,
-        default: {left: 0, top: 0}, 
+        type: Object as PropType<{ left: number, top: number }>,
+        default: { left: 0, top: 0 },
     }
 })
 </script>

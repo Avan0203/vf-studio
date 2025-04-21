@@ -2,7 +2,7 @@
  * @Author: wuyifan0203 1208097313@qq.com
  * @Date: 2025-04-03 10:25:04
  * @LastEditors: wuyifan0203 1208097313@qq.com
- * @LastEditTime: 2025-04-11 15:27:12
+ * @LastEditTime: 2025-04-21 17:51:23
  * @FilePath: \VF-Editor\packages\vf-component\src\Ribbon\RibbonMenu.vue
  * Copyright (c) 2024 by wuyifan email: 1208097313@qq.com, All Rights Reserved.
 -->
@@ -35,7 +35,7 @@
 const currentName = defineModel();
 
 defineOptions({
-    type: 'RibbonMenu',
+    name: 'RibbonMenu',
 });
 
 const emit = defineEmits(['tab-click']);
@@ -45,7 +45,7 @@ const defaults = slots.default?.();
 
 
 defaults.forEach((slot: any) => {
-    if (slot.type.type !== 'RibbonTab') {
+    if (slot.type.name !== 'RibbonTab') {
         throw new Error('tabs必须是tab')
     }
 })

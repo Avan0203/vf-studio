@@ -2,7 +2,7 @@
  * @Author: wuyifan 1208097313@qq.com
  * @Date: 2025-04-08 00:09:15
  * @LastEditors: wuyifan0203 1208097313@qq.com
- * @LastEditTime: 2025-04-16 18:19:46
+ * @LastEditTime: 2025-04-21 18:29:10
  * @FilePath: \VF-Editor\apps\vf-editor\src\components\RibbonMenu.vue
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
 -->
@@ -52,15 +52,10 @@
                 </ribbon-button-group>
             </ribbon-group>
             <ribbon-group label="dropdown menu">
-                <ribbon-drop-down-menu name="drop1" icon="f-iconfont f-zu" type="common" label="drop1">
-                    <ribbon-drop-down-menu-item name="drop1-1">1-1</ribbon-drop-down-menu-item>
-                    <ribbon-drop-down-menu-item name="drop1-2">1-2</ribbon-drop-down-menu-item>
-                    <ribbon-drop-down-menu-item name="drop1-3">1-3</ribbon-drop-down-menu-item>
+                <ribbon-drop-down-menu name="drop1" icon="f-iconfont f-zu" type="common" label="drop1"
+                    :style="{ float: 'left' }" :options="dropMenuOptions">
                 </ribbon-drop-down-menu>
-                <ribbon-drop-down-menu name="drop1" icon="f-iconfont f-zu" type="common" disabled>
-                    <ribbon-drop-down-menu-item name="drop1-1">1-1</ribbon-drop-down-menu-item>
-                    <ribbon-drop-down-menu-item name="drop1-2">1-2</ribbon-drop-down-menu-item>
-                    <ribbon-drop-down-menu-item name="drop1-3">1-3</ribbon-drop-down-menu-item>
+                <ribbon-drop-down-menu name="drop1" icon="f-iconfont f-zu" type="common" disabled :options="dropMenuOptions">
                 </ribbon-drop-down-menu>
             </ribbon-group>
         </ribbon-tab>
@@ -77,7 +72,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { reactive, ref } from 'vue';
 import {
     RibbonMenu,
     RibbonTab,
@@ -87,10 +82,48 @@ import {
     RibbonDropDownMenu,
     RibbonDropDownMenuItem,
 } from '@vf/component'
+import { RibbonMenuItem } from '@vf/component/src/Ribbon/type';
 // 狀態管理
 const openSidebar = ref(false)
 const activeName = ref('static');
 
+const dropMenuOptions = reactive<RibbonMenuItem[]>([
+    {
+        name: 'drop1-1',
+        label: '1-1',
+        icon: 'f-iconfont f-ruler',
+    },
+    {
+        name: 'drop1-2',
+        label: '1-2',
+        icon: 'f-iconfont f-ruler',
+        disabled: true,
+        divider: true,
+    },
+    {
+        name: 'drop1-3',
+        label: '1-3',
+        icon: 'f-iconfont f-ruler',
+        children: [
+            {
+                name: 'drop1-3-1',
+                label: '1-3-1',
+                icon: 'f-iconfont f-ruler',
+            },
+            {
+                name: 'drop1-3-2',
+                label: '1-3-2',
+                icon: 'f-iconfont f-ruler',
+            },
+            {
+                name: 'drop1-3-3',
+                label: '1-3-3',
+                icon: 'f-iconfont f-ruler',
+                visible: true,
+            },
+        ]
+    },
+])
 const handleOpenSideBar = (e, name) => {
     console.log('button click', name, e);
 }

@@ -22,7 +22,7 @@ const props = defineProps({
 })
 const active = ref<string[]>([]);
 defineOptions({
-  type: "RibbonButtonGroup",
+  name: "RibbonButtonGroup",
 });
 
 function updateActive(name: string) {

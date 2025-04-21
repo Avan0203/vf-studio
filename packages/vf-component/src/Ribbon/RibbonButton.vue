@@ -10,7 +10,7 @@
 import { computed, type PropType, inject, ref } from 'vue';
 
 defineOptions({
-  type: 'RibbonButton'
+  name: 'RibbonButton'
 });
 
 const ribbonButtonRef = ref<null | any>(null);

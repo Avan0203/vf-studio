@@ -12,7 +12,7 @@
 
 <script setup lang="ts">
 defineOptions({
-    type: 'RibbonTab'
+    name: 'RibbonTab'
 })
 
 defineProps({

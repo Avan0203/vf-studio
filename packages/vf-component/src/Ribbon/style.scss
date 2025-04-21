@@ -4,13 +4,13 @@ $prefix: "ribbon";
   /* Light Theme */
   --active-text-color: #4093ff;
   --active-bg-color: #ffffff;
-  --active-color: rgba(13, 118, 255, 0.2);
+  --active-color: rgb(186, 216, 255);
   --active-border-color: #3973be;
   --bg-color: #f5f5f5;
   --text-color: #333333;
   --border-color: #dcdcdc;
   --disabled-color: #999999;
-  --hover-color: rgba(64, 147, 255, 0.08); /* 新增 hover 颜色 */
+  --hover-color: rgb(224, 235, 250); /* 新增 hover 颜色 */
   --hover-border-color: #4093ff;
 
   /* Dark Theme */
@@ -196,25 +196,31 @@ $prefix: "ribbon";
   }
 }
 
-.#{$prefix}-dropdown-menu-button ::after {
-    content: "";
-    display: block;
-    position: absolute;
-    bottom: 0;
-    right: 0;
-    width: 0;
-    height: 0;
-    border-style: solid;
-    border-width: 0 0 4px 4px;
-    border-color: transparent transparent var(--dropdownToggleColor) transparent;
-    z-index: 1;
+// .#{$prefix}-dropdown-menu-button {
+//   float: right;
+//   border: 1px solid var(--border-color);
+// }
+
+.#{$prefix}-dropdown-menu-item {
+  padding: 4px 8px;
+  background: var(--active-bg-color);
+  cursor: pointer;
+  box-sizing: border-box;
+  &:hover {
+    color: var(--active-text-color);
+    background-color: var(--hover-color);
+  }
 }
 
 .#{$prefix}-dropdown-submenu {
   padding: 0;
   margin: 0;
   border: 1px solid var(--border-color);
+  border-radius: 4px;
+  overflow: hidden;
   list-style: none;
+  font-size: 12px;
+
 }
 .active {
   color: var(--active-text-color);
