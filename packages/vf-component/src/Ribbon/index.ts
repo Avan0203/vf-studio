@@ -12,8 +12,6 @@ import RibbonButton from './RibbonButton.vue';
 import RibbonTab from './RibbonTab.vue';
 import RibbonButtonGroup from './RibbonButtonGroup.vue';
 import RibbonDropDownMenu from './RibbonDropDownMenu.vue';
-import RibbonDropDownMenuItem from './RibbonDropDownMenuItem.vue';
-import RibbonDropDownSubMenu from './RibbonDropDownSubMenu.vue';
 
 export {
     RibbonMenu,
@@ -22,6 +20,4 @@ export {
     RibbonButtonGroup,
     RibbonTab,
     RibbonDropDownMenu,
-    RibbonDropDownMenuItem,
-    RibbonDropDownSubMenu
 }

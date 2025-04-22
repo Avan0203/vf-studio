@@ -206,9 +206,31 @@ $prefix: "ribbon";
   background: var(--active-bg-color);
   cursor: pointer;
   box-sizing: border-box;
+  display: flex;
+
+  &-wrap {
+    flex: 1;
+    text-align: left;
+    .#{$prefix}-dropdown-menu-item-prefix {
+      display: inline-block;
+      width: 12px;
+      height: 12px;
+      margin-right: 8px;
+    }
+  }
+  &-suffix {
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    margin-left: 8px;
+  }
+
   &:hover {
-    color: var(--active-text-color);
     background-color: var(--hover-color);
+  }
+
+  &:hover > &-wrap {
+    color: var(--active-text-color);
   }
 }
 
@@ -220,12 +242,29 @@ $prefix: "ribbon";
   overflow: hidden;
   list-style: none;
   font-size: 12px;
-
+  box-shadow: 0 0 6px 2px rgba(0, 0, 0, 0.1);
 }
+
+.arrow::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateX(-100%) rotate(45deg); /* 居中并旋转 */
+  width: 6px;
+  height: 6px;
+  border-right: 1px solid #333; /* 右侧边框作为箭头右侧线条 */
+  border-top: 1px solid #333;   /* 顶部边框作为箭头左侧线条 */
+}
+
 .active {
   color: var(--active-text-color);
   background-color: var(--active-color);
   border: 1px solid var(--active-border-color);
+}
+
+.divider {
+  border-bottom: 1px solid var(--border-color);
 }
 
 .disabled {

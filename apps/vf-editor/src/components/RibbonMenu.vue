@@ -2,7 +2,7 @@
  * @Author: wuyifan 1208097313@qq.com
  * @Date: 2025-04-08 00:09:15
  * @LastEditors: wuyifan0203 1208097313@qq.com
- * @LastEditTime: 2025-04-21 18:29:10
+ * @LastEditTime: 2025-04-22 14:40:31
  * @FilePath: \VF-Editor\apps\vf-editor\src\components\RibbonMenu.vue
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
 -->
@@ -53,9 +53,11 @@
             </ribbon-group>
             <ribbon-group label="dropdown menu">
                 <ribbon-drop-down-menu name="drop1" icon="f-iconfont f-zu" type="common" label="drop1"
-                    :style="{ float: 'left' }" :options="dropMenuOptions">
+                    :style="{ float: 'left' }" :options="dropMenuOptions" @menu-item-click="handleOpenSideBar"
+                    @click="handleOpenSideBar">
                 </ribbon-drop-down-menu>
-                <ribbon-drop-down-menu name="drop1" icon="f-iconfont f-zu" type="common" disabled :options="dropMenuOptions">
+                <ribbon-drop-down-menu name="drop1" icon="f-iconfont f-zu" type="common" disabled
+                    :options="dropMenuOptions" @menu-item-click="handleOpenSideBar" @click="handleOpenSideBar">
                 </ribbon-drop-down-menu>
             </ribbon-group>
         </ribbon-tab>
@@ -80,7 +82,6 @@ import {
     RibbonButton,
     RibbonButtonGroup,
     RibbonDropDownMenu,
-    RibbonDropDownMenuItem,
 } from '@vf/component'
 import { RibbonMenuItem } from '@vf/component/src/Ribbon/type';
 // 狀態管理
@@ -90,13 +91,12 @@ const activeName = ref('static');
 const dropMenuOptions = reactive<RibbonMenuItem[]>([
     {
         name: 'drop1-1',
-        label: '1-1',
+        label: '1-14444444444',
         icon: 'f-iconfont f-ruler',
     },
     {
         name: 'drop1-2',
         label: '1-2',
-        icon: 'f-iconfont f-ruler',
         disabled: true,
         divider: true,
     },
@@ -111,8 +111,69 @@ const dropMenuOptions = reactive<RibbonMenuItem[]>([
                 icon: 'f-iconfont f-ruler',
             },
             {
-                name: 'drop1-3-2',
+                name: 'drop1-3-211111111111111111',
                 label: '1-3-2',
+                icon: 'f-iconfont f-ruler',
+            },
+            {
+                name: 'drop1-3-3',
+                label: '1-3-3',
+                icon: 'f-iconfont f-ruler',
+                visible: true,
+            },
+        ]
+    },
+    {
+        name: 'drop1-3',
+        label: '1-3',
+        icon: 'f-iconfont f-ruler',
+        children: [
+            {
+                name: 'drop1-3-1',
+                label: '1-3-1',
+                icon: 'f-iconfont f-ruler',
+            },
+            {
+                name: 'drop1-3-211111111111111111',
+                label: '1-3-2',
+                icon: 'f-iconfont f-ruler',
+            },
+            {
+                name: 'drop1-3-3',
+                label: '1-3-3',
+                icon: 'f-iconfont f-ruler',
+                visible: true,
+            },
+        ]
+    },
+    {
+        name: 'drop1-3',
+        label: '1-3',
+        icon: 'f-iconfont f-ruler',
+        children: [
+            {
+                name: 'drop1-3-1',
+                label: '1-3-1',
+                disabled: false,
+                icon: 'f-iconfont f-ruler',
+                children: [
+                    {
+                        name: 'drop1-3-211111111111111111',
+                        label: '1-3-2',
+                        icon: 'f-iconfont f-ruler',
+                    },
+                    {
+                        name: 'drop1-3-3',
+                        label: '1-3-3',
+                        icon: 'f-iconfont f-ruler',
+                        visible: true,
+                    },
+                ]
+            },
+            {
+                name: 'drop1-3-211111111111111111',
+                label: '1-3-2',
+                disabled: true,
                 icon: 'f-iconfont f-ruler',
             },
             {
