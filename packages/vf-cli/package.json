@@ -1,0 +1,10 @@
+{
+  "name": "@vf/cli",
+  "version": "1.0.0",
+  "description": "统一的配置",
+  "devDependencies": {
+    "typescript": "~5.9.2",
+    "eslint": "^9.33.0",
+    "globals": "^16.3.0"
+  }
+}

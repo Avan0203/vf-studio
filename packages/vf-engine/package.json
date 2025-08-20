@@ -12,6 +12,6 @@
     "@vf/structure": "workspace:*"
   },
   "devDependencies": {
-    "typescript": "^5.0.4"
+    "@vf/cli": "workspace:*"
   }
 }

@@ -1,5 +1,5 @@
 {
-  "name": "vf-editor",
+  "name": "vf-studio",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -16,17 +16,13 @@
     "apps/*"
   ],
   "devDependencies": {
-    "@biomejs/biome": "1.9.4",
-    "@commitlint/cli": "^19.8.0",
-    "@commitlint/config-conventional": "^19.8.0",
+    "@commitlint/cli": "^19.8.1",
+    "@commitlint/config-conventional": "^19.8.1",
     "husky": "^9.1.7",
-    "lint-staged": "^15.3.0",
+    "lint-staged": "^16.1.5",
     "commitizen": "^4.3.1",
-    "cz-customizable": "^7.2.1",
-    "cz-git": "^1.11.0"
-  },
-  "dependencies": {
-    "three": "^0.175.0"
+    "cz-customizable": "^7.5.0",
+    "cz-git": "^1.12.0"
   },
   "config": {
     "commitizen": {
