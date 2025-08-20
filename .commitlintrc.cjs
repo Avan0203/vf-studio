@@ -1,9 +1,9 @@
 /*
  * @Author: wuyifan0203 1208097313@qq.com
  * @Date: 2025-04-01 17:32:51
- * @LastEditors: wuyifan0203 1208097313@qq.com
- * @LastEditTime: 2025-04-01 17:47:32
- * @FilePath: \VF-Editor\.commitlintrc.cjs
+ * @LastEditors: wuyifan wuyifan@udschina.com
+ * @LastEditTime: 2025-08-20 17:46:18
+ * @FilePath: \vf-studio\.commitlintrc.cjs
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
 module.exports = {
@@ -47,6 +47,8 @@ module.exports = {
             { name: 'component' },
             { name: 'docs' },
             { name: 'cli' },
+            { name: 'math' },
+            { name: 'core' },
             { name: 'others' },
         ],
         useEmoji: true,

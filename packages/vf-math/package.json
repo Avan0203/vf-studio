@@ -1,0 +1,13 @@
+{
+  "name": "@vf/template",
+  "version": "1.0.0",
+  "description": "template",
+  "main": "index.ts",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc -w"
+  },
+  "devDependencies": {
+    "@vf/cli": "workspace:*"
+  }
+}

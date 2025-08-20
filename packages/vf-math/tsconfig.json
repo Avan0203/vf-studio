@@ -1,0 +1,3 @@
+{
+  "extends": "@vf/cli/ts-config/tsconfig.json"
+}
