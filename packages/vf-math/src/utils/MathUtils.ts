@@ -1,6 +1,24 @@
 import { Tolerance } from "./Tolerance";
 
-export class Calculate {
+export class MathUtils {
+    static radToDeg(rad: number) {
+        return rad * 180 / Math.PI;
+    }
+    static degToRad(deg: number) {
+        return deg * Math.PI / 180;
+    }
+    static randomInt(min: number, max: number) {
+        return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+    static randomFloat(min: number, max: number) {
+        return Math.random() * (max - min) + min;
+    }
+    static randomBool() {
+        return Math.random() < 0.5;
+    }
+    static randomSign() {
+        return Math.random() < 0.5 ? -1 : 1;
+    }
     /**
      * @description: 判断 a 是否等于 b
      * @param {number} a
@@ -20,7 +38,7 @@ export class Calculate {
      * @return {boolean}
      */
     static greaterEqual(a: number, b: number, eps = Tolerance.CALCULATION_EPS) {
-        return a > b || Calculate.equals(a, b, eps);
+        return a > b || MathUtils.equals(a, b, eps);
     }
 
     /**
@@ -31,7 +49,7 @@ export class Calculate {
      * @return {boolean}
      */
     static greaterThan(a: number, b: number, eps = Tolerance.CALCULATION_EPS) {
-        return a > b && !Calculate.equals(a, b, eps);
+        return a > b && !MathUtils.equals(a, b, eps);
     }
 
     /**
@@ -42,7 +60,7 @@ export class Calculate {
      * @return {boolean}
      */
     static lessEqual(a: number, b: number, eps = Tolerance.CALCULATION_EPS) {
-        return a < b || Calculate.equals(a, b, eps);
+        return a < b || MathUtils.equals(a, b, eps);
     }
 
     /**
@@ -53,7 +71,7 @@ export class Calculate {
      * @return {boolean}
      */
     static lessThan(a: number, b: number, eps = Tolerance.CALCULATION_EPS) {
-        return a < b && !Calculate.equals(a, b, eps);
+        return a < b && !MathUtils.equals(a, b, eps);
     }
 
     /**
@@ -96,7 +114,7 @@ export class Calculate {
  * @return {number}
  */
     static smoothstep(edge0: number, edge1: number, x: number) {
-        let t = Calculate.clamp((x - edge0) / (edge1 - edge0), 0.0, 1.0);
+        let t = MathUtils.clamp((x - edge0) / (edge1 - edge0), 0.0, 1.0);
         return t * t * (3.0 - 2.0 * t);
     }
 

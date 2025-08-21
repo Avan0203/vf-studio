@@ -20,7 +20,4 @@ export class Tolerance {
         this.angleEps = angleEps || Tolerance.ANGLE_EPS;
         this.calculationEps = calculationEps || Tolerance.CALCULATION_EPS;
     }
-
-
-
 }
