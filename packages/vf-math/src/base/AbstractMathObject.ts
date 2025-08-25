@@ -1,17 +1,28 @@
 export abstract class AbstractMathObject {
     readonly type: string;
-    set(..._: any[]){
+    constructor() {
+        this.type = (new.target as { new(...args: any[]): any; name: string }).name;
+    }
+    set(..._: any[]) {
         return this;
     }
-    clone(){
+    clone() {
         return this.constructor();
     }
 
-    copy(..._: any[]){
+    copy(..._: any[]) {
         return this;
     }
 
-    equals(..._: any[]){
+    equals(..._: any[]) {
         return false;
+    }
+
+    load(..._: any[]) {
+        return this;
+    }
+
+    dump(){
+        return {  type: this.type  }
     }
 }

@@ -2,6 +2,11 @@ import { MathUtils, Vector2 } from '../src';
 import { describe, it, expect } from 'vitest';
 
 describe('Vector2', () => {
+  it('should have type Vector2', () => {
+    const v = new Vector2();
+    expect(v.type).toBe('Vector2');
+  });
+
   it('should create a new Vector2 with default values (0, 0)', () => {
     const v = new Vector2();
     expect(v.x).toBe(0);
@@ -55,14 +60,6 @@ describe('Vector2', () => {
     expect(v1.y).toBe(4);
   });
 
-  it('should calculate distance between vectors correctly', () => {
-    const v1 = new Vector2(0, 0);
-    const v2 = new Vector2(3, 4);
-    const distance = v1.distance(v2);
-
-    expect(distance).toBe(5);
-  });
-
   it('should calculate dot product correctly', () => {
     const v1 = new Vector2(1, 2);
     const v2 = new Vector2(3, 4);
@@ -85,18 +82,18 @@ describe('Vector2', () => {
     const v2 = new Vector2(4, 5);
     v.addVectors(v1, v2);
 
-    expect(v.x).toBe(7); // 1 + 2 + 4 = 7
-    expect(v.y).toBe(9); // 1 + 3 + 5 = 9
+    expect(v.x).toBe(6); // 2 + 4 = 6
+    expect(v.y).toBe(8); // 3 + 5 = 8
   });
 
   it('should subtract sum of two vectors from itself correctly', () => {
-    const v = new Vector2(10, 10);
+    const v = new Vector2();
     const v1 = new Vector2(2, 3);
     const v2 = new Vector2(4, 5);
-    v.subVectors(v1, v2);
+    v.subVectors(v2, v1);
 
-    expect(v.x).toBe(4); // 10 - (2 + 4) = 4
-    expect(v.y).toBe(2); // 10 - (3 + 5) = 2
+    expect(v.x).toBe(2); // 4 - 2 = 2
+    expect(v.y).toBe(2); // 5 - 3 = 2
   });
 
   it('should check equality of vectors correctly', () => {
@@ -243,8 +240,8 @@ describe('Vector2', () => {
     const v2 = new Vector2(0, 1);
     const v3 = new Vector2(1, 1);
 
-    expect(MathUtils.equals(v1.angleTo(v2) ,Math.PI / 2)).toBe(true);
-    expect(MathUtils.equals(v1.angleTo(v3) ,Math.PI / 4)).toBe(true);
+    expect(MathUtils.equals(v1.angleTo(v2), Math.PI / 2)).toBe(true);
+    expect(MathUtils.equals(v1.angleTo(v3), Math.PI / 4)).toBe(true);
   });
 
   it('should lerp to another vector correctly', () => {
@@ -278,5 +275,20 @@ describe('Vector2', () => {
 
     expect(v.x).toBe(3);
     expect(v.y).toBe(4);
+  });
+
+    it('should load data correctly', () => {
+    const v = new Vector2().load([1, 2]);
+
+    expect(v.x).toBe(1);
+    expect(v.y).toBe(2);
+  });
+
+  it('should dump data correctly', () => {
+    const v = new Vector2(1, 2);
+    const dumped = v.dump();
+
+    expect(dumped.type).toBe('Vector2');
+    expect(dumped.value).toEqual([1, 2]);
   });
 });

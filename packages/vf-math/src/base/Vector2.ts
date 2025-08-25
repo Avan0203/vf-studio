@@ -2,7 +2,7 @@
  * @Author: wuyifan wuyifan@udschina.com
  * @Date: 2025-08-20 17:14:03
  * @LastEditors: wuyifan wuyifan@udschina.com
- * @LastEditTime: 2025-08-22 17:47:34
+ * @LastEditTime: 2025-08-25 15:30:05
  * @FilePath: \vf-studio\packages\vf-math\src\base\Vector2.ts
  * Copyright (c) 2024 by wuyifan email: 1208097313@qq.com, All Rights Reserved.
  */
@@ -15,7 +15,6 @@ export type Vector2Like = {
 }
 
 export class Vector2 extends AbstractMathObject {
-    readonly type = 'Vector2';
     x: number;
     y: number;
 
@@ -48,19 +47,11 @@ export class Vector2 extends AbstractMathObject {
     }
 
     add(v: Vector2Like): this {
-        this.x += v.x;
-        this.y += v.y;
-        return this;
+        return this.addVectors(this, v);
     }
 
     sub(v: Vector2Like): this {
-        this.x -= v.x;
-        this.y -= v.y;
-        return this;
-    }
-
-    distance(v: Vector2Like): number {
-        return Math.sqrt(Math.pow(this.x - v.x, 2) + Math.pow(this.y - v.y, 2));
+        return this.subVectors(this, v);
     }
 
     dot(v: Vector2Like): number {
@@ -72,18 +63,18 @@ export class Vector2 extends AbstractMathObject {
     }
 
     addVectors(v1: Vector2Like, v2: Vector2Like): this {
-        this.x += v1.x + v2.x;
-        this.y += v1.y + v2.y;
+        this.x = v1.x + v2.x;
+        this.y = v1.y + v2.y;
         return this;
     }
 
     subVectors(v1: Vector2Like, v2: Vector2Like): this {
-        this.x -= v1.x + v2.x;
-        this.y -= v1.y + v2.y;
+        this.x = v1.x - v2.x;
+        this.y = v1.y - v2.y;
         return this;
     }
 
-    equals(v: Vector2Like, esp = Tolerance.CALCULATION_EPS): boolean {
+    equals(v: Vector2Like, esp = Tolerance.LENGTH_EPS): boolean {
         return MathUtils.equals(this.x, v.x, esp) && MathUtils.equals(this.y, v.y, esp);
     }
 
@@ -189,5 +180,23 @@ export class Vector2 extends AbstractMathObject {
         this.x = array[offset];
         this.y = array[offset + 1];
         return this;
+    }
+
+    // todo Matrix3
+    // applyMatrix3(matrix: Matrix3): this {
+    //     const x = this.x;
+    //     const y = this.y;
+    //     const e = matrix.elements;
+    //     this.x = e[0] * x + e[3] * y + e[6];
+    //     this.y = e[1] * x + e[4] * y + e[7];
+    //     return this;
+    // }
+
+    load(data: number[]): this {
+        return this.fromArray(data);
+    }
+
+    dump(){
+        return {  type: this.type, value: [this.x, this.y] }
     }
 }
