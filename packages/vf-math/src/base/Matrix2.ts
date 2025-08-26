@@ -71,10 +71,13 @@ class Matrix2 extends AbstractMathObject {
         }
     }
 
-    equals(m: Matrix2, esp = Tolerance.LENGTH_EPS): boolean {
-        const t = this.elements;
-        const e = m.elements;
-        return t.every((v, i) => MathUtils.equals(v, e[i], esp));
+    equals(m: Matrix2, eps = Tolerance.LENGTH_EPS): boolean {
+        const te = this.elements;
+        const me = m.elements;
+        for (let i = 0; i < 4; i++) {
+            if (MathUtils.equals(te[i], me[i]), eps) return false;
+        }
+        return true;
     }
 
     add(m: Matrix2) {
@@ -98,14 +101,14 @@ class Matrix2 extends AbstractMathObject {
     }
 
     multiply(m: Matrix2): this {
-        return this.multiplyMatrixs(this, m);
+        return this.multiplyMatrices(this, m);
     }
 
     premultiply(m: Matrix2): this {
-        return this.multiplyMatrixs(m, this);
+        return this.multiplyMatrices(m, this);
     }
 
-    multiplyMatrixs(m1: Matrix2, m2: Matrix2): this {
+    multiplyMatrices(m1: Matrix2, m2: Matrix2): this {
         const a = m1.elements;
         const b = m2.elements;
         const ae0 = a[0], ae1 = a[1], ae2 = a[2], ae3 = a[3];

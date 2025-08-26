@@ -8,6 +8,7 @@
  */
 import { AbstractMathObject } from "./AbstractMathObject";
 import { MathUtils, Tolerance } from "../utils";
+import type { Matrix3 } from "./Matrix3";
 
 export type Vector2Like = {
     x: number;
@@ -182,15 +183,14 @@ export class Vector2 extends AbstractMathObject {
         return this;
     }
 
-    // todo Matrix3
-    // applyMatrix3(matrix: Matrix3): this {
-    //     const x = this.x;
-    //     const y = this.y;
-    //     const e = matrix.elements;
-    //     this.x = e[0] * x + e[3] * y + e[6];
-    //     this.y = e[1] * x + e[4] * y + e[7];
-    //     return this;
-    // }
+    applyMatrix3(matrix: Matrix3): this {
+        const x = this.x;
+        const y = this.y;
+        const e = matrix.elements;
+        this.x = e[0] * x + e[3] * y + e[6];
+        this.y = e[1] * x + e[4] * y + e[7];
+        return this;
+    }
 
     load(data: number[]): this {
         return this.fromArray(data);
