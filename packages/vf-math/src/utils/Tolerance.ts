@@ -7,7 +7,7 @@
  * Copyright (c) 2024 by wuyifan email: 1208097313@qq.com, All Rights Reserved.
  */
 export class Tolerance {
-    static LENGTH_EPS = 1e-5;
+    static LENGTH_EPS = 1e-6;
     static ANGLE_EPS = 1e-5;
     static CALCULATION_EPS = 1e-6;
 
