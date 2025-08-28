@@ -149,9 +149,9 @@ export class Vector2 extends AbstractMathObject<Vector2Like> {
         return this;
     }
 
-    clamp(min: number, max: number): this {
-        this.x = MathUtils.clamp(this.x, min, max);
-        this.y = MathUtils.clamp(this.y, min, max);
+    clamp(min: Vector2Like, max: Vector2Like): this {
+        this.x = MathUtils.clamp(this.x, min.x, max.x);
+        this.y = MathUtils.clamp(this.y, min.y, max.y);
         return this;
     }
 

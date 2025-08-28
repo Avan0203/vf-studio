@@ -1,14 +1,15 @@
 import { AbstractMathObject, DumpResult } from "./AbstractMathObject";
 import { MathUtils, Tolerance } from "../utils";
 import type { Matrix4 } from "./Matrix4";
+import { Matrix3 } from "./Matrix3";
 
-export type Vector3Like = {
+type Vector3Like = {
     x: number;
     y: number;
     z: number;
 }
 
-export class Vector3 extends AbstractMathObject<Vector3Like> {
+class Vector3 extends AbstractMathObject<Vector3Like> {
     x: number;
     y: number;
     z: number;
@@ -137,10 +138,7 @@ export class Vector3 extends AbstractMathObject<Vector3Like> {
     }
 
     negate(): this {
-        this.x = -this.x;
-        this.y = -this.y;
-        this.z = -this.z;
-        return this;
+        return this.multiplyScalar(-1);
     }
 
     distanceTo(v: Vector3Like): number {
@@ -227,6 +225,19 @@ export class Vector3 extends AbstractMathObject<Vector3Like> {
         return this;
     }
 
+    applyMatrix3(matrix: Matrix3): this {
+        const x = this.x, y = this.y, z = this.z;
+        const e = matrix.elements;
+        this.x = e[0] * x + e[3] * y + e[6] * z;
+        this.y = e[1] * x + e[4] * y + e[7] * z;
+        this.z = e[2] * x + e[5] * y + e[8] * z;
+        return this;
+    }
+
+    addScaledVector(v: Vector3Like, s: number): this { 
+        return this.add(_v.copy(v).multiplyScalar(s));
+    }
+
     load(data: Vector3Like): this {
         return this.copy(data);
     }
@@ -235,3 +246,7 @@ export class Vector3 extends AbstractMathObject<Vector3Like> {
         return { type: this.type, value: { x: this.x, y: this.y, z: this.z } }
     }
 }
+
+const _v = /*@__PURE__*/ new Vector3();
+
+export { Vector3, Vector3Like }
