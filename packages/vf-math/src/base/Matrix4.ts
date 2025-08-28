@@ -1,8 +1,10 @@
-import { AbstractMathObject, MathUtils, Tolerance } from '../index.js';
+import { AbstractMathObject, MathUtils, Tolerance, type DumpResult } from '../index.js';
+import { Euler } from './Euler.js';
 import type { Matrix3 } from './Matrix3.js';
+import { Quaternion } from './Quaternion.js';
 import { Vector3, Vector3Like } from './Vector3.js';
 
-class Matrix4 extends AbstractMathObject {
+class Matrix4 extends AbstractMathObject<number[]> {
 	elements: number[] = new Array(16);
 	constructor(n11 = 1, n12 = 0, n13 = 0, n14 = 0, n21 = 0, n22 = 1, n23 = 0, n24 = 0, n31 = 0, n32 = 0, n33 = 1, n34 = 0, n41 = 0, n42 = 0, n43 = 0, n44 = 1) {
 		super();
@@ -492,7 +494,7 @@ class Matrix4 extends AbstractMathObject {
 	compose(position: Vector3Like, quaternion: Quaternion, scale: Vector3Like): this {
 		const te = this.elements;
 
-		const x = quaternion._x, y = quaternion._y, z = quaternion._z, w = quaternion._w;
+		const x = quaternion.x, y = quaternion.y, z = quaternion.z, w = quaternion.w;
 		const x2 = x + x, y2 = y + y, z2 = z + z;
 		const xx = x * x2, xy = x * y2, xz = x * z2;
 		const yy = y * y2, yz = y * z2, zz = z * z2;
@@ -675,7 +677,7 @@ class Matrix4 extends AbstractMathObject {
 		return this.fromArray(array);
 	}
 
-	dump() {
+	dump():DumpResult<number[]> {
 		return {
 			type: 'Matrix4',
 			value: [...this.elements],
@@ -690,5 +692,6 @@ const _one = /*@__PURE__*/ new Vector3(1, 1, 1);
 const _x = /*@__PURE__*/ new Vector3();
 const _y = /*@__PURE__*/ new Vector3();
 const _z = /*@__PURE__*/ new Vector3();
+
 
 export { Matrix4 };

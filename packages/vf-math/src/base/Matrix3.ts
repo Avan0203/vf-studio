@@ -1,8 +1,8 @@
 import { MathUtils, Tolerance } from "../utils";
-import { AbstractMathObject } from "./AbstractMathObject";
+import { AbstractMathObject, type DumpResult } from "./AbstractMathObject";
 import type { Matrix4 } from "./Matrix4";
 
-class Matrix3 extends AbstractMathObject {
+class Matrix3 extends AbstractMathObject<number[]> {
 	elements: number[];
 
 	constructor(n11 = 1, n12 = 0, n13 = 0, n21 = 0, n22 = 1, n23 = 0, n31 = 0, n32 = 0, n33 = 1) {
@@ -242,7 +242,7 @@ class Matrix3 extends AbstractMathObject {
 		return this.fromArray(array);
 	}
 
-	dump() {
+	dump(): DumpResult<number[]> {
 		return {
 			type: 'Matrix3',
 			value: [...this.elements],
@@ -251,5 +251,6 @@ class Matrix3 extends AbstractMathObject {
 }
 
 const _m3 = /*@__PURE__*/ new Matrix3();
+
 
 export { Matrix3 };

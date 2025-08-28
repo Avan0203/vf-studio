@@ -7,9 +7,9 @@
  * Copyright (c) 2024 by wuyifan email: 1208097313@qq.com, All Rights Reserved.
  */
 import { MathUtils, Tolerance } from "../utils";
-import { AbstractMathObject } from "./AbstractMathObject";
+import { AbstractMathObject, DumpResult } from "./AbstractMathObject";
 
-class Matrix2 extends AbstractMathObject {
+class Matrix2 extends AbstractMathObject<number[]> {
     public elements = new Array(4);
     constructor(n1 = 1, n2 = 0, n3 = 0, n4 = 1) {
         super();
@@ -64,7 +64,7 @@ class Matrix2 extends AbstractMathObject {
         return this.fromArray(array);
     }
 
-    dump() {
+    dump(): DumpResult<number[]> {
         return {
             type: 'Matrix2',
             value: [...this.elements],

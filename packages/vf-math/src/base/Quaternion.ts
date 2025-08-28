@@ -1,10 +1,17 @@
+import { AbstractMathObject,type DumpResult } from './AbstractMathObject.js';
+import { Euler } from './Euler.js';
 import { MathUtils } from '../utils/MathUtils.js';
 import { Tolerance } from '../utils/Tolerance.js';
-import { AbstractMathObject } from './AbstractMathObject.js';
 import type { Matrix4 } from './Matrix4.js';
 import type { Vector3 } from './Vector3.js';
 
-class Quaternion extends AbstractMathObject {
+type QuaternionLike = {
+	x: number;
+	y: number;
+	z: number;
+	w: number;
+}
+class Quaternion extends AbstractMathObject<QuaternionLike> {
 	private _x: number;
 	private _y: number;
 	private _z: number;
@@ -152,7 +159,7 @@ class Quaternion extends AbstractMathObject {
 		return new Quaternion(this._x, this._y, this._z, this._w);
 	}
 
-	copy(quaternion: Quaternion) {
+	copy(quaternion: QuaternionLike) {
 		this._x = quaternion.x;
 		this._y = quaternion.y;
 		this._z = quaternion.z;
@@ -162,7 +169,7 @@ class Quaternion extends AbstractMathObject {
 	}
 
 	setFromEuler(euler: Euler): this {
-		const x = euler._x, y = euler._y, z = euler._z, order = euler._order;
+		const x = euler.x, y = euler.y, z = euler.z, order = euler.order;
 		const cos = Math.cos;
 		const sin = Math.sin;
 
@@ -481,6 +488,22 @@ class Quaternion extends AbstractMathObject {
 	}
 
 	private _onChangeCallback() { }
+
+	load(data: QuaternionLike): this {
+		return this.copy(data);
+	}
+
+	dump():DumpResult<QuaternionLike> {
+		return {
+			type: 'Quaternion',
+			value: {
+				x: this._x,
+				y: this._y,
+				z: this._z,
+				w: this._w,
+			},
+		}
+	}
 }
 
 export { Quaternion };

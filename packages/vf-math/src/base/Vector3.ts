@@ -1,4 +1,4 @@
-import { AbstractMathObject } from "./AbstractMathObject";
+import { AbstractMathObject, DumpResult } from "./AbstractMathObject";
 import { MathUtils, Tolerance } from "../utils";
 import type { Matrix4 } from "./Matrix4";
 
@@ -8,7 +8,7 @@ export type Vector3Like = {
     z: number;
 }
 
-export class Vector3 extends AbstractMathObject {
+export class Vector3 extends AbstractMathObject<Vector3Like> {
     x: number;
     y: number;
     z: number;
@@ -227,11 +227,11 @@ export class Vector3 extends AbstractMathObject {
         return this;
     }
 
-    load(data: number[]): this {
-        return this.fromArray(data);
+    load(data: Vector3Like): this {
+        return this.copy(data);
     }
 
-    dump() {
-        return { type: this.type, value: [this.x, this.y, this.z] }
+    dump(): DumpResult<Vector3Like> {
+        return { type: this.type, value: { x: this.x, y: this.y, z: this.z } }
     }
 }
