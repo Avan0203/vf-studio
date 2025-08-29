@@ -1,7 +1,8 @@
 import { AbstractMathObject, DumpResult } from "./AbstractMathObject";
 import { MathUtils, Tolerance } from "../utils";
 import type { Matrix4 } from "./Matrix4";
-import { Matrix3 } from "./Matrix3";
+import type { Matrix3 } from "./Matrix3";
+import { _v } from "../utils/pure";
 
 type Vector3Like = {
     x: number;
@@ -129,6 +130,10 @@ class Vector3 extends AbstractMathObject<Vector3Like> {
         return Math.sqrt(this.getSquareLength());
     }
 
+    setLength(length: number): this {
+        return this.normalize().multiplyScalar(length);
+    }
+
     normalize(): this {
         return this.multiplyScalar((1 / this.getLength()) || 1);
     }
@@ -142,7 +147,11 @@ class Vector3 extends AbstractMathObject<Vector3Like> {
     }
 
     distanceTo(v: Vector3Like): number {
-        return Math.sqrt(Math.pow(this.x - v.x, 2) + Math.pow(this.y - v.y, 2) + Math.pow(this.z - v.z, 2));
+        return Math.sqrt(this.distanceToSquared(v));
+    }
+
+    distanceToSquared(v: Vector3Like): number {
+        return Math.pow(this.x - v.x, 2) + Math.pow(this.y - v.y, 2) + Math.pow(this.z - v.z, 2);
     }
 
     random(min = 0, max = 1): this {
@@ -246,7 +255,5 @@ class Vector3 extends AbstractMathObject<Vector3Like> {
         return { type: this.type, value: { x: this.x, y: this.y, z: this.z } }
     }
 }
-
-const _v = /*@__PURE__*/ new Vector3();
 
 export { Vector3, Vector3Like }

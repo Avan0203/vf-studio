@@ -10,12 +10,12 @@ import { AbstractMathObject, type DumpResult } from "./AbstractMathObject";
 import { MathUtils, Tolerance } from "../utils";
 import type { Matrix3 } from "./Matrix3";
 
-export type Vector2Like = {
+type Vector2Like = {
     x: number;
     y: number;
 }
 
-export class Vector2 extends AbstractMathObject<Vector2Like> {
+class Vector2 extends AbstractMathObject<Vector2Like> {
     x: number;
     y: number;
 
@@ -200,3 +200,5 @@ export class Vector2 extends AbstractMathObject<Vector2Like> {
         return { type: this.type, value: { x: this.x, y: this.y } }
     }
 }
+
+export { Vector2, Vector2Like }

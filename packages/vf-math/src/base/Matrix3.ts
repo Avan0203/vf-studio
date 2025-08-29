@@ -1,4 +1,5 @@
 import { MathUtils, Tolerance } from "../utils";
+import { _mat3 } from "../utils/pure";
 import { AbstractMathObject, type DumpResult } from "./AbstractMathObject";
 import type { Matrix4 } from "./Matrix4";
 
@@ -155,17 +156,17 @@ class Matrix3 extends AbstractMathObject<number[]> {
 	}
 
 	scale(sx: number, sy: number): this {
-		this.premultiply(_m3.makeScale(sx, sy));
+		this.premultiply(_mat3.makeScale(sx, sy));
 		return this;
 	}
 
 	rotate(theta: number): this {
-		this.premultiply(_m3.makeRotation(- theta));
+		this.premultiply(_mat3.makeRotation(- theta));
 		return this;
 	}
 
 	translate(x: number, y: number): this {
-		this.premultiply(_m3.makeTranslation(x, y));
+		this.premultiply(_mat3.makeTranslation(x, y));
 		return this;
 	}
 
@@ -249,8 +250,6 @@ class Matrix3 extends AbstractMathObject<number[]> {
 		}
 	}
 }
-
-const _m3 = /*@__PURE__*/ new Matrix3();
 
 
 export { Matrix3 };

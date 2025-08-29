@@ -1,7 +1,6 @@
-import { AbstractMathObject,type DumpResult } from './AbstractMathObject.js';
+import { AbstractMathObject, type DumpResult } from './AbstractMathObject.js';
 import { Euler } from './Euler.js';
-import { MathUtils } from '../utils/MathUtils.js';
-import { Tolerance } from '../utils/Tolerance.js';
+import { MathUtils, Tolerance } from '../utils';
 import type { Matrix4 } from './Matrix4.js';
 import type { Vector3 } from './Vector3.js';
 
@@ -493,7 +492,7 @@ class Quaternion extends AbstractMathObject<QuaternionLike> {
 		return this.copy(data);
 	}
 
-	dump():DumpResult<QuaternionLike> {
+	dump(): DumpResult<QuaternionLike> {
 		return {
 			type: 'Quaternion',
 			value: {
@@ -506,4 +505,4 @@ class Quaternion extends AbstractMathObject<QuaternionLike> {
 	}
 }
 
-export { Quaternion };
+export { Quaternion, QuaternionLike };

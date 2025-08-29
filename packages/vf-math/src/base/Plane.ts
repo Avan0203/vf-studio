@@ -1,13 +1,10 @@
-import { MathUtils } from '../utils/MathUtils';
-import { Tolerance } from '../utils/Tolerance';
+import { MathUtils, Tolerance } from '../utils';
+import { _mat3, _sphere, _v, _vec1, _vec2 } from '../utils/pure';
 import { AbstractMathObject } from './AbstractMathObject';
 import { Matrix3 } from './Matrix3.js';
 import type { Matrix4 } from './Matrix4'
+import { SphereLike } from './Sphere';
 import { Vector3, Vector3Like } from './Vector3';
-
-const _vector1 = /*@__PURE__*/ new Vector3();
-const _vector2 = /*@__PURE__*/ new Vector3();
-const _normalMatrix = /*@__PURE__*/ new Matrix3();
 
 type PlaneLike = {
 	normal: Vector3Like,
@@ -47,7 +44,7 @@ class Plane extends AbstractMathObject {
 
 
 	setFromCoplanarPoints(a: Vector3Like, b: Vector3Like, c: Vector3Like): this {
-		const normal = _vector1.subVectors(c, b).cross(_vector2.subVectors(a, b)).normalize();
+		const normal = _vec1.subVectors(c, b).cross(_vec2.subVectors(a, b)).normalize();
 		this.setFromNormalAndCoplanarPoint(normal, a);
 		return this;
 	}
@@ -87,7 +84,7 @@ class Plane extends AbstractMathObject {
 	}
 
 	intersectLine(line: Line3Like, target = new Vector3()): Vector3 | null {
-		const direction = line.delta(_vector1);
+		const direction = line.delta(_v);
 		const denominator = this.normal.dot(direction);
 		if (denominator === 0) {
 			if (this.distanceToPoint(line.start) === 0) {
@@ -116,7 +113,8 @@ class Plane extends AbstractMathObject {
 
 
 	intersectsSphere(sphere: SphereLike): boolean {
-		return sphere.intersectsPlane(this);
+		_sphere.copy(sphere);
+		return _sphere.intersectsPlane(this);
 	}
 
 	coplanarPoint(target = new Vector3()): Vector3 {
@@ -125,12 +123,11 @@ class Plane extends AbstractMathObject {
 
 
 	applyMatrix4(matrix: Matrix4, optionalNormalMatrix?: Matrix3) {
-		const normalMatrix = optionalNormalMatrix || _normalMatrix.getNormalMatrix(matrix);
-		const referencePoint = this.coplanarPoint(_vector1).applyMatrix4(matrix);
+		const normalMatrix = optionalNormalMatrix || _mat3.getNormalMatrix(matrix);
+		const referencePoint = this.coplanarPoint(_v).applyMatrix4(matrix);
 		const normal = this.normal.applyMatrix3(normalMatrix).normalize();
 		this.constant = - referencePoint.dot(normal);
 		return this;
-
 	}
 
 
@@ -150,4 +147,4 @@ class Plane extends AbstractMathObject {
 
 }
 
-export { Plane };
+export { Plane, PlaneLike };

@@ -1,10 +1,11 @@
-import { Quaternion } from './Quaternion.js';
-import { Matrix4 } from './Matrix4.js';
-import { Vector3 } from './Vector3.js';
+import type { QuaternionLike } from './Quaternion';
+import type { Matrix4 } from './Matrix4.js';
+import type { Vector3Like } from './Vector3.js';
 import { MathUtils, Tolerance } from '../utils';
 import { AbstractMathObject, type DumpResult } from './AbstractMathObject.js';
+import { _mat4, _quat1 } from '../utils/pure.js';
 
-export enum EulerOrder {
+enum EulerOrder {
 	XYZ = 'XYZ',
 	XZY = 'XZY',
 	YXZ = 'YXZ',
@@ -13,7 +14,7 @@ export enum EulerOrder {
 	ZYX = 'ZYX',
 }
 
-export type EulerLike = { x: number; y: number; z: number; order: EulerOrder };
+type EulerLike = { x: number; y: number; z: number; order: EulerOrder };
 
 class Euler extends AbstractMathObject<EulerLike> {
 	static DEFAULT_ORDER = EulerOrder.XYZ;
@@ -167,19 +168,19 @@ class Euler extends AbstractMathObject<EulerLike> {
 		return this;
 	}
 
-	setFromQuaternion(q: Quaternion, order: EulerOrder): this {
-		_matrix.makeRotationFromQuaternion(q);
-		return this.setFromRotationMatrix(_matrix, order);
+	setFromQuaternion(q: QuaternionLike, order: EulerOrder): this {
+		_mat4.makeRotationFromQuaternion(q);
+		return this.setFromRotationMatrix(_mat4, order);
 	}
 
 
-	setFromVector3(v: Vector3, order = this._order): this {
+	setFromVector3(v: Vector3Like, order = this._order): this {
 		return this.set(v.x, v.y, v.z, order);
 	}
 
 	reorder(newOrder: EulerOrder): this {
-		_quaternion.setFromEuler(this);
-		return this.setFromQuaternion(_quaternion, newOrder);
+		_quat1.setFromEuler(this);
+		return this.setFromQuaternion(_quat1, newOrder);
 	}
 
 	equals(euler: Euler, eps = Tolerance.LENGTH_EPS): boolean {
@@ -216,7 +217,7 @@ class Euler extends AbstractMathObject<EulerLike> {
 		return this.copy(data);
 	}
 
-	dump():DumpResult<EulerLike> {
+	dump(): DumpResult<EulerLike> {
 		return {
 			type: 'Euler',
 			value: {
@@ -229,7 +230,4 @@ class Euler extends AbstractMathObject<EulerLike> {
 	}
 }
 
-const _matrix = /*@__PURE__*/ new Matrix4();
-const _quaternion = /*@__PURE__*/ new Quaternion();
-
-export { Euler };
+export { Euler, EulerLike, EulerOrder };

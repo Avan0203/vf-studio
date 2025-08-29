@@ -1,8 +1,9 @@
 import { AbstractMathObject, MathUtils, Tolerance, type DumpResult } from '../index.js';
-import { Euler } from './Euler.js';
+import { _mat4, _one, _v, _vec1, _vec2, _vec3, _zero } from '../utils/pure.js';
+import { EulerLike } from './Euler.js';
 import type { Matrix3 } from './Matrix3.js';
-import { Quaternion } from './Quaternion.js';
-import { Vector3, Vector3Like } from './Vector3.js';
+import { Quaternion, QuaternionLike } from './Quaternion.js';
+import type { Vector3Like } from './Vector3.js';
 
 class Matrix4 extends AbstractMathObject<number[]> {
 	elements: number[] = new Array(16);
@@ -80,7 +81,7 @@ class Matrix4 extends AbstractMathObject<number[]> {
 	}
 
 
-	makeRotationFromEuler(euler: Euler): this {
+	makeRotationFromEuler(euler: EulerLike): this {
 		const te = this.elements;
 
 		const x = euler.x, y = euler.y, z = euler.z;
@@ -190,38 +191,38 @@ class Matrix4 extends AbstractMathObject<number[]> {
 		return this;
 	}
 
-	makeRotationFromQuaternion(q: Quaternion): this {
+	makeRotationFromQuaternion(q: QuaternionLike): this {
 		return this.compose(_zero, q, _one);
 	}
 
 	lookAt(eye: Vector3Like, target: Vector3Like, up: Vector3Like): this {
 		const te = this.elements;
-		_z.subVectors(eye, target);
+		_vec3.subVectors(eye, target);
 		// eye and target are in the same position
-		if (_z.getSquareLength() === 0) {
-			_z.z = 1;
+		if (_vec3.getSquareLength() === 0) {
+			_vec3.z = 1;
 		}
 
-		_z.normalize();
-		_x.crossVectors(up, _z);
+		_vec3.normalize();
+		_vec1.crossVectors(up, _vec3);
 
-		if (_x.getSquareLength() === 0) {
+		if (_vec1.getSquareLength() === 0) {
 			// up and z are parallel
 			if (Math.abs(up.z) === 1) {
-				_z.x += 0.0001;
+				_vec3.x += 0.0001;
 			} else {
-				_z.z += 0.0001;
+				_vec3.z += 0.0001;
 			}
-			_z.normalize();
-			_x.crossVectors(up, _z);
+			_vec3.normalize();
+			_vec1.crossVectors(up, _vec3);
 		}
 
-		_x.normalize();
-		_y.crossVectors(_z, _x);
+		_vec1.normalize();
+		_vec2.crossVectors(_vec3, _vec1);
 
-		te[0] = _x.x; te[4] = _y.x; te[8] = _z.x;
-		te[1] = _x.y; te[5] = _y.y; te[9] = _z.y;
-		te[2] = _x.z; te[6] = _y.z; te[10] = _z.z;
+		te[0] = _vec1.x; te[4] = _vec2.x; te[8] = _vec3.x;
+		te[1] = _vec1.y; te[5] = _vec2.y; te[9] = _vec3.y;
+		te[2] = _vec1.z; te[6] = _vec2.z; te[10] = _vec3.z;
 
 		return this;
 	}
@@ -491,7 +492,7 @@ class Matrix4 extends AbstractMathObject<number[]> {
 	}
 
 
-	compose(position: Vector3Like, quaternion: Quaternion, scale: Vector3Like): this {
+	compose(position: Vector3Like, quaternion: QuaternionLike, scale: Vector3Like): this {
 		const te = this.elements;
 
 		const x = quaternion.x, y = quaternion.y, z = quaternion.z, w = quaternion.w;
@@ -529,9 +530,9 @@ class Matrix4 extends AbstractMathObject<number[]> {
 	decompose(position: Vector3Like, quaternion: Quaternion, scale: Vector3Like): this {
 
 		const te = this.elements;
-		let sx = _v1.set(te[0], te[1], te[2]).getLength();
-		const sy = _v1.set(te[4], te[5], te[6]).getLength();
-		const sz = _v1.set(te[8], te[9], te[10]).getLength();
+		let sx = _v.set(te[0], te[1], te[2]).getLength();
+		const sy = _v.set(te[4], te[5], te[6]).getLength();
+		const sz = _v.set(te[8], te[9], te[10]).getLength();
 
 		// if determine is negative, we need to invert one scale
 		const det = this.determinant();
@@ -542,25 +543,25 @@ class Matrix4 extends AbstractMathObject<number[]> {
 		position.z = te[14];
 
 		// scale the rotation part
-		_m1.copy(this);
+		_mat4.copy(this);
 
 		const invSX = 1 / sx;
 		const invSY = 1 / sy;
 		const invSZ = 1 / sz;
 
-		_m1.elements[0] *= invSX;
-		_m1.elements[1] *= invSX;
-		_m1.elements[2] *= invSX;
+		_mat4.elements[0] *= invSX;
+		_mat4.elements[1] *= invSX;
+		_mat4.elements[2] *= invSX;
 
-		_m1.elements[4] *= invSY;
-		_m1.elements[5] *= invSY;
-		_m1.elements[6] *= invSY;
+		_mat4.elements[4] *= invSY;
+		_mat4.elements[5] *= invSY;
+		_mat4.elements[6] *= invSY;
 
-		_m1.elements[8] *= invSZ;
-		_m1.elements[9] *= invSZ;
-		_m1.elements[10] *= invSZ;
+		_mat4.elements[8] *= invSZ;
+		_mat4.elements[9] *= invSZ;
+		_mat4.elements[10] *= invSZ;
 
-		quaternion.setFromRotationMatrix(_m1);
+		quaternion.setFromRotationMatrix(_mat4);
 
 		scale.x = sx;
 		scale.y = sy;
@@ -684,14 +685,6 @@ class Matrix4 extends AbstractMathObject<number[]> {
 		}
 	}
 }
-
-const _v1 = /*@__PURE__*/ new Vector3();
-const _m1 = /*@__PURE__*/ new Matrix4();
-const _zero = /*@__PURE__*/ new Vector3(0, 0, 0);
-const _one = /*@__PURE__*/ new Vector3(1, 1, 1);
-const _x = /*@__PURE__*/ new Vector3();
-const _y = /*@__PURE__*/ new Vector3();
-const _z = /*@__PURE__*/ new Vector3();
 
 
 export { Matrix4 };
