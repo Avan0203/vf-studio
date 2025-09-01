@@ -172,10 +172,10 @@ class Vector3 extends AbstractMathObject<Vector3Like> {
         return this;
     }
 
-    clamp(min: number, max: number): this {
-        this.x = MathUtils.clamp(this.x, min, max);
-        this.y = MathUtils.clamp(this.y, min, max);
-        this.z = MathUtils.clamp(this.z, min, max);
+    clamp(min: Vector3Like, max: Vector3Like): this {
+        this.x = MathUtils.clamp(this.x, min.x, max.x);
+        this.y = MathUtils.clamp(this.y, min.y, max.y);
+        this.z = MathUtils.clamp(this.z, min.z, max.z);
         return this;
     }
 
@@ -209,7 +209,7 @@ class Vector3 extends AbstractMathObject<Vector3Like> {
         return this.sub(new Vector3().copy(v).multiplyScalar(2 * dot));
     }
 
-    toArray(target = [], offset = 0): number[] {
+    toArray(target:any[] = [], offset = 0): number[] {
         target[offset] = this.x;
         target[offset + 1] = this.y;
         target[offset + 2] = this.z;
@@ -240,6 +240,13 @@ class Vector3 extends AbstractMathObject<Vector3Like> {
         this.x = e[0] * x + e[3] * y + e[6] * z;
         this.y = e[1] * x + e[4] * y + e[7] * z;
         this.z = e[2] * x + e[5] * y + e[8] * z;
+        return this;
+    }
+
+    addScalar(scalar: number): this {
+        this.x += scalar;
+        this.y += scalar;
+        this.z += scalar;
         return this;
     }
 

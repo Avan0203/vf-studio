@@ -472,7 +472,7 @@ class Quaternion extends AbstractMathObject<QuaternionLike> {
 		return this;
 	}
 
-	toArray(array = [], offset = 0): any[] {
+	toArray(array:any[] = [], offset = 0): any[] {
 		array[offset] = this._x;
 		array[offset + 1] = this._y;
 		array[offset + 2] = this._z;

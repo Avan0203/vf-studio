@@ -2,7 +2,7 @@
  * @Author: wuyifan wuyifan@udschina.com
  * @Date: 2025-08-20 17:07:54
  * @LastEditors: wuyifan wuyifan@udschina.com
- * @LastEditTime: 2025-08-28 11:13:23
+ * @LastEditTime: 2025-09-01 16:44:39
  * @FilePath: \vf-studio\packages\vf-math\src\base\AbstractMathObject.ts
  * Copyright (c) 2024 by wuyifan email: 1208097313@qq.com, All Rights Reserved.
  */
@@ -31,8 +31,8 @@ export abstract class AbstractMathObject<T = any> {
         return false;
     }
 
-    load(..._: any[]) {
-        return this;
+    load(data: T) {
+        return this.copy(data);
     }
 
     dump(): DumpResult<T> {

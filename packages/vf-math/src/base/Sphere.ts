@@ -1,9 +1,10 @@
 import { PlaneLike } from './Plane';
 import { MathUtils, Tolerance } from '../utils';
-import { _plane, _sphere, _v, _vec1, _vec2 } from '../utils/pure';
+import { _box3, _plane, _sphere, _v, _vec1, _vec2 } from '../utils/pure';
 import { Vector3, Vector3Like } from './Vector3';
 import { Matrix4 } from './Matrix4';
 import { type DumpResult, AbstractMathObject } from './AbstractMathObject';
+import { Box3, Box3Like } from './Box3';
 
 type SphereLike = {
 	center: Vector3Like;
@@ -31,7 +32,7 @@ class Sphere extends AbstractMathObject<SphereLike> {
 		if (optionalCenter !== undefined) {
 			this.center.copy(optionalCenter);
 		} else {
-			_box.setFromPoints(points).getCenter(this.center);
+			_box3.setFromPoints(points).getCenter(this.center);
 		}
 
 		let maxRadiusSq = 0;

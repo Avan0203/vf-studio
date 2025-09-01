@@ -642,14 +642,14 @@ class Matrix4 extends AbstractMathObject<number[]> {
 		return true;
 	}
 
-	fromArray(array: number[] | ArrayBuffer, offset = 0): this {
+	fromArray(array: any[], offset = 0): this {
 		for (let i = 0; i < 16; i++) {
 			this.elements[i] = array[i + offset];
 		}
 		return this;
 	}
 
-	toArray(array = [], offset = 0): any[] {
+	toArray(array:any[] = [], offset = 0): any[] {
 		const te = this.elements;
 		array[offset] = te[0];
 		array[offset + 1] = te[1];

@@ -1,3 +1,6 @@
 {
-  "extends": "@vf/cli/ts-config/tsconfig.json"
+  "extends": "@vf/cli/ts-config/tsconfig.json",
+  "include": [
+    "src/**/*"
+  ]
 }

@@ -9,4 +9,6 @@ export * from './Sphere';
 export * from './Box2';
 export * from './Box3';
 export * from './Plane';
+export * from './Line3d';
+export * from './Triangle';
 

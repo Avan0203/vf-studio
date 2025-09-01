@@ -1,6 +1,13 @@
-import { B } from 'vitest/dist/chunks/worker.d.DYlqbejz.js';
-import { AbstractMathObject } from './AbstractMathObject.js';
-import { Vector3, Vector3Like } from './Vector3.js';
+import { AbstractMathObject, DumpResult } from './AbstractMathObject.js';
+import { Vector3, type Vector3Like } from './Vector3.js';
+import { Tolerance, MathUtils } from '../utils';
+import { Sphere, type SphereLike } from './Sphere.js';
+import { _plane, _sphere, _v } from '../utils/pure.js';
+import type { PlaneLike } from './Plane.js';
+import type { Matrix4 } from './Matrix4.js';
+import { TriangleLike } from './Triangle.js';
+
+const { lessEqual, greaterEqual } = MathUtils
 
 type Box3Like = {
 	min: Vector3Like;
@@ -26,7 +33,7 @@ class Box3 extends AbstractMathObject<Box3Like> {
 	setFromArray(array: number[]): this {
 		this.makeEmpty();
 		for (let i = 0, il = array.length; i < il; i += 3) {
-			this.expandByPoint(_vector.fromArray(array, i));
+			this.expandByPoint(_v.fromArray(array, i));
 		}
 		return this;
 	}
@@ -40,31 +47,24 @@ class Box3 extends AbstractMathObject<Box3Like> {
 	}
 
 	setFromCenterAndSize(center: Vector3Like, size: Vector3Like) {
-		const halfSize = _vector.copy(size).multiplyScalar(0.5);
+		const halfSize = _v.copy(size).multiplyScalar(0.5);
 		this.min.copy(center).sub(halfSize);
 		this.max.copy(center).add(halfSize);
 		return this;
 	}
 
-
-	setFromObject(object, precise = false) {
-		this.makeEmpty();
-		return this.expandByObject(object, precise);
-	}
-
-
-	clone() {
+	clone(): Box3 {
 		return new Box3().copy(this);
 	}
 
 
-	copy(box) {
+	copy(box: Box3Like): this {
 		this.min.copy(box.min);
 		this.max.copy(box.max);
 		return this;
 	}
 
-	makeEmpty() {
+	makeEmpty(): this {
 		this.min.x = this.min.y = this.min.z = + Infinity;
 		this.max.x = this.max.y = this.max.z = - Infinity;
 		return this;
@@ -82,298 +82,98 @@ class Box3 extends AbstractMathObject<Box3Like> {
 		return this.isEmpty() ? target.set(0, 0, 0) : target.subVectors(this.max, this.min);
 	}
 
-	/**
-	 * Expands the boundaries of this box to include the given point.
-	 *
-	 * @param {Vector3} point - The point that should be included by the bounding box.
-	 * @return {Box3} A reference to this bounding box.
-	 */
-	expandByPoint(point) {
-
-		this.min.min(point);
-		this.max.max(point);
-
-		return this;
-
-	}
-
-	/**
-	 * Expands this box equilaterally by the given vector. The width of this
-	 * box will be expanded by the x component of the vector in both
-	 * directions. The height of this box will be expanded by the y component of
-	 * the vector in both directions. The depth of this box will be
-	 * expanded by the z component of the vector in both directions.
-	 *
-	 * @param {Vector3} vector - The vector that should expand the bounding box.
-	 * @return {Box3} A reference to this bounding box.
-	 */
-	expandByVector(vector) {
-
-		this.min.sub(vector);
-		this.max.add(vector);
-
-		return this;
-
-	}
-
-	/**
-	 * Expands each dimension of the box by the given scalar. If negative, the
-	 * dimensions of the box will be contracted.
-	 *
-	 * @param {number} scalar - The scalar value that should expand the bounding box.
-	 * @return {Box3} A reference to this bounding box.
-	 */
-	expandByScalar(scalar) {
-
+	expandByScalar(scalar: number): this {
 		this.min.addScalar(- scalar);
 		this.max.addScalar(scalar);
 
 		return this;
-
 	}
 
-	/**
-	 * Expands the boundaries of this box to include the given 3D object and
-	 * its children, accounting for the object's, and children's, world
-	 * transforms. The function may result in a larger box than strictly
-	 * necessary (unless the precise parameter is set to true).
-	 *
-	 * @param {Object3D} object - The 3D object that should expand the bounding box.
-	 * @param {boolean} precise - If set to `true`, the method expands the bounding box
-	 * as little as necessary at the expense of more computation.
-	 * @return {Box3} A reference to this bounding box.
-	 */
-	expandByObject(object, precise = false) {
 
-		// Computes the world-axis-aligned bounding box of an object (including its children),
-		// accounting for both the object's, and children's, world transforms
-
-		object.updateWorldMatrix(false, false);
-
-		const geometry = object.geometry;
-
-		if (geometry !== undefined) {
-
-			const positionAttribute = geometry.getAttribute('position');
-
-			// precise AABB computation based on vertex data requires at least a position attribute.
-			// instancing isn't supported so far and uses the normal (conservative) code path.
-
-			if (precise === true && positionAttribute !== undefined && object.isInstancedMesh !== true) {
-
-				for (let i = 0, l = positionAttribute.count; i < l; i++) {
-
-					if (object.isMesh === true) {
-
-						object.getVertexPosition(i, _vector);
-
-					} else {
-
-						_vector.fromBufferAttribute(positionAttribute, i);
-
-					}
-
-					_vector.applyMatrix4(object.matrixWorld);
-					this.expandByPoint(_vector);
-
-				}
-
-			} else {
-
-				if (object.boundingBox !== undefined) {
-
-					// object-level bounding box
-
-					if (object.boundingBox === null) {
-
-						object.computeBoundingBox();
-
-					}
-
-					_box.copy(object.boundingBox);
-
-
-				} else {
-
-					// geometry-level bounding box
-
-					if (geometry.boundingBox === null) {
-
-						geometry.computeBoundingBox();
-
-					}
-
-					_box.copy(geometry.boundingBox);
-
-				}
-
-				_box.applyMatrix4(object.matrixWorld);
-
-				this.union(_box);
-
-			}
-
-		}
-
-		const children = object.children;
-
-		for (let i = 0, l = children.length; i < l; i++) {
-
-			this.expandByObject(children[i], precise);
-
-		}
-
+	expandByPoint(point: Vector3Like): this {
+		this.min.min(point);
+		this.max.max(point);
 		return this;
-
 	}
 
-	/**
-	 * Returns `true` if the given point lies within or on the boundaries of this box.
-	 *
-	 * @param {Vector3} point - The point to test.
-	 * @return {boolean} Whether the bounding box contains the given point or not.
-	 */
-	containsPoint(point) {
 
-		return point.x >= this.min.x && point.x <= this.max.x &&
-			point.y >= this.min.y && point.y <= this.max.y &&
-			point.z >= this.min.z && point.z <= this.max.z;
-
+	expandByVector(vector: Vector3Like): this {
+		this.min.sub(vector);
+		this.max.add(vector);
+		return this;
 	}
 
-	/**
-	 * Returns `true` if this bounding box includes the entirety of the given bounding box.
-	 * If this box and the given one are identical, this function also returns `true`.
-	 *
-	 * @param {Box3} box - The bounding box to test.
-	 * @return {boolean} Whether the bounding box contains the given bounding box or not.
-	 */
-	containsBox(box) {
-
-		return this.min.x <= box.min.x && box.max.x <= this.max.x &&
-			this.min.y <= box.min.y && box.max.y <= this.max.y &&
-			this.min.z <= box.min.z && box.max.z <= this.max.z;
-
+	containsPoint(point: Vector3Like, eps = Tolerance.LENGTH_EPS): boolean {
+		return lessEqual(point.x, this.max.x, eps) && greaterEqual(point.x, this.min.x, eps) &&
+			lessEqual(point.y, this.max.y, eps) && greaterEqual(point.y, this.min.y, eps) &&
+			lessEqual(point.z, this.max.z, eps) && greaterEqual(point.z, this.min.z, eps);
 	}
 
-	/**
-	 * Returns a point as a proportion of this box's width, height and depth.
-	 *
-	 * @param {Vector3} point - A point in 3D space.
-	 * @param {Vector3} target - The target vector that is used to store the method's result.
-	 * @return {Vector3} A point as a proportion of this box's width, height and depth.
-	 */
-	getParameter(point, target) {
 
-		// This can potentially have a divide by zero if the box
-		// has a size dimension of 0.
+	containsBox(box: Box3Like, eps = Tolerance.LENGTH_EPS): boolean {
+		return lessEqual(this.min.x, box.max.x, eps) && greaterEqual(this.max.x, box.min.x, eps) &&
+			lessEqual(this.min.y, box.max.y, eps) && greaterEqual(this.max.y, box.min.y, eps) &&
+			lessEqual(this.min.z, box.max.z, eps) && greaterEqual(this.max.z, box.min.z, eps);
+	}
 
+
+	getParameter(point: Vector3Like, target = new Vector3()): Vector3 {
 		return target.set(
 			(point.x - this.min.x) / (this.max.x - this.min.x),
 			(point.y - this.min.y) / (this.max.y - this.min.y),
 			(point.z - this.min.z) / (this.max.z - this.min.z)
 		);
-
 	}
 
-	/**
-	 * Returns `true` if the given bounding box intersects with this bounding box.
-	 *
-	 * @param {Box3} box - The bounding box to test.
-	 * @return {boolean} Whether the given bounding box intersects with this bounding box.
-	 */
-	intersectsBox(box) {
-
-		// using 6 splitting planes to rule out intersections.
-		return box.max.x >= this.min.x && box.min.x <= this.max.x &&
-			box.max.y >= this.min.y && box.min.y <= this.max.y &&
-			box.max.z >= this.min.z && box.min.z <= this.max.z;
-
+	intersectsBox(box: Box3Like, eps = Tolerance.LENGTH_EPS): boolean {
+		return lessEqual(box.max.x, this.min.x, eps) && greaterEqual(box.min.x, this.max.x, eps) &&
+			lessEqual(box.max.y, this.min.y, eps) && greaterEqual(box.min.y, this.max.y, eps) &&
+			lessEqual(box.max.z, this.min.z, eps) && greaterEqual(box.min.z, this.max.z, eps);
 	}
 
-	/**
-	 * Returns `true` if the given bounding sphere intersects with this bounding box.
-	 *
-	 * @param {Sphere} sphere - The bounding sphere to test.
-	 * @return {boolean} Whether the given bounding sphere intersects with this bounding box.
-	 */
-	intersectsSphere(sphere) {
-
-		// Find the point on the AABB closest to the sphere center.
-		this.clampPoint(sphere.center, _vector);
-
-		// If that point is inside the sphere, the AABB and sphere intersect.
-		return _vector.distanceToSquared(sphere.center) <= (sphere.radius * sphere.radius);
-
+	intersectsSphere(sphere: SphereLike, eps = Tolerance.LENGTH_EPS): boolean {
+		_sphere.copy(sphere);
+		this.clampPoint(_sphere.center, _v);
+		return lessEqual(_v.distanceToSquared(_sphere.center), (_sphere.radius * _sphere.radius), eps);
 	}
 
-	/**
-	 * Returns `true` if the given plane intersects with this bounding box.
-	 *
-	 * @param {Plane} plane - The plane to test.
-	 * @return {boolean} Whether the given plane intersects with this bounding box.
-	 */
-	intersectsPlane(plane) {
 
+	intersectsPlane(plane: PlaneLike, eps = Tolerance.LENGTH_EPS): boolean {
 		// We compute the minimum and maximum dot product values. If those values
 		// are on the same side (back or front) of the plane, then there is no intersection.
-
+		_plane.copy(plane);
 		let min, max;
-
-		if (plane.normal.x > 0) {
-
-			min = plane.normal.x * this.min.x;
-			max = plane.normal.x * this.max.x;
-
+		if (_plane.normal.x > 0) {
+			min = _plane.normal.x * this.min.x;
+			max = _plane.normal.x * this.max.x;
 		} else {
-
-			min = plane.normal.x * this.max.x;
-			max = plane.normal.x * this.min.x;
-
+			min = _plane.normal.x * this.max.x;
+			max = _plane.normal.x * this.min.x;
 		}
 
-		if (plane.normal.y > 0) {
-
-			min += plane.normal.y * this.min.y;
-			max += plane.normal.y * this.max.y;
-
+		if (_plane.normal.y > 0) {
+			min += _plane.normal.y * this.min.y;
+			max += _plane.normal.y * this.max.y;
 		} else {
-
-			min += plane.normal.y * this.max.y;
-			max += plane.normal.y * this.min.y;
-
+			min += _plane.normal.y * this.max.y;
+			max += _plane.normal.y * this.min.y;
 		}
 
-		if (plane.normal.z > 0) {
-
-			min += plane.normal.z * this.min.z;
-			max += plane.normal.z * this.max.z;
-
+		if (_plane.normal.z > 0) {
+			min += _plane.normal.z * this.min.z;
+			max += _plane.normal.z * this.max.z;
 		} else {
-
-			min += plane.normal.z * this.max.z;
-			max += plane.normal.z * this.min.z;
-
+			min += _plane.normal.z * this.max.z;
+			max += _plane.normal.z * this.min.z;
 		}
-
-		return (min <= - plane.constant && max >= - plane.constant);
-
+		return lessEqual(min, - _plane.constant, eps) && greaterEqual(max, - _plane.constant, eps);
 	}
 
-	/**
-	 * Returns `true` if the given triangle intersects with this bounding box.
-	 *
-	 * @param {Triangle} triangle - The triangle to test.
-	 * @return {boolean} Whether the given triangle intersects with this bounding box.
-	 */
-	intersectsTriangle(triangle) {
 
+	intersectsTriangle(triangle: TriangleLike, eps = Tolerance.LENGTH_EPS) {
 		if (this.isEmpty()) {
-
 			return false;
-
 		}
-
 		// compute box center and extents
 		this.getCenter(_center);
 		_extents.subVectors(this.max, _center);
@@ -397,186 +197,111 @@ class Box3 extends AbstractMathObject<Box3Like> {
 			- _f0.y, _f0.x, 0, - _f1.y, _f1.x, 0, - _f2.y, _f2.x, 0
 		];
 		if (!satForAxes(axes, _v0, _v1, _v2, _extents)) {
-
 			return false;
-
 		}
 
 		// test 3 face normals from the aabb
 		axes = [1, 0, 0, 0, 1, 0, 0, 0, 1];
 		if (!satForAxes(axes, _v0, _v1, _v2, _extents)) {
-
 			return false;
-
 		}
 
 		// finally testing the face normal of the triangle
 		// use already existing triangle edge vectors here
 		_triangleNormal.crossVectors(_f0, _f1);
 		axes = [_triangleNormal.x, _triangleNormal.y, _triangleNormal.z];
-
 		return satForAxes(axes, _v0, _v1, _v2, _extents);
-
 	}
 
-	/**
-	 * Clamps the given point within the bounds of this box.
-	 *
-	 * @param {Vector3} point - The point to clamp.
-	 * @param {Vector3} target - The target vector that is used to store the method's result.
-	 * @return {Vector3} The clamped point.
-	 */
-	clampPoint(point, target) {
 
+	clampPoint(point: Vector3Like, target = new Vector3()): Vector3 {
 		return target.copy(point).clamp(this.min, this.max);
-
 	}
 
-	/**
-	 * Returns the euclidean distance from any edge of this box to the specified point. If
-	 * the given point lies inside of this box, the distance will be `0`.
-	 *
-	 * @param {Vector3} point - The point to compute the distance to.
-	 * @return {number} The euclidean distance.
-	 */
-	distanceToPoint(point) {
 
-		return this.clampPoint(point, _vector).distanceTo(point);
-
+	distanceToPoint(point: Vector3Like): number {
+		return this.clampPoint(point, _v).distanceTo(point);
 	}
 
-	/**
-	 * Returns a bounding sphere that encloses this bounding box.
-	 *
-	 * @param {Sphere} target - The target sphere that is used to store the method's result.
-	 * @return {Sphere} The bounding sphere that encloses this bounding box.
-	 */
-	getBoundingSphere(target) {
 
+	getBoundingSphere(target = new Sphere()): Sphere {
 		if (this.isEmpty()) {
-
 			target.makeEmpty();
-
 		} else {
-
 			this.getCenter(target.center);
-
-			target.radius = this.getSize(_vector).length() * 0.5;
-
+			target.radius = this.getSize(_v).getLength() * 0.5;
 		}
-
 		return target;
-
 	}
 
-	/**
-	 * Computes the intersection of this bounding box and the given one, setting the upper
-	 * bound of this box to the lesser of the two boxes' upper bounds and the
-	 * lower bound of this box to the greater of the two boxes' lower bounds. If
-	 * there's no overlap, makes this box empty.
-	 *
-	 * @param {Box3} box - The bounding box to intersect with.
-	 * @return {Box3} A reference to this bounding box.
-	 */
-	intersect(box) {
 
+	intersect(box: Box3Like): this {
 		this.min.max(box.min);
 		this.max.min(box.max);
-
 		// ensure that if there is no overlap, the result is fully empty, not slightly empty with non-inf/+inf values that will cause subsequence intersects to erroneously return valid values.
 		if (this.isEmpty()) this.makeEmpty();
-
 		return this;
-
 	}
 
-	/**
-	 * Computes the union of this box and another and the given one, setting the upper
-	 * bound of this box to the greater of the two boxes' upper bounds and the
-	 * lower bound of this box to the lesser of the two boxes' lower bounds.
-	 *
-	 * @param {Box3} box - The bounding box that will be unioned with this instance.
-	 * @return {Box3} A reference to this bounding box.
-	 */
-	union(box) {
 
+	union(box: Box3Like): this {
 		this.min.min(box.min);
 		this.max.max(box.max);
-
 		return this;
-
 	}
 
-	/**
-	 * Transforms this bounding box by the given 4x4 transformation matrix.
-	 *
-	 * @param {Matrix4} matrix - The transformation matrix.
-	 * @return {Box3} A reference to this bounding box.
-	 */
-	applyMatrix4(matrix) {
 
+	applyMatrix4(matrix: Matrix4): this {
 		// transform of empty box is an empty box.
 		if (this.isEmpty()) return this;
-
 		// NOTE: I am using a binary pattern to specify all 2^3 combinations below
-		_points[0].set(this.min.x, this.min.y, this.min.z).applyMatrix4(matrix); // 000
-		_points[1].set(this.min.x, this.min.y, this.max.z).applyMatrix4(matrix); // 001
-		_points[2].set(this.min.x, this.max.y, this.min.z).applyMatrix4(matrix); // 010
-		_points[3].set(this.min.x, this.max.y, this.max.z).applyMatrix4(matrix); // 011
-		_points[4].set(this.max.x, this.min.y, this.min.z).applyMatrix4(matrix); // 100
-		_points[5].set(this.max.x, this.min.y, this.max.z).applyMatrix4(matrix); // 101
-		_points[6].set(this.max.x, this.max.y, this.min.z).applyMatrix4(matrix); // 110
-		_points[7].set(this.max.x, this.max.y, this.max.z).applyMatrix4(matrix); // 111
-
-		this.setFromPoints(_points);
-
+		const v: Record<number, number> = {
+			0: this.min.x,
+			1: this.min.y,
+			2: this.min.z,
+			3: this.max.x,
+			4: this.max.y,
+			5: this.max.z,
+		};
+		_points.forEach(([i, j, k]) => {
+			_v.set(v[i], v[j], v[k]).applyMatrix4(matrix);
+			this.expandByVector(_v);
+		})
 		return this;
-
 	}
 
-	/**
-	 * Adds the given offset to both the upper and lower bounds of this bounding box,
-	 * effectively moving it in 3D space.
-	 *
-	 * @param {Vector3} offset - The offset that should be used to translate the bounding box.
-	 * @return {Box3} A reference to this bounding box.
-	 */
-	translate(offset) {
 
+	translate(offset: Vector3Like): this {
 		this.min.add(offset);
 		this.max.add(offset);
-
 		return this;
-
 	}
 
-	/**
-	 * Returns `true` if this bounding box is equal with the given one.
-	 *
-	 * @param {Box3} box - The box to test for equality.
-	 * @return {boolean} Whether this bounding box is equal with the given one.
-	 */
-	equals(box) {
 
-		return box.min.equals(this.min) && box.max.equals(this.max);
+	equals(box: Box3Like, eps = Tolerance.LENGTH_EPS): boolean {
+		return this.min.equals(box.min, eps) && this.max.equals(box.max, eps);
+	}
 
+	load(data: Box3Like): this {
+		return this.copy(data);
+	}
+
+	dump(): DumpResult<Box3Like> {
+		return { type: this.type, value: { min: { x: this.min.x, y: this.min.y, z: this.min.z }, max: { x: this.max.x, y: this.max.y, z: this.max.z } } }
 	}
 }
 
-const _points = [
-	/*@__PURE__*/ new Vector3(),
-	/*@__PURE__*/ new Vector3(),
-	/*@__PURE__*/ new Vector3(),
-	/*@__PURE__*/ new Vector3(),
-	/*@__PURE__*/ new Vector3(),
-	/*@__PURE__*/ new Vector3(),
-	/*@__PURE__*/ new Vector3(),
-	/*@__PURE__*/ new Vector3()
-];
-
-const _vector = /*@__PURE__*/ new Vector3();
-
-const _box = /*@__PURE__*/ new Box3();
+const _points =
+	[
+		[0, 1, 2],
+		[0, 1, 5],
+		[0, 4, 2],
+		[0, 4, 5],
+		[3, 1, 2],
+		[3, 1, 5],
+		[3, 4, 2],
+		[3, 4, 5],
+	];
 
 // triangle centered vertices
 
@@ -595,7 +320,7 @@ const _extents = /*@__PURE__*/ new Vector3();
 const _triangleNormal = /*@__PURE__*/ new Vector3();
 const _testAxis = /*@__PURE__*/ new Vector3();
 
-function satForAxes(axes, v0, v1, v2, extents) {
+function satForAxes(axes:any[], v0:Vector3, v1:Vector3, v2:Vector3, extents:Vector3) {
 
 	for (let i = 0, j = axes.length - 3; i <= j; i += 3) {
 
@@ -621,4 +346,4 @@ function satForAxes(axes, v0, v1, v2, extents) {
 
 }
 
-export { Box3 };
+export { Box3, Box3Like };

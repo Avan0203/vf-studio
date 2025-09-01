@@ -2,11 +2,11 @@
  * @Author: wuyifan wuyifan@udschina.com
  * @Date: 2025-08-20 17:14:03
  * @LastEditors: wuyifan wuyifan@udschina.com
- * @LastEditTime: 2025-08-28 11:31:01
+ * @LastEditTime: 2025-08-25 15:30:05
  * @FilePath: \vf-studio\packages\vf-math\src\base\Vector2.ts
  * Copyright (c) 2024 by wuyifan email: 1208097313@qq.com, All Rights Reserved.
  */
-import { AbstractMathObject, type DumpResult } from "./AbstractMathObject";
+import { AbstractMathObject, DumpResult } from "./AbstractMathObject";
 import { MathUtils, Tolerance } from "../utils";
 import type { Matrix3 } from "./Matrix3";
 
@@ -171,7 +171,7 @@ class Vector2 extends AbstractMathObject<Vector2Like> {
         return this.copy(v1).lerp(v2, t);
     }
 
-    toArray(target = [], offset = 0): number[] {
+    toArray(target:any[] = [], offset = 0): any[] {
         target[offset] = this.x;
         target[offset + 1] = this.y;
         return target;
@@ -197,8 +197,8 @@ class Vector2 extends AbstractMathObject<Vector2Like> {
     }
 
     dump(): DumpResult<Vector2Like> {
-        return { type: this.type, value: { x: this.x, y: this.y } }
+        return {  type: this.type, value: { x: this.x, y: this.y } }
     }
 }
 
-export { Vector2, Vector2Like }
+export {Vector2,Vector2Like} 

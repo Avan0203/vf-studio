@@ -1,6 +1,8 @@
 import { MathUtils, Tolerance } from '../utils';
-import { _mat3, _sphere, _v, _vec1, _vec2 } from '../utils/pure';
-import { AbstractMathObject } from './AbstractMathObject';
+import { _mat3, _sphere, _v, _vec1, _vec2, _box3, _line3d } from '../utils/pure';
+import { AbstractMathObject, DumpResult } from './AbstractMathObject';
+import { Box3Like } from './Box3';
+import { Line3dLike } from './Line3d';
 import { Matrix3 } from './Matrix3.js';
 import type { Matrix4 } from './Matrix4'
 import { SphereLike } from './Sphere';
@@ -83,32 +85,34 @@ class Plane extends AbstractMathObject {
 		return target.copy(point).addScaledVector(this.normal, - this.distanceToPoint(point));
 	}
 
-	intersectLine(line: Line3Like, target = new Vector3()): Vector3 | null {
-		const direction = line.delta(_v);
+	intersectLine(line: Line3dLike, target = new Vector3()): Vector3 | null {
+		_line3d.copy(line);
+		const direction = _line3d.delta(_v);
 		const denominator = this.normal.dot(direction);
 		if (denominator === 0) {
-			if (this.distanceToPoint(line.start) === 0) {
-				return target.copy(line.start);
+			if (this.distanceToPoint(_line3d.start) === 0) {
+				return target.copy(_line3d.start);
 			}
 			return null;
 		}
-		const t = - (line.start.dot(this.normal) + this.constant) / denominator;
+		const t = - (_line3d.start.dot(this.normal) + this.constant) / denominator;
 		if (t < 0 || t > 1) {
 			return null;
 		}
-		return target.copy(line.start).addScaledVector(direction, t);
+		return target.copy(_line3d.start).addScaledVector(direction, t);
 	}
 
 
-	intersectsLine(line: Line3Like): boolean {
+	intersectsLine(line: Line3dLike): boolean {
 		const startSign = this.distanceToPoint(line.start);
 		const endSign = this.distanceToPoint(line.end);
 		return (startSign < 0 && endSign > 0) || (endSign < 0 && startSign > 0);
 	}
 
 
-	intersectsBox(box: Box3Like): boolean {
-		return box.intersectsPlane(this);
+	intersectsBox(box: Box3Like, eps = Tolerance.LENGTH_EPS): boolean {
+		_box3.copy(box);
+		return _box3.intersectsPlane(this, eps);
 	}
 
 
@@ -143,6 +147,14 @@ class Plane extends AbstractMathObject {
 
 	clone(): Plane {
 		return new Plane().copy(this);
+	}
+
+	load(data: PlaneLike): this {
+		return this.copy(data);
+	}
+
+	dump(): DumpResult<PlaneLike> {
+		return { type: this.type, value: { normal: { x: this.normal.x, y: this.normal.y, z: this.normal.z }, constant: this.constant } }
 	}
 
 }
