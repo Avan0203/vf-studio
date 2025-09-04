@@ -6,7 +6,12 @@
  * @FilePath: \vf-studio\packages\vf-core\src\types\document.ts
  * Copyright (c) 2024 by wuyifan email: 1208097313@qq.com, All Rights Reserved.
  */
+
+import { ElementClass, IElement } from ".";
+import { ElementManager } from "../element"
+
 interface IDocument {
+    create<T extends IElement>(elementClass: ElementClass<T>): T;
 }
 
 export { IDocument }
