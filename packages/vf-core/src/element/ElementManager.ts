@@ -1,3 +1,11 @@
+/*
+ * @Author: wuyifan wuyifan@udschina.com
+ * @Date: 2025-09-04 10:32:12
+ * @LastEditors: wuyifan wuyifan@udschina.com
+ * @LastEditTime: 2025-09-05 13:33:51
+ * @FilePath: \vf-studio\packages\vf-core\src\element\ElementManager.ts
+ * Copyright (c) 2024 by wuyifan email: 1208097313@qq.com, All Rights Reserved.
+ */
 import { IElement } from "../types";
 import { ElementID } from "./ElementID";
 
@@ -20,24 +28,11 @@ class ElementManager {
         this.elements.delete(id.valueOf());
     }
 
-    getElementParent(id: ElementID): IElement | null {
-        const element = this.getElementById(id);
-        if (element) {
-            return this.getElementById(element._parent);
-        }
-        return null;
-    }
-
-    getElementChildren(id: ElementID): Array<IElement> {
-        const element = this.getElementById(id);
+    getElementsByIds(ids: ElementID[]): Array<IElement> {
         const result = []
-        if (element) {
-            for (const child of element._children) {
-                const childElement = this.getElementById(child);
-                if (childElement) {
-                    result.push(childElement);
-                }
-            }
+        for (const child of ids) {
+            const childElement = this.getElementById(child);
+            childElement && result.push(childElement);
         }
         return result;
     }
@@ -46,17 +41,18 @@ class ElementManager {
         const element = this.getElementById(id);
         if (element) {
             callback(element);
-            for (const child of element._children) {
-                this.traverse(child, callback);
+            for (const child of element.getChildren()) {
+                this.traverse(child.id, callback);
             }
         }
     }
 
     getAllElements(id: ElementID): IElement[] {
-        const result: IElement[] = [];
+        let result: IElement[] = [];
         this.traverse(id, (element) => {
             result.push(element);
         })
+        result = result.slice(1)
         return result;
     }
 }

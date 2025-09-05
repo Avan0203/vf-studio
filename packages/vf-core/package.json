@@ -2,10 +2,11 @@
   "name": "@vf/core",
   "version": "1.0.0",
   "description": "vf core",
-  "main": "index.ts",
+  "main": "src/index.ts",
+  "types": "src/types/index.ts",
   "scripts": {
     "build": "tsc",
-    "dev": "tsc -w"
+    "dev": "vite"
   },
   "devDependencies": {
     "@vf/cli": "workspace:*"

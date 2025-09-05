@@ -2,7 +2,7 @@
  * @Author: wuyifan wuyifan@udschina.com
  * @Date: 2025-09-02 17:15:03
  * @LastEditors: wuyifan wuyifan@udschina.com
- * @LastEditTime: 2025-09-04 17:45:52
+ * @LastEditTime: 2025-09-05 13:24:45
  * @FilePath: \vf-studio\packages\vf-core\src\element\Element.ts
  * Copyright (c) 2024 by wuyifan email: 1208097313@qq.com, All Rights Reserved.
  */
@@ -13,8 +13,8 @@ import { ElementID, IElement } from "../types";
 class Element implements IElement {
     name = ''
     id = ElementID.INVALID
-    _parent = ElementID.INVALID
-    _children: ElementID[] = []
+    private parent = ElementID.INVALID
+    private children: ElementID[] = []
     constructor(private document: Document) {
         this.id = ElementID.generate();
     }
@@ -24,7 +24,7 @@ class Element implements IElement {
     }
 
     getParent(): IElement | null {
-        return this.document.elementManager.getElementParent(this.id);
+        return this.document.getElementById(this.parent);
     }
 
     setParent(parent: IElement | null): void {
@@ -33,30 +33,30 @@ class Element implements IElement {
             oldParent.remove(this);
         }
         if (parent) {
-            this._parent = parent.id;
+            this.parent = parent.id;
         }else{
-            this._parent = ElementID.INVALID;
+            this.parent = ElementID.INVALID;
         }
     }
 
     getChildren(): IElement[] {
-        return this.document.elementManager.getElementChildren(this.id);
+        return this.document.getElementsByIds(this.children);
     }
 
     add(child: IElement) {
-        this._children.push(child.id);
+        this.children.push(child.id);
         child.setParent(this);
     }
 
     remove(child: IElement) {
-        const index = this._children.indexOf(child.id);
+        const index = this.children.indexOf(child.id);
         if (index !== -1) {
-            this._children.splice(index, 1);
+            this.children.splice(index, 1);
         }
     }
 
     getAllChildren(): IElement[] {
-        return this.document.elementManager.getAllElements(this.id);
+        return this.document.getAllElements(this.id);
     }
 }
 
