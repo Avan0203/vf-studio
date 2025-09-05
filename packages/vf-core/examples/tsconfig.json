@@ -1,0 +1,12 @@
+{
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@vf/core": ["../src/index.ts"]
+    }
+  },
+  "include": [
+    "src/**/*"
+  ]
+}

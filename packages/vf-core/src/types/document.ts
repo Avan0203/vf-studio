@@ -16,6 +16,7 @@ interface IDocument {
     getElementById(id: ElementID): IElement | null;
     getElementsByIds(ids: ElementID[]): Array<IElement>;
     getAllElements(id: ElementID): IElement[];
+    getElementsByClass<T extends IElement>(cls: ElementClass<T>): T[];
 }
 
 export { IDocument }

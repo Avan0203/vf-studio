@@ -2,7 +2,7 @@
  * @Author: wuyifan wuyifan@udschina.com
  * @Date: 2025-09-02 17:12:56
  * @LastEditors: wuyifan wuyifan@udschina.com
- * @LastEditTime: 2025-09-05 13:15:10
+ * @LastEditTime: 2025-09-05 14:54:12
  * @FilePath: \vf-studio\packages\vf-core\src\Document\document.ts
  * Copyright (c) 2024 by wuyifan email: 1208097313@qq.com, All Rights Reserved.
  */
@@ -40,6 +40,10 @@ class Document implements IDocument {
 
     public getAllElements(id: ElementID): IElement[] {
         return this.elementManager.getAllElements(id);
+    }
+
+    public getElementsByClass<T extends IElement>(cls: ElementClass<T>): T[] {
+        return this.elementManager.getElementsByClass(cls);
     }
 }
 
