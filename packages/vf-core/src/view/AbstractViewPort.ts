@@ -10,21 +10,9 @@ import { IViewPort, IDocument, ViewPortEvent } from "../types";
 
 abstract class AbstractViewPort implements IViewPort {
 
-    protected document: IDocument;
-    protected camera: any;
     protected eventMap = new Map<string, Set<(e: ViewPortEvent) => void>>();
 
-    constructor(document: IDocument, camera:any) {
-        this.document = document;
-        this.camera = camera;
-    }
-
-    attachDocument(document: IDocument): void {
-        this.document = document;
-    }
-
-    attachCamera(camera: any): void {
-        this.camera = camera;
+    constructor() {
     }
 
     update(): void {
