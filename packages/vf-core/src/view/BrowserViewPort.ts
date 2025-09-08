@@ -1,14 +1,25 @@
-// render/browser/BrowserViewPort.ts
-import { ViewPortEvent } from "../types";
-import { AbstractViewPort } from "./AbstractViewPort";
+/*
+ * @Author: wuyifan wuyifan@udschina.com
+ * @Date: 2025-09-08 09:17:29
+ * @LastEditors: wuyifan wuyifan@udschina.com
+ * @LastEditTime: 2025-09-08 15:58:37
+ * @FilePath: \vf-studio\packages\vf-core\src\view\BrowserViewPort.ts
+ * Copyright (c) 2024 by wuyifan email: 1208097313@qq.com, All Rights Reserved.
+ */
+import { BrowserEvents, BrowserEventType, IViewPort } from "../types";
+import { EventEmitter } from "../event";
+import { InputEventListener } from "../event/InputEventListener";
 
-export class BrowserViewPort extends AbstractViewPort {
+export class BrowserViewPort<T extends Record<string, any> = BrowserEvents> extends EventEmitter<T> implements IViewPort {
   private canvas: HTMLCanvasElement;
-  private listeners = new Map<string, Set<(e: ViewPortEvent) => void>>();
-
+  private inputEventListener: InputEventListener;
   constructor(canvas: HTMLCanvasElement) {
     super();
     this.canvas = canvas;
+    this.inputEventListener = new InputEventListener(canvas,this);
+
+    this.canvas.addEventListener('contextlost', this._onContextLost.bind(this));
+    this.canvas.addEventListener('contextrestored', this._onContextRestored.bind(this));
   }
 
   get width() {
@@ -20,17 +31,11 @@ export class BrowserViewPort extends AbstractViewPort {
   }
 
   attach() {
-    this.canvas.addEventListener("mousedown", this._onMouseDown);
-    this.canvas.addEventListener("mousemove", this._onMouseMove);
-    this.canvas.addEventListener("mouseup", this._onMouseUp);
-    this.canvas.addEventListener("wheel", this._onWheel);
+    this.inputEventListener.attach();
   }
 
   detach() {
-    this.canvas.removeEventListener("mousedown", this._onMouseDown);
-    this.canvas.removeEventListener("mousemove", this._onMouseMove);
-    this.canvas.removeEventListener("mouseup", this._onMouseUp);
-    this.canvas.removeEventListener("wheel", this._onWheel);
+    this.inputEventListener.detach();
   }
 
   resize(width: number, height: number) {
@@ -38,35 +43,21 @@ export class BrowserViewPort extends AbstractViewPort {
     this.canvas.height = height;
   }
 
-  on(event: string, handler: (e: ViewPortEvent) => void): void {
-    if (!this.listeners.has(event)) {
-      this.listeners.set(event, new Set());
-    }
-    this.listeners.get(event)!.add(handler);
-  }
-
-  off(event: string, handler: (e: ViewPortEvent) => void): void {
-    this.listeners.get(event)?.delete(handler);
-  }
-
-  private emit(event: ViewPortEvent) {
-    this.listeners.get(event.type)?.forEach((h) => h(event));
-  }
-
-  private _onMouseDown = (e: MouseEvent) => {
-    this.emit({ type: "pointerdown", payload: { x: e.offsetX, y: e.offsetY, button: e.button } });
-  };
-  private _onMouseMove = (e: MouseEvent) => {
-    this.emit({ type: "pointermove", payload: { x: e.offsetX, y: e.offsetY } });
-  };
-  private _onMouseUp = (e: MouseEvent) => {
-    this.emit({ type: "pointerup", payload: { x: e.offsetX, y: e.offsetY, button: e.button } });
-  };
-  private _onWheel = (e: WheelEvent) => {
-    this.emit({ type: "wheel", payload: { x: e.offsetX, y: e.offsetY, delta: e.deltaY } });
-  };
-
   update() {
     // 浏览器里交给 WebGLRenderer 实现
+  }
+
+  private _onContextLost() {
+    this.emit('contextlost', {} as T['contextlost']);
+  }
+
+  private _onContextRestored() {
+    this.emit('contextrestored', {} as T['contextrestored']);
+  }
+
+  dispose() {
+    this.canvas.removeEventListener('contextlost', this._onContextLost.bind(this));
+    this.canvas.removeEventListener('contextrestored', this._onContextRestored.bind(this));
+    this.detach();
   }
 }

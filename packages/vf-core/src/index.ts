@@ -9,3 +9,5 @@
 export * from './document';
 export * from './element';
 export * from './types';
+export * from './view';
+export * from './event';
