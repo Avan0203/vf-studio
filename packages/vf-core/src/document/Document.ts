@@ -2,18 +2,19 @@
  * @Author: wuyifan wuyifan@udschina.com
  * @Date: 2025-09-02 17:12:56
  * @LastEditors: wuyifan wuyifan@udschina.com
- * @LastEditTime: 2025-09-05 14:54:12
+ * @LastEditTime: 2025-09-09 11:39:20
  * @FilePath: \vf-studio\packages\vf-core\src\Document\document.ts
  * Copyright (c) 2024 by wuyifan email: 1208097313@qq.com, All Rights Reserved.
  */
 
 import { ElementManager } from "../element";
-import { ElementClass, ElementID, IDocument, IElement } from "../types";
+import { ElementClass, ObjectID, IDocument, IElement } from "../types";
 
 class Document implements IDocument {
-
     private elementManager = new ElementManager();
+    root:ObjectID[] = []
     constructor() {
+
     }
 
     public create<T extends IElement>(elementClass: ElementClass<T>): T {
@@ -26,20 +27,20 @@ class Document implements IDocument {
         this.deleteElementById(element.id);
     }
 
-    public deleteElementById(id: ElementID): void {
+    public deleteElementById(id: ObjectID): void {
         this.elementManager.deleteElementById(id);
     }
 
-    public getElementById(id: ElementID): IElement | null {
+    public getElementById(id: ObjectID): IElement | null {
         return this.elementManager.getElementById(id);
     }
 
-    public getElementsByIds(ids: ElementID[]): Array<IElement> {
+    public getElementsByIds(ids: ObjectID[]): Array<IElement> {
         return this.elementManager.getElementsByIds(ids);
     }
 
-    public getAllElements(id: ElementID): IElement[] {
-        return this.elementManager.getAllElements(id);
+    public getAllChildren(id: ObjectID): IElement[] {
+        return this.elementManager.getAllChildren(id);
     }
 
     public getElementsByClass<T extends IElement>(cls: ElementClass<T>): T[] {

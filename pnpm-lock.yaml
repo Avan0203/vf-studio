@@ -77,14 +77,16 @@ importers:
         version: link:../vf-cli
 
   packages/vf-engine:
-    dependencies:
-      '@vf/structure':
-        specifier: workspace:*
-        version: link:../vf-structure
     devDependencies:
       '@vf/cli':
         specifier: workspace:*
         version: link:../vf-cli
+      '@vf/core':
+        specifier: workspace:*
+        version: link:../vf-core
+      '@vf/math':
+        specifier: workspace:*
+        version: link:../vf-math
 
   packages/vf-math:
     devDependencies:

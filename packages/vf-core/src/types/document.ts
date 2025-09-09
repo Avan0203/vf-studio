@@ -7,15 +7,15 @@
  * Copyright (c) 2024 by wuyifan email: 1208097313@qq.com, All Rights Reserved.
  */
 
-import { ElementClass, ElementID, IElement } from ".";
+import { ElementClass, IElement, ObjectID } from ".";
 
 interface IDocument {
     create<T extends IElement>(elementClass: ElementClass<T>): T;
-    delete(element:IElement): void;
-    deleteElementById(id: ElementID): void;
-    getElementById(id: ElementID): IElement | null;
-    getElementsByIds(ids: ElementID[]): Array<IElement>;
-    getAllElements(id: ElementID): IElement[];
+    delete(element: IElement): void;
+    deleteElementById(id:ObjectID ): void;
+    getElementById(id: ObjectID): IElement | null;
+    getElementsByIds(ids: ObjectID[]): Array<IElement>;
+    getAllChildren(id: ObjectID): IElement[];
     getElementsByClass<T extends IElement>(cls: ElementClass<T>): T[];
 }
 

@@ -2,17 +2,17 @@
  * @Author: wuyifan wuyifan@udschina.com
  * @Date: 2025-09-04 10:32:12
  * @LastEditors: wuyifan wuyifan@udschina.com
- * @LastEditTime: 2025-09-05 14:53:56
+ * @LastEditTime: 2025-09-09 10:37:26
  * @FilePath: \vf-studio\packages\vf-core\src\element\ElementManager.ts
  * Copyright (c) 2024 by wuyifan email: 1208097313@qq.com, All Rights Reserved.
  */
 import { IElement, ElementClass } from "../types";
-import { ElementID } from "./ElementID";
+import { ObjectID } from "../base/ObjectID";
 
 
 class ElementManager {
     private elements: Map<number, IElement>
-    private elementClasses: WeakMap<ElementClass<IElement>, Set<ElementID>>
+    private elementClasses: WeakMap<ElementClass<IElement>, Set<ObjectID>>
     constructor() {
         this.elements = new Map();
         this.elementClasses = new WeakMap();
@@ -27,15 +27,15 @@ class ElementManager {
         this.elementClasses.get(cls)!.add(element.id);
     }
 
-    getElementById(id: ElementID): IElement | null {
+    getElementById(id: ObjectID): IElement | null {
         return this.elements.get(id.valueOf()) || null;
     }
 
-    deleteElementById(id: ElementID) {
+    deleteElementById(id: ObjectID) {
         this.elements.delete(id.valueOf());
     }
 
-    getElementsByIds(ids: ElementID[]): Array<IElement> {
+    getElementsByIds(ids: ObjectID[]): Array<IElement> {
         const result = []
         for (const child of ids) {
             const childElement = this.getElementById(child);
@@ -44,7 +44,7 @@ class ElementManager {
         return result;
     }
 
-    traverse(id: ElementID, callback: (element: IElement) => void) {
+    traverse(id: ObjectID, callback: (element: IElement) => void) {
         const element = this.getElementById(id);
         if (element) {
             callback(element);
@@ -54,7 +54,7 @@ class ElementManager {
         }
     }
 
-    getAllElements(id: ElementID): IElement[] {
+    getAllChildren(id: ObjectID): IElement[] {
         let result: IElement[] = [];
         this.traverse(id, (element) => {
             result.push(element);

@@ -10,3 +10,4 @@ export * from './elements';
 export * from './document';
 export * from './view';
 export * from './event';
+export * from './base';

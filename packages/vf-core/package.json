@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "vf core",
   "main": "src/index.ts",
-  "types": "src/types/index.ts",
+  "types": "src/index.ts",
   "scripts": {
     "build": "tsc",
     "dev": "vite"

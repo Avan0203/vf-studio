@@ -2,21 +2,20 @@
  * @Author: wuyifan wuyifan@udschina.com
  * @Date: 2025-09-02 17:15:03
  * @LastEditors: wuyifan wuyifan@udschina.com
- * @LastEditTime: 2025-09-05 13:24:45
+ * @LastEditTime: 2025-09-09 15:58:47
  * @FilePath: \vf-studio\packages\vf-core\src\element\Element.ts
  * Copyright (c) 2024 by wuyifan email: 1208097313@qq.com, All Rights Reserved.
  */
 
+import { Base, ObjectID } from "../base";
 import { Document } from "../document/Document";
-import { ElementID, IElement } from "../types";
+import { IDocument, IElement } from "../types";
 
-class Element implements IElement {
-    name = ''
-    id = ElementID.INVALID
-    private parent = ElementID.INVALID
-    private children: ElementID[] = []
+class Element extends Base implements IElement  {
+    protected parent = ObjectID.INVALID
+    protected children: ObjectID[] = []
     constructor(private document: Document) {
-        this.id = ElementID.generate();
+        super();
     }
 
     isGraphical(): boolean {
@@ -34,8 +33,13 @@ class Element implements IElement {
         }
         if (parent) {
             this.parent = parent.id;
+            const index = this.document.root.findIndex((item) => item === this.id);
+            if (index !== -1) {
+                this.document.root.splice(index, 1);
+            }
         }else{
-            this.parent = ElementID.INVALID;
+            this.parent = ObjectID.INVALID;
+            this.document.root.push(this.id);
         }
     }
 
@@ -56,7 +60,11 @@ class Element implements IElement {
     }
 
     getAllChildren(): IElement[] {
-        return this.document.getAllElements(this.id);
+        return this.document.getAllChildren(this.id);
+    }
+
+    getDocument(): IDocument {
+        return this.document;
     }
 }
 
