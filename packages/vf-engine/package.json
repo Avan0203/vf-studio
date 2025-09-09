@@ -8,10 +8,9 @@
     "build": "tsc",
     "dev": "tsc -w"
   },
-  "dependencies": {
-    "@vf/structure": "workspace:*"
-  },
   "devDependencies": {
-    "@vf/cli": "workspace:*"
+    "@vf/cli": "workspace:*",
+    "@vf/core": "workspace:*",
+    "@vf/math": "workspace:*"
   }
 }
