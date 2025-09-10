@@ -1,7 +1,7 @@
 /*
- * @Author: wuyifan wuyifan@udschina.com
+ * @Author: wuyifan 1208097313@qq.com
  * @Date: 2025-08-29 13:40:47
- * @LastEditors: wuyifan wuyifan@udschina.com
+ * @LastEditors: wuyifan 1208097313@qq.com
  * @LastEditTime: 2025-09-01 11:37:46
  * @FilePath: \vf-studio\packages\vf-math\src\utils\pure.ts
  * Copyright (c) 2024 by wuyifan email: 1208097313@qq.com, All Rights Reserved.

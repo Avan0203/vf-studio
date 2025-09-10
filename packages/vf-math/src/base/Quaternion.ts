@@ -167,7 +167,7 @@ class Quaternion extends AbstractMathObject<QuaternionLike> {
 		return this;
 	}
 
-	setFromEuler(euler: Euler): this {
+	setFromEuler(euler: Euler, update = true): this {
 		const x = euler.x, y = euler.y, z = euler.z, order = euler.order;
 		const cos = Math.cos;
 		const sin = Math.sin;
@@ -222,7 +222,7 @@ class Quaternion extends AbstractMathObject<QuaternionLike> {
 				console.warn('THREE.Quaternion: .setFromEuler() encountered an unknown order: ' + order);
 		}
 
-		this._onChangeCallback();
+		update && this._onChangeCallback();
 		return this;
 	}
 
@@ -311,7 +311,9 @@ class Quaternion extends AbstractMathObject<QuaternionLike> {
 	}
 
 	identity(): this {
-		return this.set(0, 0, 0, 1);
+		this.set(0, 0, 0, 1);
+		this._onChangeCallback();
+		return this;
 	}
 
 	invert(): this {
@@ -446,12 +448,14 @@ class Quaternion extends AbstractMathObject<QuaternionLike> {
 		const x0 = Math.random();
 		const r1 = Math.sqrt(1 - x0);
 		const r2 = Math.sqrt(x0);
-		return this.set(
+		this.set(
 			r1 * Math.sin(theta1),
 			r1 * Math.cos(theta1),
 			r2 * Math.sin(theta2),
 			r2 * Math.cos(theta2),
-		);
+		)
+		this._onChangeCallback();
+		return this;
 	}
 
 	equals(quaternion: Quaternion, eps = Tolerance.LENGTH_EPS): boolean {
@@ -472,7 +476,7 @@ class Quaternion extends AbstractMathObject<QuaternionLike> {
 		return this;
 	}
 
-	toArray(array:any[] = [], offset = 0): any[] {
+	toArray(array: any[] = [], offset = 0): any[] {
 		array[offset] = this._x;
 		array[offset + 1] = this._y;
 		array[offset + 2] = this._z;
@@ -481,7 +485,7 @@ class Quaternion extends AbstractMathObject<QuaternionLike> {
 		return array;
 	}
 
-	_onChange(callback: () => void) {
+	onChange(callback: () => void) {
 		this._onChangeCallback = callback;
 		return this;
 	}

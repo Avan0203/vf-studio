@@ -1,9 +1,6 @@
-import type { QuaternionLike } from './Quaternion';
-import type { Matrix4 } from './Matrix4.js';
-import type { Vector3Like } from './Vector3.js';
 import { MathUtils, Tolerance } from '../utils';
-import { AbstractMathObject, type DumpResult } from './AbstractMathObject.js';
-import { _mat4, _quat1 } from '../utils/pure.js';
+import { AbstractMathObject, Matrix4, type Quaternion, type Vector3Like, type DumpResult } from '../index';
+import { _mat4, _quat1 } from '../utils/pure';
 
 enum EulerOrder {
 	XYZ = 'XYZ',
@@ -38,7 +35,7 @@ class Euler extends AbstractMathObject<EulerLike> {
 
 	set x(value: number) {
 		this._x = value;
-		this._onChangeCallback(this);
+		this._onChangeCallback();
 	}
 
 	get y() {
@@ -47,7 +44,7 @@ class Euler extends AbstractMathObject<EulerLike> {
 
 	set y(value: number) {
 		this._y = value;
-		this._onChangeCallback(this);
+		this._onChangeCallback();
 	}
 
 	get z() {
@@ -56,7 +53,7 @@ class Euler extends AbstractMathObject<EulerLike> {
 
 	set z(value: number) {
 		this._z = value;
-		this._onChangeCallback(this);
+		this._onChangeCallback();
 	}
 
 	get order() {
@@ -65,7 +62,7 @@ class Euler extends AbstractMathObject<EulerLike> {
 
 	set order(value: EulerOrder) {
 		this._order = value;
-		this._onChangeCallback(this);
+		this._onChangeCallback();
 	}
 
 	set(x: number, y: number, z: number, order = this._order) {
@@ -73,7 +70,7 @@ class Euler extends AbstractMathObject<EulerLike> {
 		this._y = y;
 		this._z = z;
 		this._order = order;
-		this._onChangeCallback(this);
+		this._onChangeCallback();
 		return this;
 	}
 
@@ -87,11 +84,11 @@ class Euler extends AbstractMathObject<EulerLike> {
 		this._z = euler.z;
 		this._order = euler.order;
 
-		this._onChangeCallback(this);
+		this._onChangeCallback();
 		return this;
 	}
 
-	setFromRotationMatrix(m: Matrix4, order = this._order): this {
+	setFromRotationMatrix(m: Matrix4, order = this._order, update = true): this {
 		const te = m.elements;
 		const m11 = te[0], m12 = te[4], m13 = te[8];
 		const m21 = te[1], m22 = te[5], m23 = te[9];
@@ -163,14 +160,14 @@ class Euler extends AbstractMathObject<EulerLike> {
 		}
 
 		this._order = order;
-		this._onChangeCallback(this);
+		update && this._onChangeCallback();
 
 		return this;
 	}
 
-	setFromQuaternion(q: QuaternionLike, order: EulerOrder): this {
+	setFromQuaternion(q: Quaternion, order = this._order, update = true): this {
 		_mat4.makeRotationFromQuaternion(q);
-		return this.setFromRotationMatrix(_mat4, order);
+		return this.setFromRotationMatrix(_mat4, order, update);
 	}
 
 
@@ -193,7 +190,7 @@ class Euler extends AbstractMathObject<EulerLike> {
 		this._y = array[1];
 		this._z = array[2];
 		if (array[3] !== undefined) this._order = array[3];
-		this._onChangeCallback(this);
+		this._onChangeCallback();
 
 		return this;
 	}
@@ -206,12 +203,12 @@ class Euler extends AbstractMathObject<EulerLike> {
 		return array;
 	}
 
-	_onChange(callback: (e: this) => void): this {
+	onChange(callback: () => void): this {
 		this._onChangeCallback = callback;
 		return this;
 	}
 
-	private _onChangeCallback(_: this): void { }
+	private _onChangeCallback(): void { }
 
 	load(data: EulerLike): this {
 		return this.copy(data);

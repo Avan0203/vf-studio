@@ -209,7 +209,7 @@ class Vector3 extends AbstractMathObject<Vector3Like> {
         return this.sub(new Vector3().copy(v).multiplyScalar(2 * dot));
     }
 
-    toArray(target:any[] = [], offset = 0): number[] {
+    toArray(target: any[] = [], offset = 0): number[] {
         target[offset] = this.x;
         target[offset + 1] = this.y;
         target[offset + 2] = this.z;
@@ -250,8 +250,16 @@ class Vector3 extends AbstractMathObject<Vector3Like> {
         return this;
     }
 
-    addScaledVector(v: Vector3Like, s: number): this { 
+    addScaledVector(v: Vector3Like, s: number): this {
         return this.add(_v.copy(v).multiplyScalar(s));
+    }
+
+    setFromMatrixPosition(m: Matrix4): this {
+        const e = m.elements;
+        this.x = e[12];
+        this.y = e[13];
+        this.z = e[14];
+        return this;
     }
 
     load(data: Vector3Like): this {

@@ -1,9 +1,5 @@
-import { AbstractMathObject, MathUtils, Tolerance, type DumpResult } from '../index.js';
-import { _mat4, _one, _v, _vec1, _vec2, _vec3, _zero } from '../utils/pure.js';
-import { EulerLike } from './Euler.js';
-import type { Matrix3 } from './Matrix3.js';
-import { Quaternion, QuaternionLike } from './Quaternion.js';
-import type { Vector3Like } from './Vector3.js';
+import { AbstractMathObject, MathUtils, Matrix3, Quaternion, QuaternionLike, Tolerance, Vector3, Vector3Like, type DumpResult, type EulerLike } from '../index';
+import { _mat4, _one, _v, _vec1, _vec2, _vec3, _zero } from '../utils/pure';
 
 class Matrix4 extends AbstractMathObject<number[]> {
 	elements: number[] = new Array(16);
@@ -191,7 +187,7 @@ class Matrix4 extends AbstractMathObject<number[]> {
 		return this;
 	}
 
-	makeRotationFromQuaternion(q: QuaternionLike): this {
+	makeRotationFromQuaternion(q: Quaternion): this {
 		return this.compose(_zero, q, _one);
 	}
 
@@ -350,6 +346,11 @@ class Matrix4 extends AbstractMathObject<number[]> {
 		return this;
 	}
 
+	getPosition(target: Vector3 = new Vector3()): Vector3 {
+		const te = this.elements;
+		return target.set(te[12], te[13], te[14]);
+	}
+
 	invert(): this {
 		const te = this.elements,
 
@@ -492,7 +493,7 @@ class Matrix4 extends AbstractMathObject<number[]> {
 	}
 
 
-	compose(position: Vector3Like, quaternion: QuaternionLike, scale: Vector3Like): this {
+	compose(position: Vector3Like, quaternion: Quaternion, scale: Vector3Like): this {
 		const te = this.elements;
 
 		const x = quaternion.x, y = quaternion.y, z = quaternion.z, w = quaternion.w;
@@ -649,7 +650,7 @@ class Matrix4 extends AbstractMathObject<number[]> {
 		return this;
 	}
 
-	toArray(array:any[] = [], offset = 0): any[] {
+	toArray(array: any[] = [], offset = 0): any[] {
 		const te = this.elements;
 		array[offset] = te[0];
 		array[offset + 1] = te[1];
@@ -678,7 +679,7 @@ class Matrix4 extends AbstractMathObject<number[]> {
 		return this.fromArray(array);
 	}
 
-	dump():DumpResult<number[]> {
+	dump(): DumpResult<number[]> {
 		return {
 			type: 'Matrix4',
 			value: [...this.elements],

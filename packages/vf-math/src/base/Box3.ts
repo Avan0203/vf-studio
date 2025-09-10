@@ -139,8 +139,6 @@ class Box3 extends AbstractMathObject<Box3Like> {
 
 
 	intersectsPlane(plane: PlaneLike, eps = Tolerance.LENGTH_EPS): boolean {
-		// We compute the minimum and maximum dot product values. If those values
-		// are on the same side (back or front) of the plane, then there is no intersection.
 		_plane.copy(plane);
 		let min, max;
 		if (_plane.normal.x > 0) {
@@ -188,9 +186,6 @@ class Box3 extends AbstractMathObject<Box3Like> {
 		_f1.subVectors(_v2, _v1);
 		_f2.subVectors(_v0, _v2);
 
-		// test against axes that are given by cross product combinations of the edges of the triangle and the edges of the aabb
-		// make an axis testing of each of the 3 sides of the aabb against each of the 3 sides of the triangle = 9 axis of separation
-		// axis_ij = u_i x f_j (u0, u1, u2 = face normals of aabb = x,y,z axes vectors since aabb is axis aligned)
 		let axes = [
 			0, - _f0.z, _f0.y, 0, - _f1.z, _f1.y, 0, - _f2.z, _f2.y,
 			_f0.z, 0, - _f0.x, _f1.z, 0, - _f1.x, _f2.z, 0, - _f2.x,
@@ -200,14 +195,11 @@ class Box3 extends AbstractMathObject<Box3Like> {
 			return false;
 		}
 
-		// test 3 face normals from the aabb
 		axes = [1, 0, 0, 0, 1, 0, 0, 0, 1];
 		if (!satForAxes(axes, _v0, _v1, _v2, _extents)) {
 			return false;
 		}
 
-		// finally testing the face normal of the triangle
-		// use already existing triangle edge vectors here
 		_triangleNormal.crossVectors(_f0, _f1);
 		axes = [_triangleNormal.x, _triangleNormal.y, _triangleNormal.z];
 		return satForAxes(axes, _v0, _v1, _v2, _extents);
@@ -238,7 +230,6 @@ class Box3 extends AbstractMathObject<Box3Like> {
 	intersect(box: Box3Like): this {
 		this.min.max(box.min);
 		this.max.min(box.max);
-		// ensure that if there is no overlap, the result is fully empty, not slightly empty with non-inf/+inf values that will cause subsequence intersects to erroneously return valid values.
 		if (this.isEmpty()) this.makeEmpty();
 		return this;
 	}
@@ -252,9 +243,7 @@ class Box3 extends AbstractMathObject<Box3Like> {
 
 
 	applyMatrix4(matrix: Matrix4): this {
-		// transform of empty box is an empty box.
 		if (this.isEmpty()) return this;
-		// NOTE: I am using a binary pattern to specify all 2^3 combinations below
 		const v: Record<number, number> = {
 			0: this.min.x,
 			1: this.min.y,
