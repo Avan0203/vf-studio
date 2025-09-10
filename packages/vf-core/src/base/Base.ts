@@ -10,10 +10,11 @@ class Base implements IBase {
     }
 
     copy(source: this): this {
-        throw new Error('copy not implemented');
+        return this
     }
+    
     clone(): IBase {
-        throw new Error('clone not implemented');
+        return new (this.constructor as { new(...args: any[]):any })().copy(this);
     }
 }
 

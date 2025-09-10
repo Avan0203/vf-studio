@@ -1,7 +1,7 @@
 /*
- * @Author: wuyifan wuyifan@udschina.com
+ * @Author: wuyifan 1208097313@qq.com
  * @Date: 2025-09-04 10:32:12
- * @LastEditors: wuyifan wuyifan@udschina.com
+ * @LastEditors: wuyifan 1208097313@qq.com
  * @LastEditTime: 2025-09-09 10:37:26
  * @FilePath: \vf-studio\packages\vf-core\src\element\ElementManager.ts
  * Copyright (c) 2024 by wuyifan email: 1208097313@qq.com, All Rights Reserved.
