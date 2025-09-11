@@ -2,7 +2,7 @@
  * @Author: wuyifan 1208097313@qq.com
  * @Date: 2025-09-10 14:33:28
  * @LastEditors: wuyifan 1208097313@qq.com
- * @LastEditTime: 2025-09-10 16:29:19
+ * @LastEditTime: 2025-09-11 10:11:32
  * @FilePath: \vf-studio\packages\vf-engine\src\camera\ViewOffset.ts
  * Copyright (c) 2024 by wuyifan email: 1208097313@qq.com, All Rights Reserved.
  */
@@ -30,6 +30,21 @@ class ViewOffset implements IViewOffset {
         this.fullWidth = fullWidth;
         this.fullHeight = fullHeight;
         return this;
+    }
+
+    copy(source: this): this {
+        this.enabled = source.enabled;
+        this.width = source.width;
+        this.height = source.height;
+        this.offsetX = source.offsetX;
+        this.offsetY = source.offsetY;
+        this.fullWidth = source.fullWidth;
+        this.fullHeight = source.fullHeight;
+        return this;
+    }
+
+    clone(): ViewOffset {
+        return new (this.constructor as { new(...args: any[]):any })().copy(this);
     }
 }
 

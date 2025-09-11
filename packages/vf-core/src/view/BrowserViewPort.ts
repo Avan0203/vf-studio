@@ -2,7 +2,7 @@
  * @Author: wuyifan 1208097313@qq.com
  * @Date: 2025-09-08 09:17:29
  * @LastEditors: wuyifan 1208097313@qq.com
- * @LastEditTime: 2025-09-08 15:58:37
+ * @LastEditTime: 2025-09-11 13:06:16
  * @FilePath: \vf-studio\packages\vf-core\src\view\BrowserViewPort.ts
  * Copyright (c) 2024 by wuyifan email: 1208097313@qq.com, All Rights Reserved.
  */
@@ -13,10 +13,11 @@ import { InputEventListener } from "../event/InputEventListener";
 export class BrowserViewPort<T extends Record<string, any> = BrowserEvents> extends EventEmitter<T> implements IViewPort {
   private canvas: HTMLCanvasElement;
   private inputEventListener: InputEventListener;
-  constructor(canvas: HTMLCanvasElement) {
+  constructor(container: HTMLCanvasElement) {
     super();
-    this.canvas = canvas;
-    this.inputEventListener = new InputEventListener(canvas,this);
+    this.canvas = document.createElement('canvas');
+    container.appendChild(this.canvas);
+    this.inputEventListener = new InputEventListener(this.canvas, this);
 
     this.canvas.addEventListener('contextlost', this._onContextLost.bind(this));
     this.canvas.addEventListener('contextrestored', this._onContextRestored.bind(this));

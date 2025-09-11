@@ -2,7 +2,7 @@
  * @Author: wuyifan 1208097313@qq.com
  * @Date: 2025-09-09 14:53:12
  * @LastEditors: wuyifan 1208097313@qq.com
- * @LastEditTime: 2025-09-10 14:16:08
+ * @LastEditTime: 2025-09-11 10:08:54
  * @FilePath: \vf-studio\packages\vf-engine\src\camera\Camera.ts
  * Copyright (c) 2024 by wuyifan email: 1208097313@qq.com, All Rights Reserved.
  */
@@ -11,7 +11,6 @@ import { Base3D } from "../index";
 
 class Camera extends Base3D {
     readonly baseType = 'Camera';
-    target: Vector3;
     projectionMatrix: Matrix4;
     viewMatrix: Matrix4;
     projectionMatrixInverse: Matrix4;
@@ -19,7 +18,6 @@ class Camera extends Base3D {
 
     constructor() {
         super();
-        this.target = new Vector3();
         this.projectionMatrix = new Matrix4();
         this.projectionMatrixInverse = new Matrix4();
         this.viewMatrix = new Matrix4();
@@ -28,9 +26,10 @@ class Camera extends Base3D {
     
     copy(source: this): this {
         super.copy(source);
-        this.target.copy(source.target);
         this.projectionMatrix.copy(source.projectionMatrix);
+        this.projectionMatrixInverse.copy(source.projectionMatrixInverse);
         this.viewMatrix.copy(source.viewMatrix);
+        this.viewMatrixInverse.copy(source.viewMatrixInverse);
         return this;
     }
 

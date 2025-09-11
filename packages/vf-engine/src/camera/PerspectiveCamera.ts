@@ -2,7 +2,7 @@
  * @Author: wuyifan 1208097313@qq.com
  * @Date: 2025-09-09 14:58:23
  * @LastEditors: wuyifan 1208097313@qq.com
- * @LastEditTime: 2025-09-10 16:41:23
+ * @LastEditTime: 2025-09-11 10:13:00
  * @FilePath: \vf-studio\packages\vf-engine\src\camera\PerspectiveCamera.ts
  * Copyright (c) 2024 by wuyifan email: 1208097313@qq.com, All Rights Reserved.
  */
@@ -119,6 +119,20 @@ class PerspectiveCamera extends Camera {
         this.projectionMatrix.makePerspective(left, left + width, top, top - height, near, this.far, true,);
 
         this.projectionMatrixInverse.copy(this.projectionMatrix).invert();
+        return this;
+    }
+
+    copy(source: this): this {
+        super.copy(source);
+        this.fov = source.fov;
+        this.aspect = source.aspect;
+        this.near = source.near;
+        this.far = source.far;
+        this.focus = source.focus;
+        this.filmGauge = source.filmGauge;
+        this.filmOffset = source.filmOffset;
+        this.zoom = source.zoom;
+        this.view.copy(source.view);
         return this;
     }
 }

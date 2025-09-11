@@ -72,6 +72,20 @@ class OrthographicCamera extends Camera {
         this.projectionMatrixInverse.copy(this.projectionMatrix).invert();
         return this;
     }
+
+    copy(source: this): this {
+        super.copy(source);
+        this.zoom = source.zoom;
+        this.left = source.left;
+        this.right = source.right;
+        this.top = source.top;
+        this.bottom = source.bottom;
+        this.near = source.near;
+        this.far = source.far;
+        this.view.copy(source.view);
+        this.updateProjectionMatrix();
+        return this;
+    }
 }
 
 export { OrthographicCamera }
