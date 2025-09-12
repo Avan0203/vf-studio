@@ -1,6 +1,5 @@
 import { Vector3, Vector3Like } from './Vector3.js';
 import { AbstractMathObject, DumpResult } from './AbstractMathObject.js';
-import { _v, _va, _vb, _vec1, _vec2 } from '../utils/pure.js';
 import { MathUtils, Tolerance } from '../utils';
 import { Matrix4 } from './Matrix4.js';
 
@@ -168,5 +167,11 @@ class Line3d extends AbstractMathObject {
 	}
 
 }
+
+const _v = /*@__PURE__*/ new Vector3();
+const _va = /*@__PURE__*/ new Vector3();
+const _vb = /*@__PURE__*/ new Vector3();
+const _vec1 = /*@__PURE__*/ new Vector3();
+const _vec2 = /*@__PURE__*/ new Vector3();
 
 export { Line3d, Line3dLike };

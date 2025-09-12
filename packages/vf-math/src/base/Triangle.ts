@@ -1,7 +1,6 @@
 import { MathUtils, Tolerance } from '../utils';
-import { _box3 } from '../utils/pure';
 import { AbstractMathObject, DumpResult } from './AbstractMathObject.js';
-import { Box3Like } from './Box3';
+import { Box3, Box3Like } from './Box3';
 import { Plane } from './Plane';
 import { Vector3, Vector3Like } from './Vector3';
 
@@ -271,5 +270,7 @@ class Triangle extends AbstractMathObject {
 		}
 	}
 }
+
+const _box3 = /*@__PURE__*/ new Box3();
 
 export { Triangle, TriangleLike };

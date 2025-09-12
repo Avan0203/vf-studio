@@ -2,7 +2,6 @@ import { AbstractMathObject, DumpResult } from "./AbstractMathObject";
 import { MathUtils, Tolerance } from "../utils";
 import type { Matrix4 } from "./Matrix4";
 import type { Matrix3 } from "./Matrix3";
-import { _v } from "../utils/pure";
 
 type Vector3Like = {
     x: number;
@@ -29,6 +28,10 @@ class Vector3 extends AbstractMathObject<Vector3Like> {
 
     static Z() {
         return new Vector3(0, 0, 1);
+    }
+
+    static ONE() {
+        return new Vector3(1, 1, 1);
     }
 
     static getSquareLength(v: Vector3Like) {
@@ -270,5 +273,7 @@ class Vector3 extends AbstractMathObject<Vector3Like> {
         return { type: this.type, value: { x: this.x, y: this.y, z: this.z } }
     }
 }
+
+const _v = /*@__PURE__*/ new Vector3();
 
 export { Vector3, Vector3Like }

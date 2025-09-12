@@ -1,6 +1,5 @@
 import { MathUtils, Tolerance } from '../utils';
-import { AbstractMathObject, Matrix4, type Quaternion, type Vector3Like, type DumpResult } from '../index';
-import { _mat4, _quat1 } from '../utils/pure';
+import { AbstractMathObject, Matrix4, Quaternion, type Vector3Like, type DumpResult } from '../index';
 
 enum EulerOrder {
 	XYZ = 'XYZ',
@@ -176,8 +175,8 @@ class Euler extends AbstractMathObject<EulerLike> {
 	}
 
 	reorder(newOrder: EulerOrder): this {
-		_quat1.setFromEuler(this);
-		return this.setFromQuaternion(_quat1, newOrder);
+		_quat.setFromEuler(this);
+		return this.setFromQuaternion(_quat, newOrder);
 	}
 
 	equals(euler: Euler, eps = Tolerance.LENGTH_EPS): boolean {
@@ -226,5 +225,8 @@ class Euler extends AbstractMathObject<EulerLike> {
 		}
 	}
 }
+
+const _mat4 = /*@__PURE__*/ new Matrix4();
+const _quat = /*@__PURE__*/ new Quaternion();
 
 export { Euler, EulerLike, EulerOrder };

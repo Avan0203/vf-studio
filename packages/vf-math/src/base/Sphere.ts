@@ -1,6 +1,5 @@
-import { PlaneLike } from './Plane';
+import { Plane, PlaneLike } from './Plane';
 import { MathUtils, Tolerance } from '../utils';
-import { _box3, _plane, _sphere, _v, _vec1, _vec2 } from '../utils/pure';
 import { Vector3, Vector3Like } from './Vector3';
 import { Matrix4 } from './Matrix4';
 import { type DumpResult, AbstractMathObject } from './AbstractMathObject';
@@ -178,5 +177,12 @@ class Sphere extends AbstractMathObject<SphereLike> {
 		return { type: this.type, value: { center: this.center, radius: this.radius } }
 	}
 }
+
+const _sphere = /*@__PURE__*/ new Sphere();
+const _v = /*@__PURE__*/ new Vector3();
+const _vec1 = /*@__PURE__*/ new Vector3();
+const _vec2 = /*@__PURE__*/ new Vector3();
+const _plane = /*@__PURE__*/ new Plane();
+const _box3 = /*@__PURE__*/ new Box3();
 
 export { Sphere, SphereLike };

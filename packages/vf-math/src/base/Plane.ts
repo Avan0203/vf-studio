@@ -1,11 +1,10 @@
 import { MathUtils, Tolerance } from '../utils';
-import { _mat3, _sphere, _v, _vec1, _vec2, _box3, _line3d } from '../utils/pure';
 import { AbstractMathObject, DumpResult } from './AbstractMathObject';
-import { Box3Like } from './Box3';
-import { Line3dLike } from './Line3d';
+import { Box3, Box3Like } from './Box3';
+import { Line3d, Line3dLike } from './Line3d';
 import { Matrix3 } from './Matrix3.js';
 import type { Matrix4 } from './Matrix4'
-import { SphereLike } from './Sphere';
+import { Sphere, SphereLike } from './Sphere';
 import { Vector3, Vector3Like } from './Vector3';
 
 type PlaneLike = {
@@ -156,7 +155,15 @@ class Plane extends AbstractMathObject {
 	dump(): DumpResult<PlaneLike> {
 		return { type: this.type, value: { normal: { x: this.normal.x, y: this.normal.y, z: this.normal.z }, constant: this.constant } }
 	}
-
 }
+
+const _v = /*@__PURE__*/ new Vector3();
+const _mat3 = /*@__PURE__*/ new Matrix3();
+const _sphere = /*@__PURE__*/ new Sphere();
+const _box3 = /*@__PURE__*/ new Box3();
+const _line3d = /*@__PURE__*/ new Line3d();
+
+const _vec1 = /*@__PURE__*/ new Vector3();
+const _vec2 = /*@__PURE__*/ new Vector3();
 
 export { Plane, PlaneLike };

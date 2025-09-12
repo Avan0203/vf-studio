@@ -1,5 +1,4 @@
 import { AbstractMathObject, MathUtils, Matrix3, Quaternion, QuaternionLike, Tolerance, Vector3, Vector3Like, type DumpResult, type EulerLike } from '../index';
-import { _mat4, _one, _v, _vec1, _vec2, _vec3, _zero } from '../utils/pure';
 
 class Matrix4 extends AbstractMathObject<number[]> {
 	elements: number[] = new Array(16);
@@ -193,32 +192,32 @@ class Matrix4 extends AbstractMathObject<number[]> {
 
 	lookAt(eye: Vector3Like, target: Vector3Like, up: Vector3Like): this {
 		const te = this.elements;
-		_vec3.subVectors(eye, target);
+		_z.subVectors(eye, target);
 		// eye and target are in the same position
-		if (_vec3.getSquareLength() === 0) {
-			_vec3.z = 1;
+		if (_z.getSquareLength() === 0) {
+			_z.z = 1;
 		}
 
-		_vec3.normalize();
-		_vec1.crossVectors(up, _vec3);
+		_z.normalize();
+		_x.crossVectors(up, _z);
 
-		if (_vec1.getSquareLength() === 0) {
+		if (_x.getSquareLength() === 0) {
 			// up and z are parallel
 			if (Math.abs(up.z) === 1) {
-				_vec3.x += 0.0001;
+				_z.x += 0.0001;
 			} else {
-				_vec3.z += 0.0001;
+				_z.z += 0.0001;
 			}
-			_vec3.normalize();
-			_vec1.crossVectors(up, _vec3);
+			_z.normalize();
+			_x.crossVectors(up, _z);
 		}
 
-		_vec1.normalize();
-		_vec2.crossVectors(_vec3, _vec1);
+		_x.normalize();
+		_y.crossVectors(_z, _x);
 
-		te[0] = _vec1.x; te[4] = _vec2.x; te[8] = _vec3.x;
-		te[1] = _vec1.y; te[5] = _vec2.y; te[9] = _vec3.y;
-		te[2] = _vec1.z; te[6] = _vec2.z; te[10] = _vec3.z;
+		te[0] = _x.x; te[4] = _y.x; te[8] = _z.x;
+		te[1] = _x.y; te[5] = _y.y; te[9] = _z.y;
+		te[2] = _x.z; te[6] = _y.z; te[10] = _z.z;
 
 		return this;
 	}
@@ -686,6 +685,15 @@ class Matrix4 extends AbstractMathObject<number[]> {
 		}
 	}
 }
+
+const _mat4 = /*@__PURE__*/ new Matrix4();
+const _v = /*@__PURE__*/ new Vector3();
+const _one = /*@__PURE__*/ Vector3.ONE();
+const _zero = /*@__PURE__*/ Vector3.ZERO();
+
+const _x = /*@__PURE__*/ new Vector3();
+const _y = /*@__PURE__*/  new Vector3();
+const _z = /*@__PURE__*/  new Vector3();
 
 
 export { Matrix4 };

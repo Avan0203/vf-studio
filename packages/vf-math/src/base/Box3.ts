@@ -2,8 +2,7 @@ import { AbstractMathObject, DumpResult } from './AbstractMathObject.js';
 import { Vector3, type Vector3Like } from './Vector3.js';
 import { Tolerance, MathUtils } from '../utils';
 import { Sphere, type SphereLike } from './Sphere.js';
-import { _plane, _sphere, _v } from '../utils/pure.js';
-import type { PlaneLike } from './Plane.js';
+import { Plane, type PlaneLike } from './Plane.js';
 import type { Matrix4 } from './Matrix4.js';
 import { TriangleLike } from './Triangle.js';
 
@@ -292,6 +291,8 @@ const _points =
 		[3, 4, 5],
 	];
 
+
+
 // triangle centered vertices
 
 const _v0 = /*@__PURE__*/ new Vector3();
@@ -309,7 +310,10 @@ const _extents = /*@__PURE__*/ new Vector3();
 const _triangleNormal = /*@__PURE__*/ new Vector3();
 const _testAxis = /*@__PURE__*/ new Vector3();
 
-function satForAxes(axes:any[], v0:Vector3, v1:Vector3, v2:Vector3, extents:Vector3) {
+const _v = /*@__PURE__*/ new Vector3();
+
+
+function satForAxes(axes: any[], v0: Vector3, v1: Vector3, v2: Vector3, extents: Vector3) {
 
 	for (let i = 0, j = axes.length - 3; i <= j; i += 3) {
 
@@ -334,5 +338,8 @@ function satForAxes(axes:any[], v0:Vector3, v1:Vector3, v2:Vector3, extents:Vect
 	return true;
 
 }
+
+const _sphere = /*@__PURE__*/ new Sphere();
+const _plane = /*@__PURE__*/ new Plane();
 
 export { Box3, Box3Like };

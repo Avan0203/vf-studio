@@ -2,7 +2,7 @@
  * @Author: wuyifan 1208097313@qq.com
  * @Date: 2025-08-25 14:50:07
  * @LastEditors: wuyifan 1208097313@qq.com
- * @LastEditTime: 2025-08-25 16:17:20
+ * @LastEditTime: 2025-09-12 17:22:23
  * @FilePath: \vf-studio\packages\vf-math\src\base\Matrix2.ts
  * Copyright (c) 2024 by wuyifan email: 1208097313@qq.com, All Rights Reserved.
  */
@@ -51,7 +51,7 @@ class Matrix2 extends AbstractMathObject<number[]> {
         return this;
     }
 
-    toArray(target = [], offset = 0): number[] {
+    toArray(target: any[] = [], offset = 0): any[] {
         const t = this.elements;
         target[offset] = t[0];
         target[offset + 1] = t[1];

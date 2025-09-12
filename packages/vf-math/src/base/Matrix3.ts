@@ -1,5 +1,4 @@
 import { MathUtils, Tolerance } from "../utils";
-import { _mat3 } from "../utils/pure";
 import { AbstractMathObject, type DumpResult } from "./AbstractMathObject";
 import type { Matrix4 } from "./Matrix4";
 
@@ -250,6 +249,8 @@ class Matrix3 extends AbstractMathObject<number[]> {
 		}
 	}
 }
+
+const _mat3 = /*@__PURE__*/ new Matrix3();
 
 
 export { Matrix3 };
