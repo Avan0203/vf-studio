@@ -2,18 +2,18 @@
  * @Author: wuyifan 1208097313@qq.com
  * @Date: 2025-09-08 09:17:29
  * @LastEditors: wuyifan 1208097313@qq.com
- * @LastEditTime: 2025-09-11 13:06:16
+ * @LastEditTime: 2025-09-12 17:01:46
  * @FilePath: \vf-studio\packages\vf-core\src\view\BrowserViewPort.ts
  * Copyright (c) 2024 by wuyifan email: 1208097313@qq.com, All Rights Reserved.
  */
-import { BrowserEvents, BrowserEventType, IViewPort } from "../types";
+import { BrowserEvents, IViewPort } from "../types";
 import { EventEmitter } from "../event";
 import { InputEventListener } from "../event/InputEventListener";
 
 export class BrowserViewPort<T extends Record<string, any> = BrowserEvents> extends EventEmitter<T> implements IViewPort {
   private canvas: HTMLCanvasElement;
   private inputEventListener: InputEventListener;
-  constructor(container: HTMLCanvasElement) {
+  constructor(container: HTMLElement) {
     super();
     this.canvas = document.createElement('canvas');
     container.appendChild(this.canvas);
@@ -31,12 +31,12 @@ export class BrowserViewPort<T extends Record<string, any> = BrowserEvents> exte
     return this.canvas.height;
   }
 
-  attach() {
-    this.inputEventListener.attach();
+  lock() {
+    this.inputEventListener.lock();
   }
 
-  detach() {
-    this.inputEventListener.detach();
+  unlock() {
+    this.inputEventListener.unlock();
   }
 
   resize(width: number, height: number) {
@@ -59,6 +59,6 @@ export class BrowserViewPort<T extends Record<string, any> = BrowserEvents> exte
   dispose() {
     this.canvas.removeEventListener('contextlost', this._onContextLost.bind(this));
     this.canvas.removeEventListener('contextrestored', this._onContextRestored.bind(this));
-    this.detach();
+    this.inputEventListener.unlock();
   }
 }

@@ -1,4 +1,12 @@
-type PointEventPayload = { x: number; y: number; button: number, touches?: TouchList };
+/*
+ * @Author: wuyifan 1208097313@qq.com
+ * @Date: 2025-09-08 16:00:04
+ * @LastEditors: wuyifan 1208097313@qq.com
+ * @LastEditTime: 2025-09-12 16:55:30
+ * @FilePath: \vf-studio\packages\vf-core\src\types\event.ts
+ * Copyright (c) 2024 by wuyifan email: 1208097313@qq.com, All Rights Reserved.
+ */
+type PointEventPayload = { x: number; y: number; button: number };
 type WheelEventPayload = { x: number; y: number; delta: number };
 type ResizeEventPayload = { width: number; height: number };
 
@@ -25,4 +33,17 @@ enum BrowserEventType {
   ContextMenu = 'contextmenu',
 }
 
-export { BrowserEvents, BrowserEventType, PointEventPayload, WheelEventPayload, ResizeEventPayload }
+
+interface InputObserverInterface {
+  onPointerDown(payload: PointEventPayload): Promise<boolean>;
+  onPointerUp(payload: PointEventPayload): Promise<boolean>;
+  onPointerMove(payload: PointEventPayload): Promise<boolean>;
+  onClick(payload: PointEventPayload): Promise<boolean>;
+  onContextMenu(payload: PointEventPayload): Promise<boolean>;
+  onWheel(payload: WheelEventPayload): Promise<boolean>;
+  onDblClick(payload: PointEventPayload): Promise<boolean>;
+  onResize(payload: ResizeEventPayload): Promise<boolean>;
+}
+
+
+export { BrowserEvents, BrowserEventType, PointEventPayload, WheelEventPayload, ResizeEventPayload, InputObserverInterface }
