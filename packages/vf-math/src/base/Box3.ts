@@ -2,7 +2,7 @@ import { AbstractMathObject, DumpResult } from './AbstractMathObject.js';
 import { Vector3, type Vector3Like } from './Vector3.js';
 import { Tolerance, MathUtils } from '../utils';
 import { Sphere, type SphereLike } from './Sphere.js';
-import { Plane, type PlaneLike } from './Plane.js';
+import  type {PlaneLike } from './Plane.js';
 import type { Matrix4 } from './Matrix4.js';
 import { TriangleLike } from './Triangle.js';
 
@@ -131,39 +131,37 @@ class Box3 extends AbstractMathObject<Box3Like> {
 	}
 
 	intersectsSphere(sphere: SphereLike, eps = Tolerance.LENGTH_EPS): boolean {
-		_sphere.copy(sphere);
-		this.clampPoint(_sphere.center, _v);
-		return lessEqual(_v.distanceToSquared(_sphere.center), (_sphere.radius * _sphere.radius), eps);
+		this.clampPoint(sphere.center, _v);
+		return lessEqual(_v.distanceToSquared(sphere.center), (sphere.radius * sphere.radius), eps);
 	}
 
 
 	intersectsPlane(plane: PlaneLike, eps = Tolerance.LENGTH_EPS): boolean {
-		_plane.copy(plane);
 		let min, max;
-		if (_plane.normal.x > 0) {
-			min = _plane.normal.x * this.min.x;
-			max = _plane.normal.x * this.max.x;
+		if (plane.normal.x > 0) {
+			min = plane.normal.x * this.min.x;
+			max = plane.normal.x * this.max.x;
 		} else {
-			min = _plane.normal.x * this.max.x;
-			max = _plane.normal.x * this.min.x;
+			min = plane.normal.x * this.max.x;
+			max = plane.normal.x * this.min.x;
 		}
 
-		if (_plane.normal.y > 0) {
-			min += _plane.normal.y * this.min.y;
-			max += _plane.normal.y * this.max.y;
+		if (plane.normal.y > 0) {
+			min += plane.normal.y * this.min.y;
+			max += plane.normal.y * this.max.y;
 		} else {
-			min += _plane.normal.y * this.max.y;
-			max += _plane.normal.y * this.min.y;
+			min += plane.normal.y * this.max.y;
+			max += plane.normal.y * this.min.y;
 		}
 
-		if (_plane.normal.z > 0) {
-			min += _plane.normal.z * this.min.z;
-			max += _plane.normal.z * this.max.z;
+		if (plane.normal.z > 0) {
+			min += plane.normal.z * this.min.z;
+			max += plane.normal.z * this.max.z;
 		} else {
-			min += _plane.normal.z * this.max.z;
-			max += _plane.normal.z * this.min.z;
+			min += plane.normal.z * this.max.z;
+			max += plane.normal.z * this.min.z;
 		}
-		return lessEqual(min, - _plane.constant, eps) && greaterEqual(max, - _plane.constant, eps);
+		return lessEqual(min, - plane.constant, eps) && greaterEqual(max, - plane.constant, eps);
 	}
 
 
@@ -338,8 +336,5 @@ function satForAxes(axes: any[], v0: Vector3, v1: Vector3, v2: Vector3, extents:
 	return true;
 
 }
-
-const _sphere = /*@__PURE__*/ new Sphere();
-const _plane = /*@__PURE__*/ new Plane();
 
 export { Box3, Box3Like };

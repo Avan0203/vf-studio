@@ -115,9 +115,8 @@ class Plane extends AbstractMathObject {
 	}
 
 
-	intersectsSphere(sphere: SphereLike): boolean {
-		_sphere.copy(sphere);
-		return _sphere.intersectsPlane(this);
+	intersectsSphere(sphere: Sphere): boolean {
+		return sphere.intersectsPlane(this);
 	}
 
 	coplanarPoint(target = new Vector3()): Vector3 {
@@ -159,7 +158,6 @@ class Plane extends AbstractMathObject {
 
 const _v = /*@__PURE__*/ new Vector3();
 const _mat3 = /*@__PURE__*/ new Matrix3();
-const _sphere = /*@__PURE__*/ new Sphere();
 const _box3 = /*@__PURE__*/ new Box3();
 const _line3d = /*@__PURE__*/ new Line3d();
 
