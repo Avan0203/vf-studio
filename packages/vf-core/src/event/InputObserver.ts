@@ -2,8 +2,8 @@
  * @Author: wuyifan 1208097313@qq.com
  * @Date: 2025-09-12 13:58:18
  * @LastEditors: wuyifan 1208097313@qq.com
- * @LastEditTime: 2025-09-12 17:35:46
- * @FilePath: \vf-studio\packages\vf-core\src\event\InputObserver.ts
+ * @LastEditTime: 2025-09-15 01:28:51
+ * @FilePath: /vf-studio/packages/vf-core/src/event/InputObserver.ts
  * Copyright (c) 2024 by wuyifan email: 1208097313@qq.com, All Rights Reserved.
  */
 
@@ -11,9 +11,6 @@ import { InputObserverInterface, PointEventPayload, ResizeEventPayload, WheelEve
 
 const registeredObserversClasses: InputObserverInterface[] = [];
 
-function registerInputObserver<T extends { new (...args: any[]): InputObserverInterface }>(constructor: T) {
-    registeredObserversClasses.push(new constructor());
-}
 
 function getObserverClasses(): InputObserverInterface[] {
     return registeredObserversClasses;
@@ -21,9 +18,7 @@ function getObserverClasses(): InputObserverInterface[] {
 
 class InputObserver implements InputObserverInterface {
     constructor() {
-        if (new.target !== InputObserver) {
-            registeredObserversClasses.push(this as InputObserverInterface);
-        }
+        registeredObserversClasses.push(this);
     }
     public async onPointerDown(event: PointEventPayload): Promise<boolean> {
         return false;
@@ -51,4 +46,4 @@ class InputObserver implements InputObserverInterface {
     }
 }
 
-export { InputObserver, getObserverClasses, registerInputObserver }
+export { InputObserver, getObserverClasses }

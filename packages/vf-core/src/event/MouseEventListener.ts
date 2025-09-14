@@ -1,9 +1,19 @@
+/*
+ * @Author: wuyifan 1208097313@qq.com
+ * @Date: 2025-09-09 23:44:17
+ * @LastEditors: wuyifan 1208097313@qq.com
+ * @LastEditTime: 2025-09-13 19:57:52
+ * @FilePath: /vf-studio/packages/vf-core/src/event/MouseEventListener.ts
+ * Copyright (c) 2024 by wuyifan email: 1208097313@qq.com, All Rights Reserved.
+ */
 import { BrowserEvents, BrowserEventType } from "../types";
 import { EventEmitter } from "./EventEmitter";
 
 class MouseEventListener extends EventEmitter<BrowserEvents> {
 
   constructor(private canvas: HTMLCanvasElement) {
+    console.log('canvas: ', canvas);
+    console.log('MouseEventListener constructor');
     super();
   }
 
@@ -14,6 +24,7 @@ class MouseEventListener extends EventEmitter<BrowserEvents> {
     this.canvas.addEventListener("click", this._onClick);
     this.canvas.addEventListener("dblclick", this._onDblClick);
     this.canvas.addEventListener("contextmenu", this._onContextMenu);
+    this.canvas.addEventListener("wheel", this._onWheel);
   }
 
   public detach() {
@@ -23,6 +34,7 @@ class MouseEventListener extends EventEmitter<BrowserEvents> {
     this.canvas.removeEventListener("click", this._onClick);
     this.canvas.removeEventListener("dblclick", this._onDblClick);
     this.canvas.removeEventListener("contextmenu", this._onContextMenu);
+    this.canvas.removeEventListener("wheel", this._onWheel);
   }
 
   public dispose() {
@@ -48,6 +60,10 @@ class MouseEventListener extends EventEmitter<BrowserEvents> {
   private _onContextMenu = (e: MouseEvent) => {
     e.preventDefault();
     this.emit(BrowserEventType.ContextMenu, { x: e.offsetX, y: e.offsetY, button: e.button });
+  };
+
+  private _onWheel = (e: WheelEvent) => {
+    this.emit(BrowserEventType.Wheel, { x: e.offsetX, y: e.offsetY, delta: e.deltaY });
   };
 }
 
