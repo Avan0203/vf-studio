@@ -9,6 +9,7 @@
     "dev": "vite"
   },
   "devDependencies": {
-    "@vf/cli": "workspace:*"
+    "@vf/cli": "workspace:*",
+    "@vf/math": "workspace:*"
   }
 }

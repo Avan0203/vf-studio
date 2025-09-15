@@ -2,8 +2,8 @@
  * @Author: wuyifan 1208097313@qq.com
  * @Date: 2025-09-08 14:36:57
  * @LastEditors: wuyifan 1208097313@qq.com
- * @LastEditTime: 2025-09-13 20:22:37
- * @FilePath: /vf-studio/packages/vf-core/src/event/InputEventListener.ts
+ * @LastEditTime: 2025-09-15 11:22:33
+ * @FilePath: \vf-studio\packages\vf-core\src\event\InputEventListener.ts
  * Copyright (c) 2024 by wuyifan email: 1208097313@qq.com, All Rights Reserved.
  */
 import { BrowserEvents, BrowserEventType, PointEventPayload, ResizeEventPayload, WheelEventPayload } from '../types';
@@ -40,10 +40,10 @@ const eventMap = {
 class InputEventListener extends EventEmitter<BrowserEvents> {
   private impl: MouseEventListener | TouchEventListener;
 
-  constructor(private canvas: HTMLCanvasElement, private viewPort: BrowserViewPort) {
+  constructor(private viewPort: BrowserViewPort) {
     super();
     // 简单判断移动端
-    this.impl = isMobile() ? new TouchEventListener(canvas) : new MouseEventListener(canvas);
+    this.impl = isMobile() ? new TouchEventListener(this.viewPort.html()) : new MouseEventListener(this.viewPort.html());
     this.unlock();
   }
 
@@ -71,26 +71,21 @@ class InputEventListener extends EventEmitter<BrowserEvents> {
     events.forEach(event => {
       this.impl.on(event, this.processEvent);
     });
-    window.addEventListener('resize', this.onResize.bind(this));
   }
 
   private stopListening() {
     events.forEach(event => {
       this.impl.off(event, this.processEvent as (payload?: ResizeEventPayload | PointEventPayload | WheelEventPayload | undefined, event?: BrowserEventType | undefined) => void);
     });
-    window.removeEventListener('resize', this.onResize.bind(this));
-  }
-
-  private async onResize (){
-    await this.processEvent({
-      width: window.innerWidth,
-      height: window.innerHeight,
-    }, BrowserEventType.Resize);
   }
 
   dispose() {
     this.impl.dispose();
     this.clear();
+  }
+
+  getListener() {
+    return this.impl;
   }
 }
 export { InputEventListener }
