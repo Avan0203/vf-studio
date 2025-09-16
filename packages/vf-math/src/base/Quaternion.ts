@@ -1,5 +1,5 @@
 import { AbstractMathObject, type DumpResult } from './AbstractMathObject.js';
-import { Euler } from './Euler.js';
+import type { EulerLike } from './Euler.js';
 import { MathUtils, Tolerance } from '../utils';
 import type { Matrix4 } from './Matrix4.js';
 import type { Vector3 } from './Vector3.js';
@@ -167,7 +167,7 @@ class Quaternion extends AbstractMathObject<QuaternionLike> {
 		return this;
 	}
 
-	setFromEuler(euler: Euler, update = true): this {
+	setFromEuler(euler: EulerLike, update = true): this {
 		const x = euler.x, y = euler.y, z = euler.z, order = euler.order;
 		const cos = Math.cos;
 		const sin = Math.sin;
@@ -219,7 +219,7 @@ class Quaternion extends AbstractMathObject<QuaternionLike> {
 				this._w = c1 * c2 * c3 + s1 * s2 * s3;
 				break;
 			default:
-				console.warn('THREE.Quaternion: .setFromEuler() encountered an unknown order: ' + order);
+				console.warn('Quaternion: .setFromEuler() encountered an unknown order: ' + order);
 		}
 
 		update && this._onChangeCallback();

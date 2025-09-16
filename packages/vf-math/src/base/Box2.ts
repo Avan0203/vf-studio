@@ -139,6 +139,15 @@ class Box2 extends AbstractMathObject<Box2Like> {
 		return this;
 	}
 
+	getConner(): Vector2[] {
+		return [
+			new Vector2(this.min.x, this.min.y),
+			new Vector2(this.max.x, this.min.y),
+			new Vector2(this.max.x, this.max.y),
+			new Vector2(this.min.x, this.max.y),
+		]
+	 }
+
 	equals(box: Box2Like, eps = Tolerance.LENGTH_EPS): boolean {
 		return this.min.equals(box.min, eps) && this.max.equals(box.max, eps);
 	}

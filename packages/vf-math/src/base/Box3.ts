@@ -202,6 +202,19 @@ class Box3 extends AbstractMathObject<Box3Like> {
 		return satForAxes(axes, _v0, _v1, _v2, _extents);
 	}
 
+	getConner(): Vector3[] {
+		return [
+			new Vector3(this.min.x, this.min.y, this.min.z),
+			new Vector3(this.max.x, this.min.y, this.min.z),
+			new Vector3(this.max.x, this.max.y, this.min.z),
+			new Vector3(this.min.x, this.max.y, this.min.z),
+			new Vector3(this.min.x, this.min.y, this.max.z),
+			new Vector3(this.max.x, this.min.y, this.max.z),
+			new Vector3(this.max.x, this.max.y, this.max.z),
+			new Vector3(this.min.x, this.max.y, this.max.z),
+		]
+	 }
+
 
 	clampPoint(point: Vector3Like, target = new Vector3()): Vector3 {
 		return target.copy(point).clamp(this.min, this.max);

@@ -2,6 +2,8 @@ import { AbstractMathObject, DumpResult } from "./AbstractMathObject";
 import { MathUtils, Tolerance } from "../utils";
 import type { Matrix4 } from "./Matrix4";
 import type { Matrix3 } from "./Matrix3";
+import { Quaternion, QuaternionLike } from "./Quaternion";
+import { EulerLike } from "./Euler";
 
 type Vector3Like = {
     x: number;
@@ -226,6 +228,26 @@ class Vector3 extends AbstractMathObject<Vector3Like> {
         return this;
     }
 
+    applyQuaternion(q: QuaternionLike): this {
+        const vx = this.x, vy = this.y, vz = this.z;
+        const qx = q.x, qy = q.y, qz = q.z, qw = q.w;
+        // t = 2 * cross( q.xyz, v );
+        const tx = 2 * (qy * vz - qz * vy);
+        const ty = 2 * (qz * vx - qx * vz);
+        const tz = 2 * (qx * vy - qy * vx);
+
+        // v + q.w * t + cross( q.xyz, t );
+        this.x = vx + qw * tx + qy * tz - qz * ty;
+        this.y = vy + qw * ty + qz * tx - qx * tz;
+        this.z = vz + qw * tz + qx * ty - qy * tx;
+        return this;
+    }
+
+    applyEuler(euler: EulerLike): this {
+        return this.applyQuaternion(_q.setFromEuler(euler));
+    }
+
+
     applyMatrix4(matrix: Matrix4): this {
         const x = this.x;
         const y = this.y;
@@ -275,5 +297,6 @@ class Vector3 extends AbstractMathObject<Vector3Like> {
 }
 
 const _v = /*@__PURE__*/ new Vector3();
+const _q = /*@__PURE__*/ new Quaternion();
 
 export { Vector3, Vector3Like }
