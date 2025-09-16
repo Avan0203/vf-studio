@@ -2,19 +2,25 @@
  * @Author: wuyifan 1208097313@qq.com
  * @Date: 2025-09-11 00:11:24
  * @LastEditors: wuyifan 1208097313@qq.com
- * @LastEditTime: 2025-09-15 17:45:07
+ * @LastEditTime: 2025-09-16 15:03:00
  * @FilePath: \vf-studio\packages\vf-engine\src\controller\CameraController.ts
  * Copyright (c) 2024 by wuyifan email: 1208097313@qq.com, All Rights Reserved.
  */
-import { Vector2, Vector3 } from "@vf/math";
+import { Quaternion, Vector2, Vector3, MathUtils } from "@vf/math";
 import { InputObserver, MouseButton, PointEventPayload, WheelEventPayload } from "@vf/core";
 import { OrthographicCamera, PerspectiveCamera } from "../index";
 import { ControllerMode, IViewController } from "../types"
+
+const { clamp } = MathUtils;
 
 const moveDir = new Vector3();
 const eyeDir = new Vector3();
 const cameraUpDir = new Vector3();
 const cameraSidewaysDir = new Vector3();
+const axis = new Vector3();
+const quaternion = new Quaternion();
+const mouseChange = new Vector2();
+const pan = new Vector3();
 
 class CameraController extends InputObserver implements IViewController {
   mode: ControllerMode;
@@ -30,6 +36,11 @@ class CameraController extends InputObserver implements IViewController {
   minZoom = 0;
   maxDistance = Infinity;
   minDistance = 0;
+  rotateSpeed = 1.0;
+  panSpeed = 1.0;
+  zoomSpeed = 1.0;
+
+
   private eye = new Vector3();
   private moveCurr = new Vector2();
   private movePrev = new Vector2();
@@ -38,9 +49,6 @@ class CameraController extends InputObserver implements IViewController {
   private panStart = new Vector2();
   private panEnd = new Vector2();
 
-  private lastPos = new Vector3();
-  private lastZoom = 1;
-  private lastRotate = 0;
   constructor(private camera: OrthographicCamera | PerspectiveCamera) {
     super();
     this.mode = ControllerMode.NONE;
@@ -136,29 +144,55 @@ class CameraController extends InputObserver implements IViewController {
 
     this.camera.position.addVectors(this.target, this.eye);
 
-    if (this.camera.type === 'PerspectiveCamera') {
+    if (this.camera instanceof PerspectiveCamera) {
       this.checkDistance();
       this.camera.lookAt(this.target);
     } else {
       this.camera.lookAt(this.target);
-      this.lastZoom = this.camera.zoom;
     }
-    this.lastPos.copy(this.camera.position);
   }
 
   handlePan(): void {
+    mouseChange.copy(this.panEnd).sub(this.panStart);
+    if (mouseChange.getSquareLength()) {
+      if (this.camera instanceof OrthographicCamera) {
+        const scale_x = (this.camera.right - this.camera.left) / this.camera.zoom / this.size.x;
+        const scale_y = (this.camera.top - this.camera.bottom) / this.camera.zoom / this.size.x;
 
+        mouseChange.x *= scale_x;
+        mouseChange.y *= scale_y;
+      }
+
+      mouseChange.multiplyScalar(this.eye.getLength() * this.panSpeed);
+
+      pan.copy(this.eye).cross(this.camera.up).setLength(mouseChange.x);
+      pan.add(cameraUpDir.copy(this.camera.up).setLength(mouseChange.y));
+
+      this.camera.position.add(pan);
+      this.target.add(pan);
+      this.panStart.copy(this.panEnd);
+    }
   }
 
   handleZoom(): void {
-
+    let factor = 0;
+    factor = 1 + (this.zoomEnd.y - this.zoomStart.y) * this.zoomSpeed;
+    if (factor !== 1 && factor > 0) {
+      if (this.camera instanceof OrthographicCamera) {
+        this.camera.zoom = clamp(this.camera.zoom / factor, this.minZoom, this.maxZoom);
+        this.camera.updateProjectionMatrix();
+      } else {
+        this.eye.multiplyScalar(factor);
+      }
+    }
+    this.zoomStart.copy(this.zoomEnd);
   }
 
   handleRotate(): void {
     moveDir.set(this.moveCurr.x - this.movePrev.x, this.moveCurr.y - this.movePrev.y, 0);
     let angle = moveDir.getLength();
 
-    if(angle){
+    if (angle) {
       this.eye.copy(this.camera.position).sub(this.target);
       eyeDir.copy(this.eye).normalize();
       cameraUpDir.copy(this.camera.up).normalize();
@@ -166,12 +200,18 @@ class CameraController extends InputObserver implements IViewController {
 
       cameraUpDir.setLength(this.moveCurr.y - this.movePrev.y);
       cameraSidewaysDir.setLength(this.moveCurr.x - this.movePrev.x);
-      
 
+      moveDir.copy(cameraUpDir.add(cameraSidewaysDir));
+      axis.crossVectors(moveDir, this.eye).normalize();
+
+      angle *= this.rotateSpeed;
+      quaternion.setFromAxisAngle(axis, angle);
+
+      this.eye.applyQuaternion(quaternion);
+      this.camera.up.applyQuaternion(quaternion);
     }
 
-    
-
+    this.movePrev.copy(this.moveCurr);
   }
 
   private checkDistance(): void {
