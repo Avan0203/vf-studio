@@ -2,7 +2,7 @@
  * @Author: wuyifan 1208097313@qq.com
  * @Date: 2025-09-11 00:11:24
  * @LastEditors: wuyifan 1208097313@qq.com
- * @LastEditTime: 2025-09-16 15:03:00
+ * @LastEditTime: 2025-09-17 11:38:37
  * @FilePath: \vf-studio\packages\vf-engine\src\controller\CameraController.ts
  * Copyright (c) 2024 by wuyifan email: 1208097313@qq.com, All Rights Reserved.
  */
@@ -93,7 +93,7 @@ class CameraController extends InputObserver implements IViewController {
   }
 
   public async onPointerMove({ x, y }: PointEventPayload): Promise<boolean> {
-    if (!this.state.enabled) return false;
+    if (!this.state.enabled || this.mode === ControllerMode.NONE) return false;
     switch (this.mode) {
       case ControllerMode.ROTATE:
         this.movePrev.copy(this.moveCurr);
@@ -105,9 +105,8 @@ class CameraController extends InputObserver implements IViewController {
       case ControllerMode.PAN:
         this.panEnd.copy(this.getMouse({ x, y }));
         break;
-      default:
-        break;
     }
+    console.log('move');
     this.emit('Change', null);
     return false;
   }
@@ -123,6 +122,7 @@ class CameraController extends InputObserver implements IViewController {
     if (this.mode === ControllerMode.ZOOM && this.state.enabledZoom) {
       this.zoomStart.y -= delta * 0.03;
     }
+    console.log('wheel');
     this.emit('Change', null);
     return false;
   }

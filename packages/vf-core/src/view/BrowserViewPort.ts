@@ -2,7 +2,7 @@
  * @Author: wuyifan 1208097313@qq.com
  * @Date: 2025-09-08 09:17:29
  * @LastEditors: wuyifan 1208097313@qq.com
- * @LastEditTime: 2025-09-15 11:18:54
+ * @LastEditTime: 2025-09-17 17:53:53
  * @FilePath: \vf-studio\packages\vf-core\src\view\BrowserViewPort.ts
  * Copyright (c) 2024 by wuyifan email: 1208097313@qq.com, All Rights Reserved.
  */
@@ -26,18 +26,15 @@ export class BrowserViewPort<T extends Record<string, any> = BrowserEvents> exte
     this.setSize(container.clientWidth, container.clientHeight);
   }
 
-  get width() {
-    return this.canvas.width;
+  getSize(): { width: number; height: number } {
+    return { width: this.canvas.width, height: this.canvas.height };
   }
 
-  get height() {
-    return this.canvas.height;
-  }
-
-  setSize(width: number, height: number) {
+  setSize(width: number, height: number): this {
     this.canvas.width = width;
     this.canvas.height = height;
     this.inputEventListener.getListener().emit(BrowserEventType.Resize, { width, height });
+    return this;
   }
 
   lock() {
@@ -48,14 +45,12 @@ export class BrowserViewPort<T extends Record<string, any> = BrowserEvents> exte
     this.inputEventListener.unlock();
   }
 
-  resize(width: number, height: number) {
+  resize(width: number, height: number): this {
     this.canvas.width = width;
     this.canvas.height = height;
+    return this;
   }
 
-  update() {
-    // 浏览器里交给 WebGLRenderer 实现
-  }
 
   private _onContextLost() {
     this.emit('contextlost', {} as T['contextlost']);
