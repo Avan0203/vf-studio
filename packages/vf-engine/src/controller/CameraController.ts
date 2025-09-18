@@ -2,7 +2,7 @@
  * @Author: wuyifan 1208097313@qq.com
  * @Date: 2025-09-11 00:11:24
  * @LastEditors: wuyifan 1208097313@qq.com
- * @LastEditTime: 2025-09-17 11:38:37
+ * @LastEditTime: 2025-09-18 17:22:21
  * @FilePath: \vf-studio\packages\vf-engine\src\controller\CameraController.ts
  * Copyright (c) 2024 by wuyifan email: 1208097313@qq.com, All Rights Reserved.
  */
@@ -59,6 +59,11 @@ class CameraController extends InputObserver implements IViewController {
       enabledRotate: true,
     };
     this.target = new Vector3();
+  }
+
+  public setCamera(camera: OrthographicCamera | PerspectiveCamera) {
+    this.camera = camera;
+    this.update();
   }
 
   public async onPointerDown({ button, x, y }: PointEventPayload): Promise<boolean> {
@@ -127,7 +132,7 @@ class CameraController extends InputObserver implements IViewController {
     return false;
   }
 
-  update(): void {
+  public update(): void {
     this.eye.subVectors(this.camera.position, this.target);
 
     if (this.state.enabledRotate) {
@@ -152,7 +157,7 @@ class CameraController extends InputObserver implements IViewController {
     }
   }
 
-  handlePan(): void {
+  protected handlePan(): void {
     mouseChange.copy(this.panEnd).sub(this.panStart);
     if (mouseChange.getSquareLength()) {
       if (this.camera instanceof OrthographicCamera) {
@@ -174,7 +179,7 @@ class CameraController extends InputObserver implements IViewController {
     }
   }
 
-  handleZoom(): void {
+  protected handleZoom(): void {
     let factor = 0;
     factor = 1 + (this.zoomEnd.y - this.zoomStart.y) * this.zoomSpeed;
     if (factor !== 1 && factor > 0) {
@@ -188,7 +193,7 @@ class CameraController extends InputObserver implements IViewController {
     this.zoomStart.copy(this.zoomEnd);
   }
 
-  handleRotate(): void {
+  protected handleRotate(): void {
     moveDir.set(this.moveCurr.x - this.movePrev.x, this.moveCurr.y - this.movePrev.y, 0);
     let angle = moveDir.getLength();
 
@@ -214,7 +219,7 @@ class CameraController extends InputObserver implements IViewController {
     this.movePrev.copy(this.moveCurr);
   }
 
-  private checkDistance(): void {
+  protected checkDistance(): void {
     if (this.state.enabledZoom || this.state.enabledPan) {
       if (this.eye.getSquareLength() > this.maxDistance * this.maxDistance) {
         this.camera.position.addVectors(this.target, this.eye.setLength(this.maxDistance));
