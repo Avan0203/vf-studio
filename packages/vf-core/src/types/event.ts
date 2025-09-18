@@ -40,7 +40,7 @@ enum BrowserEventType {
 }
 
 
-interface InputObserverInterface {
+interface IInputObserver {
   onPointerDown(payload: PointEventPayload): Promise<boolean>;
   onPointerUp(payload: PointEventPayload): Promise<boolean>;
   onPointerMove(payload: PointEventPayload): Promise<boolean>;
@@ -58,6 +58,6 @@ export {
   PointEventPayload, 
   WheelEventPayload, 
   ResizeEventPayload, 
-  InputObserverInterface,
+  IInputObserver,
   MouseButton
 }

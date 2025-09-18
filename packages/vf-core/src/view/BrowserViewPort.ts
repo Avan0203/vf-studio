@@ -2,11 +2,11 @@
  * @Author: wuyifan 1208097313@qq.com
  * @Date: 2025-09-08 09:17:29
  * @LastEditors: wuyifan 1208097313@qq.com
- * @LastEditTime: 2025-09-17 17:53:53
+ * @LastEditTime: 2025-09-18 17:15:46
  * @FilePath: \vf-studio\packages\vf-core\src\view\BrowserViewPort.ts
  * Copyright (c) 2024 by wuyifan email: 1208097313@qq.com, All Rights Reserved.
  */
-import { BrowserEvents, BrowserEventType, IViewPort } from "../types";
+import { BrowserEvents, BrowserEventType, IInputObserver, IViewPort } from "../types";
 import { EventEmitter } from "../event";
 import { InputEventListener } from "../event/InputEventListener";
 
@@ -43,6 +43,15 @@ export class BrowserViewPort<T extends Record<string, any> = BrowserEvents> exte
 
   unlock() {
     this.inputEventListener.unlock();
+  }
+
+  addObserver(observer: IInputObserver): this {
+    this.inputEventListener.addObserver(observer);
+    return this;
+  }
+  removeObserver(observer: IInputObserver): this {
+    this.inputEventListener.removeObserver(observer);
+    return this;
   }
 
   resize(width: number, height: number): this {

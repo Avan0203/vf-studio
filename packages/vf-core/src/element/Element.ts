@@ -2,7 +2,7 @@
  * @Author: wuyifan 1208097313@qq.com
  * @Date: 2025-09-02 17:15:03
  * @LastEditors: wuyifan 1208097313@qq.com
- * @LastEditTime: 2025-09-09 15:58:47
+ * @LastEditTime: 2025-09-18 16:46:38
  * @FilePath: \vf-studio\packages\vf-core\src\element\Element.ts
  * Copyright (c) 2024 by wuyifan email: 1208097313@qq.com, All Rights Reserved.
  */
@@ -13,7 +13,17 @@ import { IDocument, IElement } from "../types";
 
 class Element extends Base implements IElement  {
     protected parent = ObjectID.INVALID
-    protected children: ObjectID[] = []
+    protected children: ObjectID[] = [];
+    private _needUpdate = true;
+
+    set needsUpdate(value: boolean) {
+        this._needUpdate = value;
+    }
+
+    get needsUpdate(): boolean {
+        return this._needUpdate;
+    }
+
     constructor(private document: Document) {
         super();
     }
@@ -33,13 +43,13 @@ class Element extends Base implements IElement  {
         }
         if (parent) {
             this.parent = parent.id;
-            const index = this.document.root.findIndex((item) => item === this.id);
+            const index = this.document.children.findIndex((item) => item === this.id);
             if (index !== -1) {
-                this.document.root.splice(index, 1);
+                this.document.children.splice(index, 1);
             }
         }else{
             this.parent = ObjectID.INVALID;
-            this.document.root.push(this.id);
+            this.document.children.push(this.id);
         }
     }
 

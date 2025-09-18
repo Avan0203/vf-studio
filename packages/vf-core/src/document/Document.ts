@@ -12,8 +12,12 @@ import { ElementClass, ObjectID, IDocument, IElement } from "../types";
 
 class Document implements IDocument {
     private elementManager = new ElementManager();
-    root:ObjectID[] = []
+    children: ObjectID[] = []
     constructor() {
+
+    }
+
+    public build() {
 
     }
 

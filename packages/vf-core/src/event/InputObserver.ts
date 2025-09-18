@@ -2,28 +2,19 @@
  * @Author: wuyifan 1208097313@qq.com
  * @Date: 2025-09-12 13:58:18
  * @LastEditors: wuyifan 1208097313@qq.com
- * @LastEditTime: 2025-09-15 14:16:29
+ * @LastEditTime: 2025-09-18 17:14:50
  * @FilePath: \vf-studio\packages\vf-core\src\event\InputObserver.ts
  * Copyright (c) 2024 by wuyifan email: 1208097313@qq.com, All Rights Reserved.
  */
 
 import { Vector2, Vector2Like } from "@vf/math";
-import { InputObserverInterface, PointEventPayload, ResizeEventPayload, WheelEventPayload } from "../types";
+import { IInputObserver, PointEventPayload, ResizeEventPayload, WheelEventPayload } from "../types";
 import { EventEmitter } from "./EventEmitter";
-
-const registeredObserversClasses: InputObserverInterface[] = [];
-
-
-function getObserverClasses(): InputObserverInterface[] {
-    return registeredObserversClasses;
-}
-
-class InputObserver extends EventEmitter<{ Change: null }> implements InputObserverInterface {
+class InputObserver extends EventEmitter<{ Change: null }> implements IInputObserver {
     protected mouse = new Vector2();
     protected size = new Vector2();
     constructor() {
         super();
-        registeredObserversClasses.push(this);
     }
     public async onPointerDown(event: PointEventPayload): Promise<boolean> {
         return false;
@@ -64,4 +55,4 @@ class InputObserver extends EventEmitter<{ Change: null }> implements InputObser
     }
 }
 
-export { InputObserver, getObserverClasses }
+export { InputObserver }

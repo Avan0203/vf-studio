@@ -2,15 +2,14 @@
  * @Author: wuyifan 1208097313@qq.com
  * @Date: 2025-09-08 14:36:57
  * @LastEditors: wuyifan 1208097313@qq.com
- * @LastEditTime: 2025-09-15 11:22:33
+ * @LastEditTime: 2025-09-18 17:14:00
  * @FilePath: \vf-studio\packages\vf-core\src\event\InputEventListener.ts
  * Copyright (c) 2024 by wuyifan email: 1208097313@qq.com, All Rights Reserved.
  */
-import { BrowserEvents, BrowserEventType, PointEventPayload, ResizeEventPayload, WheelEventPayload } from '../types';
+import { BrowserEvents, BrowserEventType, IInputObserver, PointEventPayload, ResizeEventPayload, WheelEventPayload } from '../types';
 import { isMobile } from '../utils';
 import { BrowserViewPort } from '../view';
 import { EventEmitter } from './EventEmitter';
-import { getObserverClasses } from './InputObserver';
 import { MouseEventListener } from "./MouseEventListener";
 import { TouchEventListener } from "./TouchEventListener ";
 
@@ -39,6 +38,7 @@ const eventMap = {
 
 class InputEventListener extends EventEmitter<BrowserEvents> {
   private impl: MouseEventListener | TouchEventListener;
+  private observers: IInputObserver[] = [];
 
   constructor(private viewPort: BrowserViewPort) {
     super();
@@ -57,9 +57,18 @@ class InputEventListener extends EventEmitter<BrowserEvents> {
     this.startListening();
   }
 
+  public addObserver(observer: IInputObserver) {
+    this.observers.push(observer);
+  }
+  public removeObserver(observer: IInputObserver) {
+    const index = this.observers.indexOf(observer);
+    if (index !== -1) {
+      this.observers.splice(index, 1);
+    }
+  }
+
   private async processEvent(payload: ResizeEventPayload | PointEventPayload | WheelEventPayload, event: BrowserEventType): Promise<void> {
-    const observers = getObserverClasses();
-    for (const observer of observers) {
+    for (const observer of this.observers) {
       const result = await (observer as any)[(eventMap as any)[event]](payload);
       if (result) {
         break;
