@@ -2,11 +2,11 @@
  * @Author: wuyifan 1208097313@qq.com
  * @Date: 2025-09-05 11:28:13
  * @LastEditors: wuyifan 1208097313@qq.com
- * @LastEditTime: 2025-09-12 16:42:21
- * @FilePath: \vf-studio\packages\vf-core\examples\src\index.ts
+ * @LastEditTime: 2025-09-19 15:35:56
+ * @FilePath: \vf-studio\packages\vf-core\example\src\index.ts
  * Copyright (c) 2024 by wuyifan email: 1208097313@qq.com, All Rights Reserved.
  */
-import { Document, Element, BrowserViewPort, BrowserEventType } from "../../src/";
+import { Document, Element, BrowserViewPort } from "../../src/";
 console.log('vf core');
 console.log('hello world');
 

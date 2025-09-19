@@ -9,7 +9,7 @@
 
 import { Vector2, Vector2Like } from "@vf/math";
 import { IInputObserver, PointEventPayload, ResizeEventPayload, WheelEventPayload } from "../types";
-import { EventEmitter } from "./EventEmitter";
+import { EventEmitter } from "../base/EventEmitter";
 class InputObserver extends EventEmitter<{ Change: null }> implements IInputObserver {
     protected mouse = new Vector2();
     protected size = new Vector2();

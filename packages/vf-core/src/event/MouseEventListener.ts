@@ -2,18 +2,16 @@
  * @Author: wuyifan 1208097313@qq.com
  * @Date: 2025-09-09 23:44:17
  * @LastEditors: wuyifan 1208097313@qq.com
- * @LastEditTime: 2025-09-13 19:57:52
- * @FilePath: /vf-studio/packages/vf-core/src/event/MouseEventListener.ts
+ * @LastEditTime: 2025-09-19 15:06:07
+ * @FilePath: \vf-studio\packages\vf-core\src\event\MouseEventListener.ts
  * Copyright (c) 2024 by wuyifan email: 1208097313@qq.com, All Rights Reserved.
  */
-import { BrowserEvents, BrowserEventType } from "../types";
-import { EventEmitter } from "./EventEmitter";
+import { EventType } from "../types";
+import { EventListener } from "./EventListener";
 
-class MouseEventListener extends EventEmitter<BrowserEvents> {
+class MouseEventListener extends EventListener{
 
   constructor(private canvas: HTMLCanvasElement) {
-    console.log('canvas: ', canvas);
-    console.log('MouseEventListener constructor');
     super();
   }
 
@@ -37,33 +35,28 @@ class MouseEventListener extends EventEmitter<BrowserEvents> {
     this.canvas.removeEventListener("wheel", this._onWheel);
   }
 
-  public dispose() {
-    this.detach();
-    this.clear();
-  }
-
   private _onMouseDown = (e: MouseEvent) => {
-    this.emit(BrowserEventType.PointerDown, { x: e.offsetX, y: e.offsetY, button: e.button });
+    this.emit(EventType.PointerDown, { x: e.offsetX, y: e.offsetY, button: e.button });
   };
   private _onMouseMove = (e: MouseEvent) => {
-    this.emit(BrowserEventType.PointerMove, { x: e.offsetX, y: e.offsetY, button: e.button });
+    this.emit(EventType.PointerMove, { x: e.offsetX, y: e.offsetY, button: e.button });
   };
   private _onMouseUp = (e: MouseEvent) => {
-    this.emit(BrowserEventType.PointerUp, { x: e.offsetX, y: e.offsetY, button: e.button });
+    this.emit(EventType.PointerUp, { x: e.offsetX, y: e.offsetY, button: e.button });
   };
   private _onClick = (e: MouseEvent) => {
-    this.emit(BrowserEventType.Click, { x: e.offsetX, y: e.offsetY, button: e.button });
+    this.emit(EventType.Click, { x: e.offsetX, y: e.offsetY, button: e.button });
   };
   private _onDblClick = (e: MouseEvent) => {
-    this.emit(BrowserEventType.DblClick, { x: e.offsetX, y: e.offsetY, button: e.button });
+    this.emit(EventType.DblClick, { x: e.offsetX, y: e.offsetY, button: e.button });
   };
   private _onContextMenu = (e: MouseEvent) => {
     e.preventDefault();
-    this.emit(BrowserEventType.ContextMenu, { x: e.offsetX, y: e.offsetY, button: e.button });
+    this.emit(EventType.ContextMenu, { x: e.offsetX, y: e.offsetY, button: e.button });
   };
 
   private _onWheel = (e: WheelEvent) => {
-    this.emit(BrowserEventType.Wheel, { x: e.offsetX, y: e.offsetY, delta: e.deltaY });
+    this.emit(EventType.Wheel, { x: e.offsetX, y: e.offsetY, delta: e.deltaY });
   };
 }
 

@@ -17,18 +17,18 @@ enum MouseButton {
   Right = 2,
 }
 
-interface BrowserEvents {
-  [BrowserEventType.Resize]: ResizeEventPayload;
-  [BrowserEventType.PointerDown]: PointEventPayload;
-  [BrowserEventType.PointerMove]: PointEventPayload;
-  [BrowserEventType.PointerUp]: PointEventPayload;
-  [BrowserEventType.Wheel]: WheelEventPayload;
-  [BrowserEventType.Click]: PointEventPayload;
-  [BrowserEventType.DblClick]: PointEventPayload;
-  [BrowserEventType.ContextMenu]: PointEventPayload;
+interface ViewPortEvents {
+  [EventType.Resize]: ResizeEventPayload;
+  [EventType.PointerDown]: PointEventPayload;
+  [EventType.PointerMove]: PointEventPayload;
+  [EventType.PointerUp]: PointEventPayload;
+  [EventType.Wheel]: WheelEventPayload;
+  [EventType.Click]: PointEventPayload;
+  [EventType.DblClick]: PointEventPayload;
+  [EventType.ContextMenu]: PointEventPayload;
 }
 
-enum BrowserEventType {
+enum EventType {
   Resize = 'resize',
   PointerDown = 'pointerdown',
   PointerMove = 'pointermove',
@@ -53,8 +53,8 @@ interface IInputObserver {
 
 
 export { 
-  BrowserEvents, 
-  BrowserEventType, 
+  EventType, 
+  ViewPortEvents, 
   PointEventPayload, 
   WheelEventPayload, 
   ResizeEventPayload, 
