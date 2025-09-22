@@ -2,14 +2,14 @@
  * @Author: wuyifan 1208097313@qq.com
  * @Date: 2025-09-02 17:15:03
  * @LastEditors: wuyifan 1208097313@qq.com
- * @LastEditTime: 2025-09-18 16:46:38
+ * @LastEditTime: 2025-09-22 14:40:19
  * @FilePath: \vf-studio\packages\vf-core\src\element\Element.ts
  * Copyright (c) 2024 by wuyifan email: 1208097313@qq.com, All Rights Reserved.
  */
 
 import { Base, ObjectID } from "../base";
 import { Document } from "../document/Document";
-import { IDocument, IElement } from "../types";
+import { CacheType, IDocument, IElement } from "../types";
 
 class Element extends Base implements IElement  {
     protected parent = ObjectID.INVALID
@@ -18,6 +18,9 @@ class Element extends Base implements IElement  {
 
     set needsUpdate(value: boolean) {
         this._needUpdate = value;
+        if (value) {
+            this.document.setChangeCache(CacheType.UPDATE, [this]);
+        }
     }
 
     get needsUpdate(): boolean {
@@ -38,18 +41,22 @@ class Element extends Base implements IElement  {
 
     setParent(parent: IElement | null): void {
         const oldParent = this.getParent();
+        // 1) 从旧父节点解绑（避免调用对方的公共 API 造成递归）
         if (oldParent) {
-            oldParent.remove(this);
+            const list = (oldParent as Element).children;
+            const idx = list.indexOf(this.id);
+            if (idx !== -1) list.splice(idx, 1);
         }
+
+        // 2) 绑定到新父节点或根
         if (parent) {
             this.parent = parent.id;
-            const index = this.document.children.findIndex((item) => item === this.id);
-            if (index !== -1) {
-                this.document.children.splice(index, 1);
-            }
-        }else{
+            const parentChildren = (parent as Element).children;
+            if (!parentChildren.includes(this.id)) parentChildren.push(this.id);
+        } else {
             this.parent = ObjectID.INVALID;
-            this.document.children.push(this.id);
+            const rootChildren = (this.document.rootElement as Element).children;
+            if (!rootChildren.includes(this.id)) rootChildren.push(this.id);
         }
     }
 
@@ -58,15 +65,13 @@ class Element extends Base implements IElement  {
     }
 
     add(child: IElement) {
-        this.children.push(child.id);
+        if (child.getParent() === this) return;
         child.setParent(this);
     }
 
     remove(child: IElement) {
-        const index = this.children.indexOf(child.id);
-        if (index !== -1) {
-            this.children.splice(index, 1);
-        }
+        if (child.getParent() !== this) return;
+        child.setParent(null);
     }
 
     getAllChildren(): IElement[] {

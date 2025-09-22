@@ -11,5 +11,8 @@
   "devDependencies": {
     "@vf/cli": "workspace:*",
     "@vf/math": "workspace:*"
+  },
+  "dependencies": {
+    "defu": "^6.1.4"
   }
 }

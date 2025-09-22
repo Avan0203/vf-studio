@@ -6,8 +6,8 @@
  * @FilePath: \vf-studio\packages\vf-engine\src\base\Base3D.ts
  * Copyright (c) 2024 by wuyifan email: 1208097313@qq.com, All Rights Reserved.
  */
-import { Base } from "@vf/core";
 import { Euler, Matrix4, Quaternion, Vector3 } from "@vf/math";
+import { Base } from "./Base";
 import { IBase3D } from "../types";
 
 const _v = /*@__PURE__*/ new Vector3();
