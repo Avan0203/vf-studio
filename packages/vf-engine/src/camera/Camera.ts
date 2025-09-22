@@ -2,12 +2,12 @@
  * @Author: wuyifan 1208097313@qq.com
  * @Date: 2025-09-09 14:53:12
  * @LastEditors: wuyifan 1208097313@qq.com
- * @LastEditTime: 2025-09-11 10:08:54
+ * @LastEditTime: 2025-09-22 16:15:31
  * @FilePath: \vf-studio\packages\vf-engine\src\camera\Camera.ts
  * Copyright (c) 2024 by wuyifan email: 1208097313@qq.com, All Rights Reserved.
  */
+import { Base3D } from '@vf/core';
 import { Matrix4, Vector3 } from "@vf/math";
-import { Base3D } from "../index";
 
 class Camera extends Base3D {
     readonly baseType = 'Camera';
