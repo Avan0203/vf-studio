@@ -87,6 +87,10 @@ importers:
         version: link:../vf-math
 
   packages/vf-engine:
+    dependencies:
+      defu:
+        specifier: ^6.1.4
+        version: 6.1.4
     devDependencies:
       '@vf/cli':
         specifier: workspace:*
@@ -111,10 +115,20 @@ importers:
         version: 4.0.0-beta.8(@types/node@22.13.15)(jiti@2.4.2)(sass-embedded@1.86.1)(yaml@2.8.1)
 
   packages/vf-structure:
+    dependencies:
+      defu:
+        specifier: ^6.1.4
+        version: 6.1.4
     devDependencies:
       '@vf/cli':
         specifier: workspace:*
         version: link:../vf-cli
+      '@vf/core':
+        specifier: workspace:*
+        version: link:../vf-core
+      '@vf/math':
+        specifier: workspace:*
+        version: link:../vf-math
 
   packages/vf-template:
     devDependencies:

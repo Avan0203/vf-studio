@@ -81,6 +81,14 @@ class Element extends Base implements IElement  {
     getDocument(): IDocument {
         return this.document;
     }
+
+    serialize(): { type: string, value: any } {
+        return { type: this.type, value: {} };
+    }
+
+    deserialize(data: any): this {
+        return this;
+    }
 }
 
 export { Element }

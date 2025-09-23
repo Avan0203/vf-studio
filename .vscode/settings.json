@@ -6,7 +6,7 @@
         "LastEditors": "git config user.name && git config user.email", // 文件最后编辑者
         "LastEditTime": "Do not edit", // 文件最后编辑时间
         "FilePath": "Do not edit", // 文件在项目中的相对路径 自动更新
-        "custom_string_obkoro1_copyright": "Copyright (c) 2024 by wuyifan email: 1208097313@qq.com, All Rights Reserved."
+        "custom_string_obkoro1_copyright": "Copyright (c) 2025 by wuyifan email: 1208097313@qq.com, All Rights Reserved."
     },
     "fileheader.configObj": {
         "prohibitAutoAdd": [
@@ -22,6 +22,7 @@
     },
     "cSpell.words": [
         "defu",
+        "gnode",
         "maximise",
         "maximised",
         "minimise",

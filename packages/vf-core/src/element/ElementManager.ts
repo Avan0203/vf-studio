@@ -2,7 +2,7 @@
  * @Author: wuyifan 1208097313@qq.com
  * @Date: 2025-09-04 10:32:12
  * @LastEditors: wuyifan 1208097313@qq.com
- * @LastEditTime: 2025-09-09 10:37:26
+ * @LastEditTime: 2025-09-23 10:52:27
  * @FilePath: \vf-studio\packages\vf-core\src\element\ElementManager.ts
  * Copyright (c) 2024 by wuyifan email: 1208097313@qq.com, All Rights Reserved.
  */
@@ -33,6 +33,7 @@ class ElementManager {
 
     deleteElementById(id: ObjectID) {
         this.elements.delete(id.valueOf());
+        ObjectID.release(id);
     }
 
     getElementsByIds(ids: ObjectID[]): Array<IElement> {
