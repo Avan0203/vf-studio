@@ -9,6 +9,11 @@
     "dev": "tsc -w"
   },
   "devDependencies": {
-    "@vf/cli": "workspace:*"
+    "@vf/core": "workspace:*",
+    "@vf/cli": "workspace:*",
+    "@vf/math": "workspace:*"
+  },
+  "dependencies": {
+    "defu": "^6.1.4"
   }
 }
