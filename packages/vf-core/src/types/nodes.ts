@@ -2,7 +2,7 @@
  * @Author: wuyifan 1208097313@qq.com
  * @Date: 2025-09-22 15:31:00
  * @LastEditors: wuyifan 1208097313@qq.com
- * @LastEditTime: 2025-09-22 17:14:41
+ * @LastEditTime: 2025-09-25 17:24:03
  * @FilePath: \vf-studio\packages\vf-core\src\types\nodes.ts
  * Copyright (c) 2024 by wuyifan email: 1208097313@qq.com, All Rights Reserved.
  */
@@ -13,23 +13,17 @@
 import { Vector2, Vector3 } from "@vf/math";
 
 enum GNodeType {
-    Mesh = 'mesh',
+    Virtual = 'virtual',
     Curve = 'curve',
     Point = 'point',
     Text = 'text',
     Sprite = 'sprite',
     Group = 'group',
-    Model = 'model',
+    Mesh = 'mesh',
 }
 
 
-interface GMeshOptions {
-    width?: number;
-    height?: number;
-    depth?: number;
-    radius?: number;
-    segments?: number;
-}
+type GVirtualOptions = Record<string, unknown>;
 
 interface GCurveOptions {
     start?: Vector3;
@@ -58,7 +52,7 @@ interface GSpriteOptions {
     opacity?: number;
 }
 
-interface GModelOptions {
+interface GMeshOptions {
     vertices?: number[];
     indices?: number[];
     normals?: number[];
@@ -67,7 +61,7 @@ interface GModelOptions {
 }
 
 interface IGNodeStyle { 
-    mesh
+    mesh?:IMeshStyle;
 }
 
 interface IMeshStyle{
@@ -92,7 +86,6 @@ export type {
     GPointOptions,
     GTextOptions,
     GSpriteOptions,
-    GModelOptions,
 }
 
 
