@@ -225,7 +225,7 @@ describe('Vector3', () => {
 
   it('should clamp values correctly', () => {
     const v = new Vector3(1, 6, 3);
-    v.clamp(2, 5);
+    v.clamp(new Vector3(2, 2, 2), new Vector3(5, 5, 5));
 
     expect(v.x).toBe(2);
     expect(v.y).toBe(5);
@@ -298,7 +298,7 @@ describe('Vector3', () => {
   });
 
   it('should load data correctly', () => {
-    const v = new Vector3().load([1, 2, 3]);
+    const v = new Vector3().load({ x: 1, y: 2, z: 3 });
 
     expect(v.x).toBe(1);
     expect(v.y).toBe(2);
@@ -310,7 +310,7 @@ describe('Vector3', () => {
     const dumped = v.dump();
 
     expect(dumped.type).toBe('Vector3');
-    expect(dumped.value).toEqual([1, 2, 3]);
+    expect(dumped.value).toEqual({ x: 1, y: 2, z: 3 });
   });
 
   

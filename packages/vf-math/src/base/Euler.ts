@@ -1,5 +1,8 @@
 import { MathUtils, Tolerance } from '../utils';
-import { AbstractMathObject, Matrix4, Quaternion, type Vector3Like, type DumpResult } from '../index';
+import { AbstractMathObject, type DumpResult } from './AbstractMathObject';
+import { Matrix4 } from './Matrix4';
+import { Quaternion } from './Quaternion';
+import { type Vector3Like } from './Vector3';
 
 enum EulerOrder {
 	XYZ = 'XYZ',

@@ -1,4 +1,11 @@
-import { AbstractMathObject, MathUtils, Matrix3, Quaternion, QuaternionLike, Tolerance, Vector3, Vector3Like, type DumpResult, type EulerLike } from '../index';
+import { AbstractMathObject, type DumpResult } from './AbstractMathObject';
+import { MathUtils, Tolerance } from '../utils';
+import { Matrix3 } from './Matrix3';
+import { Quaternion } from './Quaternion';
+import { Vector3, type Vector3Like } from './Vector3';
+import { type EulerLike } from './Euler';
+
+const { equals } = MathUtils;
 
 class Matrix4 extends AbstractMathObject<number[]> {
 	elements: number[] = new Array(16);
@@ -637,7 +644,7 @@ class Matrix4 extends AbstractMathObject<number[]> {
 		const te = this.elements;
 		const me = matrix.elements;
 		for (let i = 0; i < 16; i++) {
-			if (MathUtils.equals(te[i], me[i], eps)) return false;
+			if (equals(te[i], me[i], eps)) return false;
 		}
 		return true;
 	}

@@ -2,7 +2,7 @@
  * @Author: wuyifan 1208097313@qq.com
  * @Date: 2025-08-21 17:05:45
  * @LastEditors: wuyifan 1208097313@qq.com
- * @LastEditTime: 2025-09-09 16:30:40
+ * @LastEditTime: 2025-09-25 17:45:48
  * @FilePath: \vf-studio\packages\vf-math\src\base\index.ts
  * Copyright (c) 2024 by wuyifan email: 1208097313@qq.com, All Rights Reserved.
  */
@@ -20,4 +20,8 @@ export * from './Box3';
 export * from './Plane';
 export * from './Line3d';
 export * from './Triangle';
+export * from './Coordinate2';
+export * from './Coordinate3';
+export * from './Interval';
+export * from './CircularInterval';
 

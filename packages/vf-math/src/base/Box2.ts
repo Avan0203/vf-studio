@@ -1,7 +1,6 @@
-import { MathUtils } from '../utils/MathUtils.js';
-import { Tolerance } from '../utils/Tolerance.js';
+import { MathUtils, Tolerance } from '../utils';
 import { AbstractMathObject, DumpResult } from './AbstractMathObject.js';
-import { Vector2, Vector2Like } from './Vector2.js';
+import { Vector2, type Vector2Like } from './Vector2.js';
 
 const { greaterEqual, lessEqual } = MathUtils;
 
@@ -146,7 +145,7 @@ class Box2 extends AbstractMathObject<Box2Like> {
 			new Vector2(this.max.x, this.max.y),
 			new Vector2(this.min.x, this.max.y),
 		]
-	 }
+	}
 
 	equals(box: Box2Like, eps = Tolerance.LENGTH_EPS): boolean {
 		return this.min.equals(box.min, eps) && this.max.equals(box.max, eps);

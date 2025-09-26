@@ -1,3 +1,4 @@
+import { DOUBLE_PI } from "./Constant";
 import { Tolerance } from "./Tolerance";
 
 export class MathUtils {
@@ -136,5 +137,15 @@ export class MathUtils {
         if (x > 0) return 1;
         else if (x < 0) return -1;
         else return 0;
+    }
+
+    /**
+     * @description: 将角度归一化到指定范围内
+     * @param {number} angle 要归一化的角度
+     * @param {number} period 周期，默认为 2π
+     * @return {number} 归一化后的角度
+     */
+    static normalizeAngle(angle: number, period: number = DOUBLE_PI): number {
+        return angle - Math.floor(angle / period) * period;
     }
 }
