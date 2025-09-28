@@ -644,7 +644,7 @@ class Matrix4 extends AbstractMathObject<number[]> {
 		const te = this.elements;
 		const me = matrix.elements;
 		for (let i = 0; i < 16; i++) {
-			if (equals(te[i], me[i], eps)) return false;
+			if (!equals(te[i], me[i], eps)) return false;
 		}
 		return true;
 	}

@@ -204,7 +204,7 @@ class Matrix3 extends AbstractMathObject<number[]> {
 		const me = matrix.elements;
 
 		for (let i = 0; i < 9; i++) {
-			if (MathUtils.equals(te[i], me[i]), eps) return false;
+			if (!MathUtils.equals(te[i], me[i], eps)) return false;
 		}
 		return true;
 	}

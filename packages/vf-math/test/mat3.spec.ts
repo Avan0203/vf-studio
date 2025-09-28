@@ -60,18 +60,30 @@ describe('Matrix3', () => {
         const m1 = new Matrix3(1, 2, 3, 4, 5, 6, 7, 8, 9);
         const m2 = new Matrix3(9, 8, 7, 6, 5, 4, 3, 2, 1);
         m1.multiply(m2);
-        expect(m1.elements[0]).toBeCloseTo(30);
-        expect(m1.elements[1]).toBeCloseTo(24);
-        expect(m1.elements[2]).toBeCloseTo(18);
+        // Column-major multiplication: m1 * m2
+        // m1 = [[1, 4, 7], [2, 5, 8], [3, 6, 9]]
+        // m2 = [[9, 6, 3], [8, 5, 2], [7, 4, 1]]
+        // Result[0,0] = 1*9 + 4*8 + 7*7 = 9 + 32 + 49 = 90
+        // Result[1,0] = 2*9 + 5*8 + 8*7 = 18 + 40 + 56 = 114
+        // Result[2,0] = 3*9 + 6*8 + 9*7 = 27 + 48 + 63 = 138
+        expect(m1.elements[0]).toBeCloseTo(90);
+        expect(m1.elements[1]).toBeCloseTo(114);
+        expect(m1.elements[2]).toBeCloseTo(138);
     });
 
     test('should premultiply matrices correctly', () => {
         const m1 = new Matrix3(1, 2, 3, 4, 5, 6, 7, 8, 9);
         const m2 = new Matrix3(9, 8, 7, 6, 5, 4, 3, 2, 1);
         m1.premultiply(m2);
-        expect(m1.elements[0]).toBeCloseTo(90);
-        expect(m1.elements[1]).toBeCloseTo(114);
-        expect(m1.elements[2]).toBeCloseTo(138);
+        // Column-major multiplication: m2 * m1
+        // m2 = [[9, 6, 3], [8, 5, 2], [7, 4, 1]]
+        // m1 = [[1, 4, 7], [2, 5, 8], [3, 6, 9]]
+        // Result[0,0] = 9*1 + 6*2 + 3*3 = 9 + 12 + 9 = 30
+        // Result[1,0] = 8*1 + 5*2 + 2*3 = 8 + 10 + 6 = 24
+        // Result[2,0] = 7*1 + 4*2 + 1*3 = 7 + 8 + 3 = 18
+        expect(m1.elements[0]).toBeCloseTo(30);
+        expect(m1.elements[1]).toBeCloseTo(24);
+        expect(m1.elements[2]).toBeCloseTo(18);
     });
 
     test('should multiply scalars correctly', () => {
@@ -101,6 +113,9 @@ describe('Matrix3', () => {
     test('should transpose matrix correctly', () => {
         const m = new Matrix3(1, 2, 3, 4, 5, 6, 7, 8, 9);
         m.transpose();
+        // Original: [[1, 4, 7], [2, 5, 8], [3, 6, 9]]
+        // Transposed: [[1, 2, 3], [4, 5, 6], [7, 8, 9]]
+        // Stored as [1, 4, 7, 2, 5, 8, 3, 6, 9]
         expect(m.elements).toEqual([1, 4, 7, 2, 5, 8, 3, 6, 9]);
     });
 

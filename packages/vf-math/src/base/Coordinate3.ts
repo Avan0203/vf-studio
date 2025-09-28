@@ -6,26 +6,20 @@
  * @FilePath: \vf-studio\packages\vf-math\src\base\Coordinate3.ts
  * Copyright (c) 2024 by wuyifan email: 1208097313@qq.com, All Rights Reserved.
  */
-import { AbstractMathObject, DumpResult } from "./AbstractMathObject";
+import { Coordinate, CoordinateLike } from "./Coordinate";
 import { Vector3, type Vector3Like } from "./Vector3";
 import { Matrix4 } from "./Matrix4";
 import { Quaternion, type QuaternionLike } from "./Quaternion";
 import { Tolerance } from "../utils";
+import { DumpResult } from "./AbstractMathObject";
 
-type Coordinate3Like = {
-    origin: Vector3Like;
-    dx: Vector3Like;
-    dy: Vector3Like;
-}
+type Coordinate3Like = CoordinateLike<Vector3>;
 
 /**
  * 三维坐标系类
  * 表示一个三维坐标系，包含原点、Dx、Dy和Dz方向向量
 */
-class Coordinate3 extends AbstractMathObject<Coordinate3Like> {
-    origin: Vector3;
-    dx: Vector3;  // X轴方向向量
-    dy: Vector3;  // Y轴方向向量
+class Coordinate3 extends Coordinate<Vector3, Coordinate3Like> {
     dz: Vector3;  // Z轴方向向量
 
     /**
@@ -63,13 +57,14 @@ class Coordinate3 extends AbstractMathObject<Coordinate3Like> {
         dx: Vector3Like = { x: 1, y: 0, z: 0 },
         dy: Vector3Like = { x: 0, y: 1, z: 0 }
     ) {
-        super();
-        this.origin = new Vector3().copy(origin);
-        this.dx = new Vector3().copy(dx).normalize();
-        this.dy = new Vector3().copy(dy).normalize();
+        super(
+            new Vector3().copy(origin),
+            new Vector3().copy(dx).normalize(),
+            new Vector3().copy(dy).normalize()
+        );
 
         // 通过叉积计算dz轴，确保坐标系的正交性
-        this.dz = this.dx.cross(this.dy).normalize();
+        this.dz = this._dx.cross(this._dy).normalize();
 
         // 确保坐标系正交（主要处理dx和dy可能不完全正交的情况）
         this.orthogonalize();
@@ -79,13 +74,14 @@ class Coordinate3 extends AbstractMathObject<Coordinate3Like> {
      * 复制另一个坐标系
      */
     copy(cs: Coordinate3Like): this {
-        this.origin.copy(cs.origin);
-        this.dx.copy(cs.dx);
-        this.dy.copy(cs.dy);
+        this._origin.copy(cs.origin);
+        this._dx.copy(cs.dx);
+        this._dy.copy(cs.dy);
 
         // 通过叉积重新计算dz轴
-        this.dz = this.dx.cross(this.dy).normalize();
+        this.dz = this._dx.cross(this._dy).normalize();
 
+        this.update();
         return this;
     }
 
@@ -93,19 +89,19 @@ class Coordinate3 extends AbstractMathObject<Coordinate3Like> {
      * 克隆坐标系
      */
     clone(): Coordinate3 {
-        return new Coordinate3(this.origin, this.dx, this.dy);
+        return new Coordinate3(this._origin, this._dx, this._dy);
     }
 
     /**
      * 设置坐标系
      */
     set(origin: Vector3Like, dx: Vector3Like, dy: Vector3Like): this {
-        this.origin.copy(origin);
-        this.dx.copy(dx).normalize();
-        this.dy.copy(dy).normalize();
+        this._origin.copy(origin);
+        this._dx.copy(dx).normalize();
+        this._dy.copy(dy).normalize();
 
         // 通过叉积计算dz轴
-        this.dz = this.dx.cross(this.dy).normalize();
+        this.dz = this._dx.cross(this._dy).normalize();
 
         // 确保坐标系正交
         this.orthogonalize();
@@ -118,15 +114,15 @@ class Coordinate3 extends AbstractMathObject<Coordinate3Like> {
     orthogonalize(): this {
         // 使用Gram-Schmidt正交化过程
         // 保持Dx轴不变，正交化Dy轴
-        const projectionY = this.dy.dot(this.dx);
-        this.dy.sub(new Vector3().copy(this.dx).multiplyScalar(projectionY)).normalize();
+        const projectionY = this._dy.dot(this._dx);
+        this._dy.sub(new Vector3().copy(this._dx).multiplyScalar(projectionY)).normalize();
 
         // 正交化Dz轴
-        const projectionZX = this.dz.dot(this.dx);
-        const projectionZY = this.dz.dot(this.dy);
+        const projectionZX = this.dz.dot(this._dx);
+        const projectionZY = this.dz.dot(this._dy);
         this.dz
-            .sub(new Vector3().copy(this.dx).multiplyScalar(projectionZX))
-            .sub(new Vector3().copy(this.dy).multiplyScalar(projectionZY))
+            .sub(new Vector3().copy(this._dx).multiplyScalar(projectionZX))
+            .sub(new Vector3().copy(this._dy).multiplyScalar(projectionZY))
             .normalize();
 
         return this;
@@ -136,7 +132,7 @@ class Coordinate3 extends AbstractMathObject<Coordinate3Like> {
      * 检查坐标系是否为左手系
      */
     isLeftHanded(eps = Tolerance.CALCULATION_EPS): boolean {
-        const cross = this.dx.cross(this.dy);
+        const cross = this._dx.cross(this._dy);
         return cross.dot(this.dz) < -eps;
     }
 
@@ -144,10 +140,10 @@ class Coordinate3 extends AbstractMathObject<Coordinate3Like> {
      * 将世界坐标转换为本地坐标
      */
     worldToLocal(worldPoint: Vector3Like): Vector3 {
-        const localPoint = new Vector3().copy(worldPoint).sub(this.origin);
+        const localPoint = new Vector3().copy(worldPoint).sub(this._origin);
         return new Vector3(
-            localPoint.dot(this.dx),
-            localPoint.dot(this.dy),
+            localPoint.dot(this._dx),
+            localPoint.dot(this._dy),
             localPoint.dot(this.dz)
         );
     }
@@ -157,9 +153,9 @@ class Coordinate3 extends AbstractMathObject<Coordinate3Like> {
      */
     localToWorld(localPoint: Vector3Like): Vector3 {
         return new Vector3()
-            .copy(this.origin)
-            .add(new Vector3().copy(this.dx).multiplyScalar(localPoint.x))
-            .add(new Vector3().copy(this.dy).multiplyScalar(localPoint.y))
+            .copy(this._origin)
+            .add(new Vector3().copy(this._dx).multiplyScalar(localPoint.x))
+            .add(new Vector3().copy(this._dy).multiplyScalar(localPoint.y))
             .add(new Vector3().copy(this.dz).multiplyScalar(localPoint.z));
     }
 
@@ -168,8 +164,8 @@ class Coordinate3 extends AbstractMathObject<Coordinate3Like> {
      */
     worldVectorToLocal(worldVector: Vector3Like): Vector3 {
         return new Vector3(
-            worldVector.x * this.dx.x + worldVector.y * this.dx.y + worldVector.z * this.dx.z,
-            worldVector.x * this.dy.x + worldVector.y * this.dy.y + worldVector.z * this.dy.z,
+            worldVector.x * this._dx.x + worldVector.y * this._dx.y + worldVector.z * this._dx.z,
+            worldVector.x * this._dy.x + worldVector.y * this._dy.y + worldVector.z * this._dy.z,
             worldVector.x * this.dz.x + worldVector.y * this.dz.y + worldVector.z * this.dz.z
         );
     }
@@ -179,8 +175,8 @@ class Coordinate3 extends AbstractMathObject<Coordinate3Like> {
      */
     localVectorToWorld(localVector: Vector3Like): Vector3 {
         return new Vector3()
-            .copy(this.dx).multiplyScalar(localVector.x)
-            .add(new Vector3().copy(this.dy).multiplyScalar(localVector.y))
+            .copy(this._dx).multiplyScalar(localVector.x)
+            .add(new Vector3().copy(this._dy).multiplyScalar(localVector.y))
             .add(new Vector3().copy(this.dz).multiplyScalar(localVector.z));
     }
 
@@ -192,9 +188,9 @@ class Coordinate3 extends AbstractMathObject<Coordinate3Like> {
         const sin = Math.sin(angle);
 
         const newDy = new Vector3(
-            this.dy.x,
-            this.dy.y * cos - this.dy.z * sin,
-            this.dy.y * sin + this.dy.z * cos
+            this._dy.x,
+            this._dy.y * cos - this._dy.z * sin,
+            this._dy.y * sin + this._dy.z * cos
         );
 
         const newDz = new Vector3(
@@ -203,7 +199,7 @@ class Coordinate3 extends AbstractMathObject<Coordinate3Like> {
             this.dz.y * sin + this.dz.z * cos
         );
 
-        this.dy.copy(newDy);
+        this._dy.copy(newDy);
         this.dz.copy(newDz);
         return this;
     }
@@ -216,9 +212,9 @@ class Coordinate3 extends AbstractMathObject<Coordinate3Like> {
         const sin = Math.sin(angle);
 
         const newDx = new Vector3(
-            this.dx.x * cos + this.dx.z * sin,
-            this.dx.y,
-            -this.dx.x * sin + this.dx.z * cos
+            this._dx.x * cos + this._dx.z * sin,
+            this._dx.y,
+            -this._dx.x * sin + this._dx.z * cos
         );
 
         const newDz = new Vector3(
@@ -227,7 +223,7 @@ class Coordinate3 extends AbstractMathObject<Coordinate3Like> {
             -this.dz.x * sin + this.dz.z * cos
         );
 
-        this.dx.copy(newDx);
+        this._dx.copy(newDx);
         this.dz.copy(newDz);
         return this;
     }
@@ -240,19 +236,19 @@ class Coordinate3 extends AbstractMathObject<Coordinate3Like> {
         const sin = Math.sin(angle);
 
         const newDx = new Vector3(
-            this.dx.x * cos - this.dx.y * sin,
-            this.dx.x * sin + this.dx.y * cos,
-            this.dx.z
+            this._dx.x * cos - this._dx.y * sin,
+            this._dx.x * sin + this._dx.y * cos,
+            this._dx.z
         );
 
         const newDy = new Vector3(
-            this.dy.x * cos - this.dy.y * sin,
-            this.dy.x * sin + this.dy.y * cos,
-            this.dy.z
+            this._dy.x * cos - this._dy.y * sin,
+            this._dy.x * sin + this._dy.y * cos,
+            this._dy.z
         );
 
-        this.dx.copy(newDx);
-        this.dy.copy(newDy);
+        this._dx.copy(newDx);
+        this._dy.copy(newDy);
         return this;
     }
 
@@ -260,8 +256,8 @@ class Coordinate3 extends AbstractMathObject<Coordinate3Like> {
      * 使用四元数旋转坐标系
      */
     rotateByQuaternion(quaternion: QuaternionLike): this {
-        this.dx.applyQuaternion(quaternion);
-        this.dy.applyQuaternion(quaternion);
+        this._dx.applyQuaternion(quaternion);
+        this._dy.applyQuaternion(quaternion);
         this.dz.applyQuaternion(quaternion);
         return this;
     }
@@ -270,7 +266,7 @@ class Coordinate3 extends AbstractMathObject<Coordinate3Like> {
      * 平移坐标系
      */
     translate(translation: Vector3Like): this {
-        this.origin.add(translation);
+        this._origin.add(translation);
         return this;
     }
 
@@ -279,10 +275,10 @@ class Coordinate3 extends AbstractMathObject<Coordinate3Like> {
      */
     getMatrix(): Matrix4 {
         return new Matrix4(
-            this.dx.x, this.dx.y, this.dx.z, 0,
-            this.dy.x, this.dy.y, this.dy.z, 0,
+            this._dx.x, this._dx.y, this._dx.z, 0,
+            this._dy.x, this._dy.y, this._dy.z, 0,
             this.dz.x, this.dz.y, this.dz.z, 0,
-            this.origin.x, this.origin.y, this.origin.z, 1
+            this._origin.x, this._origin.y, this._origin.z, 1
         );
     }
 
@@ -290,9 +286,9 @@ class Coordinate3 extends AbstractMathObject<Coordinate3Like> {
      * 从变换矩阵设置坐标系
      */
     setFromMatrix(matrix: Matrix4): this {
-        this.origin.set(matrix.elements[12], matrix.elements[13], matrix.elements[14]);
-        this.dx.set(matrix.elements[0], matrix.elements[1], matrix.elements[2]).normalize();
-        this.dy.set(matrix.elements[4], matrix.elements[5], matrix.elements[6]).normalize();
+        this._origin.set(matrix.elements[12], matrix.elements[13], matrix.elements[14]);
+        this._dx.set(matrix.elements[0], matrix.elements[1], matrix.elements[2]).normalize();
+        this._dy.set(matrix.elements[4], matrix.elements[5], matrix.elements[6]).normalize();
         this.dz.set(matrix.elements[8], matrix.elements[9], matrix.elements[10]).normalize();
         return this;
     }
@@ -309,12 +305,12 @@ class Coordinate3 extends AbstractMathObject<Coordinate3Like> {
      * 从四元数设置坐标系
      */
     setFromQuaternion(origin: Vector3Like, quaternion: QuaternionLike): this {
-        this.origin.copy(origin);
-        this.dx.set(1, 0, 0).applyQuaternion(quaternion);
-        this.dy.set(0, 1, 0).applyQuaternion(quaternion);
+        this._origin.copy(origin);
+        this._dx.set(1, 0, 0).applyQuaternion(quaternion);
+        this._dy.set(0, 1, 0).applyQuaternion(quaternion);
 
         // 通过叉积计算dz轴
-        this.dz = this.dx.cross(this.dy).normalize();
+        this.dz = this._dx.cross(this._dy).normalize();
 
         return this;
     }
@@ -326,9 +322,9 @@ class Coordinate3 extends AbstractMathObject<Coordinate3Like> {
         // 计算cs对应的dz轴
         const csDz = new Vector3().copy(cs.dx).cross(new Vector3().copy(cs.dy)).normalize();
 
-        return this.origin.equals(cs.origin, eps) &&
-            this.dx.equals(cs.dx, eps) &&
-            this.dy.equals(cs.dy, eps) &&
+        return this._origin.equals(cs.origin, eps) &&
+            this._dx.equals(cs.dx, eps) &&
+            this._dy.equals(cs.dy, eps) &&
             this.dz.equals(csDz, eps);
     }
 
@@ -347,12 +343,12 @@ class Coordinate3 extends AbstractMathObject<Coordinate3Like> {
 
         // 重新计算Dx轴和Dy轴以保持正交
         if (Math.abs(this.dz.dot(Vector3.X())) < 0.9) {
-            this.dx = Vector3.X().cross(this.dz).normalize();
+            this._dx = Vector3.X().cross(this.dz).normalize();
         } else {
-            this.dx = Vector3.Y().cross(this.dz).normalize();
+            this._dx = Vector3.Y().cross(this.dz).normalize();
         }
 
-        this.dy = this.dz.cross(this.dx).normalize();
+        this._dy = this.dz.cross(this._dx).normalize();
         return this;
     }
 
@@ -370,11 +366,19 @@ class Coordinate3 extends AbstractMathObject<Coordinate3Like> {
         return {
             type: this.type,
             value: {
-                origin: { x: this.origin.x, y: this.origin.y, z: this.origin.z },
-                dx: { x: this.dx.x, y: this.dx.y, z: this.dx.z },
-                dy: { x: this.dy.x, y: this.dy.y, z: this.dy.z }
+                origin: this._origin,
+                dx: this._dx,
+                dy: this._dy
             }
         };
+    }
+
+    /**
+     * 更新坐标系（实现抽象方法）
+     */
+    protected update(): void {
+        // 重新计算dz轴
+        this.dz = this._dx.cross(this._dy).normalize();
     }
 }
 

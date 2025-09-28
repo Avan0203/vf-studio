@@ -114,6 +114,9 @@ describe('Matrix4', () => {
     test('should transpose matrix correctly', () => {
         const m = new Matrix4(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16);
         m.transpose();
+        // Original: [[1, 5, 9, 13], [2, 6, 10, 14], [3, 7, 11, 15], [4, 8, 12, 16]]
+        // Transposed: [[1, 2, 3, 4], [5, 6, 7, 8], [9, 10, 11, 12], [13, 14, 15, 16]]
+        // Stored as [1, 5, 9, 13, 2, 6, 10, 14, 3, 7, 11, 15, 4, 8, 12, 16]
         const expected = [1, 5, 9, 13, 2, 6, 10, 14, 3, 7, 11, 15, 4, 8, 12, 16];
         expect(m.elements).toEqual(expected);
     });
@@ -238,12 +241,14 @@ describe('Matrix4', () => {
 
     test('should make shear matrix', () => {
         const m = new Matrix4().makeShear(2, 3, 4, 5, 6, 7);
-        expect(m.elements[1]).toBeCloseTo(2);
-        expect(m.elements[2]).toBeCloseTo(3);
-        expect(m.elements[4]).toBeCloseTo(4);
-        expect(m.elements[6]).toBeCloseTo(5);
-        expect(m.elements[8]).toBeCloseTo(6);
-        expect(m.elements[9]).toBeCloseTo(7);
+        // Shear matrix: [[1, 4, 6, 0], [2, 1, 7, 0], [3, 5, 1, 0], [0, 0, 0, 1]]
+        // Stored as [1, 2, 3, 0, 4, 1, 5, 0, 6, 7, 1, 0, 0, 0, 0, 1]
+        expect(m.elements[1]).toBeCloseTo(2); // xy
+        expect(m.elements[2]).toBeCloseTo(3); // xz
+        expect(m.elements[4]).toBeCloseTo(4); // yx
+        expect(m.elements[6]).toBeCloseTo(5); // yz
+        expect(m.elements[8]).toBeCloseTo(6); // zx
+        expect(m.elements[9]).toBeCloseTo(7); // zy
     });
 
     test('should compose matrix from position, quaternion, and scale', () => {
@@ -328,12 +333,14 @@ describe('Matrix4', () => {
 
     test('should make shear matrix with specific parameters', () => {
         const m = new Matrix4().makeShear(2, 3, 4, 5, 6, 7);
-        expect(m.elements[1]).toBeCloseTo(2);
-        expect(m.elements[2]).toBeCloseTo(3);
-        expect(m.elements[4]).toBeCloseTo(4);
-        expect(m.elements[6]).toBeCloseTo(5);
-        expect(m.elements[8]).toBeCloseTo(6);
-        expect(m.elements[9]).toBeCloseTo(7);
+        // Shear matrix: [[1, 4, 6, 0], [2, 1, 7, 0], [3, 5, 1, 0], [0, 0, 0, 1]]
+        // Stored as [1, 2, 3, 0, 4, 1, 5, 0, 6, 7, 1, 0, 0, 0, 0, 1]
+        expect(m.elements[1]).toBeCloseTo(2); // xy
+        expect(m.elements[2]).toBeCloseTo(3); // xz
+        expect(m.elements[4]).toBeCloseTo(4); // yx
+        expect(m.elements[6]).toBeCloseTo(5); // yz
+        expect(m.elements[8]).toBeCloseTo(6); // zx
+        expect(m.elements[9]).toBeCloseTo(7); // zy
     });
 
     test('should compare matrices for equality', () => {

@@ -2,20 +2,21 @@
  * @Author: wuyifan 1208097313@qq.com
  * @Date: 2025-08-20 17:14:03
  * @LastEditors: wuyifan 1208097313@qq.com
- * @LastEditTime: 2025-08-25 15:30:05
+ * @LastEditTime: 2025-09-28 13:55:20
  * @FilePath: \vf-studio\packages\vf-math\src\base\Vector2.ts
  * Copyright (c) 2024 by wuyifan email: 1208097313@qq.com, All Rights Reserved.
  */
-import { AbstractMathObject, DumpResult } from "./AbstractMathObject";
+import { Vector } from "./Vector";
 import { MathUtils, Tolerance } from "../utils";
 import type { Matrix3 } from "./Matrix3";
+import { DumpResult } from "./AbstractMathObject";
 
 type Vector2Like = {
     x: number;
     y: number;
 }
 
-class Vector2 extends AbstractMathObject<Vector2Like> {
+class Vector2 extends Vector<Vector2Like> {
     x: number;
     y: number;
 
@@ -23,12 +24,12 @@ class Vector2 extends AbstractMathObject<Vector2Like> {
         return new Vector2(0, 0);
     }
 
-    static X() {
-        return new Vector2(1, 0);
+    static X(n = 1) {
+        return new Vector2(n, 0);
     }
 
-    static Y() {
-        return new Vector2(0, 1);
+    static Y(n = 1) {
+        return new Vector2(0, n);
     }
 
     constructor(x = 0, y = 0) {
@@ -37,14 +38,28 @@ class Vector2 extends AbstractMathObject<Vector2Like> {
         this.y = y;
     }
 
+    getComponents(): number[] {
+        return [this.x, this.y];
+    }
+
+    setComponents(values: number[]): this {
+        this.x = values[0] || 0;
+        this.y = values[1] || 0;
+        return this;
+    }
+
+    protected getComponentsFromLike(v: Vector2Like): number[] {
+        return [v.x, v.y];
+    }
+
     copy(v: Vector2Like): this {
         this.x = v.x;
         this.y = v.y;
         return this;
     }
 
-    clone(): Vector2 {
-        return new Vector2(this.x, this.y);
+    clone(): this {
+        return new Vector2(this.x, this.y) as this;
     }
 
     add(v: Vector2Like): this {
@@ -63,89 +78,9 @@ class Vector2 extends AbstractMathObject<Vector2Like> {
         return this.x * v.y - this.y * v.x;
     }
 
-    addVectors(v1: Vector2Like, v2: Vector2Like): this {
-        this.x = v1.x + v2.x;
-        this.y = v1.y + v2.y;
-        return this;
-    }
-
-    subVectors(v1: Vector2Like, v2: Vector2Like): this {
-        this.x = v1.x - v2.x;
-        this.y = v1.y - v2.y;
-        return this;
-    }
-
-    equals(v: Vector2Like, esp = Tolerance.LENGTH_EPS): boolean {
-        return MathUtils.equals(this.x, v.x, esp) && MathUtils.equals(this.y, v.y, esp);
-    }
-
-    multiply(v: Vector2Like): this {
-        this.x *= v.x;
-        this.y *= v.y;
-        return this;
-    }
-
-    divide(v: Vector2Like): this {
-        this.x /= v.x;
-        this.y /= v.y;
-        return this;
-    }
-
-    multiplyScalar(v: number): this {
-        this.x *= v;
-        this.y *= v;
-        return this;
-    }
-
     set(x: number, y: number): this {
         this.x = x;
         this.y = y;
-        return this;
-    }
-
-    getSquareLength(): number {
-        return this.x * this.x + this.y * this.y;
-    }
-
-    getLength(): number {
-        return Math.sqrt(this.getSquareLength());
-    }
-
-    normalize(): this {
-        return this.multiplyScalar((1 / this.getLength()) || 1);
-    }
-
-    isParallel(v: Vector2Like, esp = Tolerance.CALCULATION_EPS): boolean {
-        return MathUtils.equals(this.dot(v), 0, esp);
-    }
-
-    negate(): this {
-        this.x = -this.x;
-        this.y = -this.y;
-        return this;
-    }
-
-    distanceTo(v: Vector2Like): number {
-        return Math.sqrt(Math.pow(this.x - v.x, 2) + Math.pow(this.y - v.y, 2));
-    }
-
-    random(min = 0, max = 1): this {
-        return this.set(MathUtils.randomFloat(min, max), MathUtils.randomFloat(min, max));
-    }
-
-    angle(): number {
-        return Math.atan2(this.y, this.x);
-    }
-
-    max(v: Vector2Like): this {
-        this.x = Math.max(this.x, v.x);
-        this.y = Math.max(this.y, v.y);
-        return this;
-    }
-
-    min(v: Vector2Like): this {
-        this.x = Math.min(this.x, v.x);
-        this.y = Math.min(this.y, v.y);
         return this;
     }
 
@@ -153,6 +88,20 @@ class Vector2 extends AbstractMathObject<Vector2Like> {
         this.x = MathUtils.clamp(this.x, min.x, max.x);
         this.y = MathUtils.clamp(this.y, min.y, max.y);
         return this;
+    }
+
+
+    isParallel(v: Vector2Like, esp = Tolerance.CALCULATION_EPS): boolean {
+        return MathUtils.equals(this.dot(v), 0, esp);
+    }
+
+    distanceTo(v: Vector2Like): number {
+        _v.copy(v);
+        return Math.sqrt(this.distanceToSquared(_v));
+    }
+
+    angle(): number {
+        return Math.atan2(this.y, this.x);
     }
 
     angleTo(v: Vector2Like): number {
@@ -200,5 +149,7 @@ class Vector2 extends AbstractMathObject<Vector2Like> {
         return {  type: this.type, value: { x: this.x, y: this.y } }
     }
 }
+
+const _v = new Vector2();
 
 export {Vector2,Vector2Like} 

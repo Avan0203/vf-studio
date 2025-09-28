@@ -1,9 +1,18 @@
-import { AbstractMathObject, DumpResult } from "./AbstractMathObject";
+/*
+ * @Author: wuyifan 1208097313@qq.com
+ * @Date: 2025-09-04 17:47:57
+ * @LastEditors: wuyifan 1208097313@qq.com
+ * @LastEditTime: 2025-09-28 13:53:46
+ * @FilePath: \vf-studio\packages\vf-math\src\base\Vector3.ts
+ * Copyright (c) 2025 by wuyifan email: 1208097313@qq.com, All Rights Reserved.
+ */
+import { Vector } from "./Vector";
 import { MathUtils, Tolerance } from "../utils";
 import type { Matrix4 } from "./Matrix4";
 import type { Matrix3 } from "./Matrix3";
 import { Quaternion, QuaternionLike } from "./Quaternion";
 import { EulerLike } from "./Euler";
+import { DumpResult } from "./AbstractMathObject";
 
 type Vector3Like = {
     x: number;
@@ -11,7 +20,7 @@ type Vector3Like = {
     z: number;
 }
 
-class Vector3 extends AbstractMathObject<Vector3Like> {
+class Vector3 extends Vector<Vector3Like> {
     x: number;
     y: number;
     z: number;
@@ -20,24 +29,20 @@ class Vector3 extends AbstractMathObject<Vector3Like> {
         return new Vector3(0, 0, 0);
     }
 
-    static X() {
-        return new Vector3(1, 0, 0);
+    static X(n = 1) {
+        return new Vector3(n, 0, 0);
     }
 
-    static Y() {
-        return new Vector3(0, 1, 0);
+    static Y(n = 1) {
+        return new Vector3(0, n, 0);
     }
 
-    static Z() {
-        return new Vector3(0, 0, 1);
+    static Z(n = 1) {
+        return new Vector3(0, 0, n);
     }
 
     static ONE() {
         return new Vector3(1, 1, 1);
-    }
-
-    static getSquareLength(v: Vector3Like) {
-        return v.x * v.x + v.y * v.y + v.z * v.z;
     }
 
     constructor(x = 0, y = 0, z = 0) {
@@ -47,6 +52,21 @@ class Vector3 extends AbstractMathObject<Vector3Like> {
         this.z = z;
     }
 
+    getComponents(): number[] {
+        return [this.x, this.y, this.z];
+    }
+
+    setComponents(values: number[]): this {
+        this.x = values[0] || 0;
+        this.y = values[1] || 0;
+        this.z = values[2] || 0;
+        return this;
+    }
+
+    protected getComponentsFromLike(v: Vector3Like): number[] {
+        return [v.x, v.y, v.z];
+    }
+
     copy(v: Vector3Like): this {
         this.x = v.x;
         this.y = v.y;
@@ -54,16 +74,18 @@ class Vector3 extends AbstractMathObject<Vector3Like> {
         return this;
     }
 
-    clone(): Vector3 {
-        return new Vector3(this.x, this.y, this.z);
+    clone(): this {
+        return new Vector3(this.x, this.y, this.z) as this;
     }
 
     add(v: Vector3Like): this {
-        return this.addVectors(this, v);
+        _v.copy(v);
+        return this.addVectors(this, _v);
     }
 
     sub(v: Vector3Like): this {
-        return this.subVectors(this, v);
+        _v.copy(v);
+        return this.subVectors(this, _v);
     }
 
     dot(v: Vector3Like): number {
@@ -81,37 +103,6 @@ class Vector3 extends AbstractMathObject<Vector3Like> {
         return this;
     }
 
-    addVectors(v1: Vector3Like, v2: Vector3Like): this {
-        this.x = v1.x + v2.x;
-        this.y = v1.y + v2.y;
-        this.z = v1.z + v2.z;
-        return this;
-    }
-
-    subVectors(v1: Vector3Like, v2: Vector3Like): this {
-        this.x = v1.x - v2.x;
-        this.y = v1.y - v2.y;
-        this.z = v1.z - v2.z;
-        return this;
-    }
-
-    equals(v: Vector3Like, esp = Tolerance.LENGTH_EPS): boolean {
-        return MathUtils.equals(this.x, v.x, esp) && MathUtils.equals(this.y, v.y, esp) && MathUtils.equals(this.z, v.z, esp);
-    }
-
-    multiply(v: Vector3Like): this {
-        this.x *= v.x;
-        this.y *= v.y;
-        this.z *= v.z;
-        return this;
-    }
-
-    divide(v: Vector3Like): this {
-        this.x /= v.x;
-        this.y /= v.y;
-        this.z /= v.z;
-        return this;
-    }
 
     multiplyScalar(v: number): this {
         this.x *= v;
@@ -127,54 +118,13 @@ class Vector3 extends AbstractMathObject<Vector3Like> {
         return this;
     }
 
-    getSquareLength(): number {
-        return Vector3.getSquareLength(this);
-    }
-
-    getLength(): number {
-        return Math.sqrt(this.getSquareLength());
-    }
-
-    setLength(length: number): this {
-        return this.normalize().multiplyScalar(length);
-    }
-
-    normalize(): this {
-        return this.multiplyScalar((1 / this.getLength()) || 1);
-    }
-
     isPerpendicular(v: Vector3Like, esp = Tolerance.CALCULATION_EPS): boolean {
         return MathUtils.equals(this.dot(v), 0, esp);
     }
 
-    negate(): this {
-        return this.multiplyScalar(-1);
-    }
-
     distanceTo(v: Vector3Like): number {
-        return Math.sqrt(this.distanceToSquared(v));
-    }
-
-    distanceToSquared(v: Vector3Like): number {
-        return Math.pow(this.x - v.x, 2) + Math.pow(this.y - v.y, 2) + Math.pow(this.z - v.z, 2);
-    }
-
-    random(min = 0, max = 1): this {
-        return this.set(MathUtils.randomFloat(min, max), MathUtils.randomFloat(min, max), MathUtils.randomFloat(min, max));
-    }
-
-    max(v: Vector3Like): this {
-        this.x = Math.max(this.x, v.x);
-        this.y = Math.max(this.y, v.y);
-        this.z = Math.max(this.z, v.z);
-        return this;
-    }
-
-    min(v: Vector3Like): this {
-        this.x = Math.min(this.x, v.x);
-        this.y = Math.min(this.y, v.y);
-        this.z = Math.min(this.z, v.z);
-        return this;
+        _v.copy(v);
+        return Math.sqrt(this.distanceToSquared(_v));
     }
 
     clamp(min: Vector3Like, max: Vector3Like): this {
@@ -185,7 +135,8 @@ class Vector3 extends AbstractMathObject<Vector3Like> {
     }
 
     angleTo(v: Vector3Like): number {
-        const denominator = Math.sqrt(this.getSquareLength() * Vector3.getSquareLength(v));
+        _v.copy(v);
+        const denominator = Math.sqrt(this.getSquareLength() * _v.getSquareLength());
         if (denominator === 0) return Math.PI / 2;
         const theta = this.dot(v) / denominator;
         return Math.acos(MathUtils.clamp(theta, - 1, 1));
@@ -203,7 +154,8 @@ class Vector3 extends AbstractMathObject<Vector3Like> {
     }
 
     projectOnVector(v: Vector3Like): this {
-        const denominator = Vector3.getSquareLength(v);
+        _v.copy(v);
+        const denominator = _v.getSquareLength();
         if (denominator === 0) return this.set(0, 0, 0);
         const scalar = this.dot(v) / denominator;
         return this.copy(v).multiplyScalar(scalar);
@@ -268,13 +220,6 @@ class Vector3 extends AbstractMathObject<Vector3Like> {
         return this;
     }
 
-    addScalar(scalar: number): this {
-        this.x += scalar;
-        this.y += scalar;
-        this.z += scalar;
-        return this;
-    }
-
     addScaledVector(v: Vector3Like, s: number): this {
         return this.add(_v.copy(v).multiplyScalar(s));
     }
@@ -297,6 +242,7 @@ class Vector3 extends AbstractMathObject<Vector3Like> {
 }
 
 const _v = /*@__PURE__*/ new Vector3();
+const _p = /*@__PURE__*/ new Vector3();
 const _q = /*@__PURE__*/ new Quaternion();
 
 export { Vector3, Vector3Like }

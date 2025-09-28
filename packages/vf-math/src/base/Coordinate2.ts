@@ -2,29 +2,23 @@
  * @Author: wuyifan 1208097313@qq.com
  * @Date: 2025-01-27 10:00:00
  * @LastEditors: wuyifan 1208097313@qq.com
- * @LastEditTime: 2025-09-26 11:30:07
+ * @LastEditTime: 2025-09-28 10:15:40
  * @FilePath: \vf-studio\packages\vf-math\src\base\Coordinate2.ts
  * Copyright (c) 2024 by wuyifan email: 1208097313@qq.com, All Rights Reserved.
  */
-import { AbstractMathObject, DumpResult } from "./AbstractMathObject";
+import { Coordinate, CoordinateLike } from "./Coordinate";
 import { Vector2, type Vector2Like } from "./Vector2";
 import { Matrix3 } from "./Matrix3";
 import { Tolerance } from "../utils";
+import { DumpResult } from "./AbstractMathObject";
 
-type Coordinate2Like = {
-    origin: Vector2Like;
-    dx: Vector2Like;
-    dy: Vector2Like;
-}
+type Coordinate2Like = CoordinateLike<Vector2>;
 
 /**
  * 二维坐标系类
  * 表示一个二维坐标系，包含原点、Dx和Dy方向向量
  */
-class Coordinate2 extends AbstractMathObject<Coordinate2Like> {
-    origin: Vector2;
-    dx: Vector2;  // X轴方向向量
-    dy: Vector2;  // Y轴方向向量
+class Coordinate2 extends Coordinate<Vector2, Coordinate2Like> {
 
     /**
      * 创建标准坐标系（原点在(0,0)，Dx为(1,0)，Dy为(0,1)）
@@ -48,10 +42,11 @@ class Coordinate2 extends AbstractMathObject<Coordinate2Like> {
     }
 
     constructor(origin: Vector2Like = { x: 0, y: 0 }, dx: Vector2Like = { x: 1, y: 0 }, dy: Vector2Like = { x: 0, y: 1 }) {
-        super();
-        this.origin = new Vector2().copy(origin);
-        this.dx = new Vector2().copy(dx).normalize();
-        this.dy = new Vector2().copy(dy).normalize();
+        super(
+            new Vector2().copy(origin),
+            new Vector2().copy(dx).normalize(),
+            new Vector2().copy(dy).normalize()
+        );
         
         // 确保Dy与Dx垂直
         this.orthogonalize();
@@ -61,9 +56,9 @@ class Coordinate2 extends AbstractMathObject<Coordinate2Like> {
      * 复制另一个坐标系
      */
     copy(cs: Coordinate2Like): this {
-        this.origin.copy(cs.origin);
-        this.dx.copy(cs.dx);
-        this.dy.copy(cs.dy);
+        this._origin.copy(cs.origin);
+        this._dx.copy(cs.dx);
+        this._dy.copy(cs.dy);
         return this;
     }
 
@@ -71,16 +66,16 @@ class Coordinate2 extends AbstractMathObject<Coordinate2Like> {
      * 克隆坐标系
      */
     clone(): Coordinate2 {
-        return new Coordinate2(this.origin, this.dx, this.dy);
+        return new Coordinate2(this._origin, this._dx, this._dy);
     }
 
     /**
      * 设置坐标系
      */
     set(origin: Vector2Like, dx: Vector2Like, dy: Vector2Like): this {
-        this.origin.copy(origin);
-        this.dx.copy(dx).normalize();
-        this.dy.copy(dy).normalize();
+        this._origin.copy(origin);
+        this._dx.copy(dx).normalize();
+        this._dy.copy(dy).normalize();
         this.orthogonalize();
         return this;
     }
@@ -90,9 +85,9 @@ class Coordinate2 extends AbstractMathObject<Coordinate2Like> {
      */
     orthogonalize(): this {
         // 计算Dy在Dx上的投影
-        const projection = this.dy.dot(this.dx);
+        const projection = this._dy.dot(this._dx);
         // 从Dy中减去投影，得到垂直分量
-        this.dy.sub(new Vector2().copy(this.dx).multiplyScalar(projection)).normalize();
+        this._dy.sub(new Vector2().copy(this._dx).multiplyScalar(projection)).normalize();
         return this;
     }
 
@@ -100,7 +95,7 @@ class Coordinate2 extends AbstractMathObject<Coordinate2Like> {
      * 检查坐标系是否为左手系
      */
     isLeftHanded(eps = Tolerance.CALCULATION_EPS): boolean {
-        const cross = this.dx.cross(this.dy);
+        const cross = this._dx.cross(this._dy);
         return cross < -eps;
     }
 
@@ -108,10 +103,10 @@ class Coordinate2 extends AbstractMathObject<Coordinate2Like> {
      * 将世界坐标转换为本地坐标
      */
     worldToLocal(worldPoint: Vector2Like): Vector2 {
-        const localPoint = new Vector2().copy(worldPoint).sub(this.origin);
+        const localPoint = new Vector2().copy(worldPoint).sub(this._origin);
         return new Vector2(
-            localPoint.dot(this.dx),
-            localPoint.dot(this.dy)
+            localPoint.dot(this._dx),
+            localPoint.dot(this._dy)
         );
     }
 
@@ -120,9 +115,9 @@ class Coordinate2 extends AbstractMathObject<Coordinate2Like> {
      */
     localToWorld(localPoint: Vector2Like): Vector2 {
         return new Vector2()
-            .copy(this.origin)
-            .add(new Vector2().copy(this.dx).multiplyScalar(localPoint.x))
-            .add(new Vector2().copy(this.dy).multiplyScalar(localPoint.y));
+            .copy(this._origin)
+            .add(new Vector2().copy(this._dx).multiplyScalar(localPoint.x))
+            .add(new Vector2().copy(this._dy).multiplyScalar(localPoint.y));
     }
 
     /**
@@ -130,8 +125,8 @@ class Coordinate2 extends AbstractMathObject<Coordinate2Like> {
      */
     worldVectorToLocal(worldVector: Vector2Like): Vector2 {
         return new Vector2(
-            worldVector.x * this.dx.x + worldVector.y * this.dx.y,
-            worldVector.x * this.dy.x + worldVector.y * this.dy.y
+            worldVector.x * this._dx.x + worldVector.y * this._dx.y,
+            worldVector.x * this._dy.x + worldVector.y * this._dy.y
         );
     }
 
@@ -140,8 +135,8 @@ class Coordinate2 extends AbstractMathObject<Coordinate2Like> {
      */
     localVectorToWorld(localVector: Vector2Like): Vector2 {
         return new Vector2()
-            .copy(this.dx).multiplyScalar(localVector.x)
-            .add(new Vector2().copy(this.dy).multiplyScalar(localVector.y));
+            .copy(this._dx).multiplyScalar(localVector.x)
+            .add(new Vector2().copy(this._dy).multiplyScalar(localVector.y));
     }
 
     /**
@@ -152,17 +147,17 @@ class Coordinate2 extends AbstractMathObject<Coordinate2Like> {
         const sin = Math.sin(angle);
         
         const newDx = new Vector2(
-            this.dx.x * cos - this.dx.y * sin,
-            this.dx.x * sin + this.dx.y * cos
+            this._dx.x * cos - this._dx.y * sin,
+            this._dx.x * sin + this._dx.y * cos
         );
         
         const newDy = new Vector2(
-            this.dy.x * cos - this.dy.y * sin,
-            this.dy.x * sin + this.dy.y * cos
+            this._dy.x * cos - this._dy.y * sin,
+            this._dy.x * sin + this._dy.y * cos
         );
         
-        this.dx.copy(newDx);
-        this.dy.copy(newDy);
+        this._dx.copy(newDx);
+        this._dy.copy(newDy);
         return this;
     }
 
@@ -170,7 +165,7 @@ class Coordinate2 extends AbstractMathObject<Coordinate2Like> {
      * 平移坐标系
      */
     translate(translation: Vector2Like): this {
-        this.origin.add(translation);
+        this._origin.add(translation);
         return this;
     }
 
@@ -179,9 +174,9 @@ class Coordinate2 extends AbstractMathObject<Coordinate2Like> {
      */
     getMatrix(): Matrix3 {
         return new Matrix3(
-            this.dx.x, this.dx.y, 0,
-            this.dy.x, this.dy.y, 0,
-            this.origin.x, this.origin.y, 1
+            this._dx.x, this._dx.y, 0,
+            this._dy.x, this._dy.y, 0,
+            this._origin.x, this._origin.y, 1
         );
     }
 
@@ -189,9 +184,9 @@ class Coordinate2 extends AbstractMathObject<Coordinate2Like> {
      * 从变换矩阵设置坐标系
      */
     setFromMatrix(matrix: Matrix3): this {
-        this.origin.set(matrix.elements[6], matrix.elements[7]);
-        this.dx.set(matrix.elements[0], matrix.elements[1]).normalize();
-        this.dy.set(matrix.elements[3], matrix.elements[4]).normalize();
+        this._origin.set(matrix.elements[6], matrix.elements[7]);
+        this._dx.set(matrix.elements[0], matrix.elements[1]).normalize();
+        this._dy.set(matrix.elements[3], matrix.elements[4]).normalize();
         return this;
     }
 
@@ -199,24 +194,24 @@ class Coordinate2 extends AbstractMathObject<Coordinate2Like> {
      * 比较两个坐标系是否相等
      */
     equals(cs: Coordinate2Like, eps = Tolerance.LENGTH_EPS): boolean {
-        return this.origin.equals(cs.origin, eps) &&
-               this.dx.equals(cs.dx, eps) &&
-               this.dy.equals(cs.dy, eps);
+        return this._origin.equals(cs.origin, eps) &&
+               this._dx.equals(cs.dx, eps) &&
+               this._dy.equals(cs.dy, eps);
     }
 
     /**
      * 获取坐标系的角度（Dx与标准X轴的夹角）
      */
     getAngle(): number {
-        return this.dx.angle();
+        return this._dx.angle();
     }
 
     /**
      * 设置坐标系的角度
      */
     setAngle(angle: number): this {
-        this.dx.set(Math.cos(angle), Math.sin(angle));
-        this.dy.set(-Math.sin(angle), Math.cos(angle));
+        this._dx.set(Math.cos(angle), Math.sin(angle));
+        this._dy.set(-Math.sin(angle), Math.cos(angle));
         return this;
     }
 
@@ -234,11 +229,18 @@ class Coordinate2 extends AbstractMathObject<Coordinate2Like> {
         return {
             type: this.type,
             value: {
-                origin: { x: this.origin.x, y: this.origin.y },
-                dx: { x: this.dx.x, y: this.dx.y },
-                dy: { x: this.dy.x, y: this.dy.y }
+                origin: this._origin,
+                dx: this._dx,
+                dy: this._dy
             }
         };
+    }
+
+    /**
+     * 更新坐标系（实现抽象方法）
+     */
+    protected update(): void {
+        // 二维坐标系不需要额外的更新逻辑
     }
 }
 

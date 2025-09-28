@@ -75,7 +75,7 @@ class Matrix2 extends AbstractMathObject<number[]> {
         const te = this.elements;
         const me = m.elements;
         for (let i = 0; i < 4; i++) {
-            if (MathUtils.equals(te[i], me[i]), eps) return false;
+            if (!MathUtils.equals(te[i], me[i], eps)) return false;
         }
         return true;
     }
