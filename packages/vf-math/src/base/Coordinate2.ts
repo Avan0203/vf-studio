@@ -2,7 +2,7 @@
  * @Author: wuyifan 1208097313@qq.com
  * @Date: 2025-01-27 10:00:00
  * @LastEditors: wuyifan 1208097313@qq.com
- * @LastEditTime: 2025-09-28 10:15:40
+ * @LastEditTime: 2025-09-29 09:51:37
  * @FilePath: \vf-studio\packages\vf-math\src\base\Coordinate2.ts
  * Copyright (c) 2024 by wuyifan email: 1208097313@qq.com, All Rights Reserved.
  */
@@ -162,14 +162,6 @@ class Coordinate2 extends Coordinate<Vector2, Coordinate2Like> {
     }
 
     /**
-     * 平移坐标系
-     */
-    translate(translation: Vector2Like): this {
-        this._origin.add(translation);
-        return this;
-    }
-
-    /**
      * 获取变换矩阵
      */
     getMatrix(): Matrix3 {
@@ -234,13 +226,6 @@ class Coordinate2 extends Coordinate<Vector2, Coordinate2Like> {
                 dy: this._dy
             }
         };
-    }
-
-    /**
-     * 更新坐标系（实现抽象方法）
-     */
-    protected update(): void {
-        // 二维坐标系不需要额外的更新逻辑
     }
 }
 

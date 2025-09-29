@@ -2,12 +2,12 @@
  * @Author: wuyifan 1208097313@qq.com
  * @Date: 2025-09-28 09:42:20
  * @LastEditors: wuyifan 1208097313@qq.com
- * @LastEditTime: 2025-09-28 14:14:43
+ * @LastEditTime: 2025-09-29 11:07:09
  * @FilePath: \vf-studio\packages\vf-math\src\base\Coordinate.ts
  * Copyright (c) 2025 by wuyifan email: 1208097313@qq.com, All Rights Reserved.
  */
 import { AbstractMathObject } from "./AbstractMathObject";
-import { Vector, VectorLike } from "./Vector";
+import { VectorLike } from "./Vector";
 
 /**
  * 坐标系接口 - 定义坐标系的数据结构
@@ -33,65 +33,72 @@ abstract class Coordinate<T extends VectorLike, TLike extends CoordinateLike<T>>
         this._dy = dy;
     }
 
+    set(origin: T, dx: T, dy: T): this {
+        this._origin.copy(origin);
+        this._dx.copy(dx);
+        this._dy.copy(dy);
+        return this;
+    }
+
     /**
      * 获取原点
      */
-    getOrigin(): T {
+    get origin(): T {
         return this._origin.clone();
     }
 
     /**
      * 获取X轴方向向量
      */
-    getDx(): T {
+    get dx(): T {
         return this._dx.clone();
     }
 
     /**
      * 获取Y轴方向向量
      */
-    getDy(): T {
+    get dy(): T {
         return this._dy.clone();
     }
 
     /**
      * 设置原点
      */
-    setOrigin(origin: T): this {
+    set origin(origin: T) {
         this._origin.copy(origin);
-        this.update();
-        return this;
-    }
-    
-    /**
-     * 设置X轴方向向量
-     */
-    setDx(dx: T): this {
-        this._dx.copy(dx);
-        this.update();
-        return this;
-    }
-    
-    /**
-     * 设置Y轴方向向量
-     */
-    setDy(dy: T): this {
-        this._dy.copy(dy);
-        this.update();
-        return this;
+        this.orthogonalize();
     }
 
     /**
-     * 复制坐标系
+     * 设置X轴方向向量
      */
+    set dx(dx: T) {
+        this._dx.copy(dx);
+        this.orthogonalize();
+    }
+
+    /**
+     * 设置Y轴方向向量
+     */
+    set dy(dy: T) {
+        this._dy.copy(dy);
+        this.orthogonalize();
+    }
+
+
     copy(source: TLike): this {
         this._origin.copy(source.origin);
         this._dx.copy(source.dx);
         this._dy.copy(source.dy);
-        this.update();
+        this.orthogonalize();
         return this;
     }
-    
+
+    translate(vector: T): this { 
+        this._origin.add(vector);
+        return this;
+    }
+
     /**
      * 克隆坐标系
      */
@@ -128,19 +135,9 @@ abstract class Coordinate<T extends VectorLike, TLike extends CoordinateLike<T>>
     abstract localVectorToWorld(localVector: T): T;
 
     /**
-     * 平移坐标系
-     */
-    abstract translate(translation: T): this;
-
-    /**
      * 比较两个坐标系是否相等
      */
     abstract equals(coordinate: TLike, eps?: number): boolean;
-
-    /**
-     * 更新坐标系（子类实现）
-     */
-    protected abstract update(): void;
 }
 
 export { Coordinate, CoordinateLike };

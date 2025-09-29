@@ -2,7 +2,7 @@
  * @Author: wuyifan 1208097313@qq.com
  * @Date: 2025-09-28 10:22:44
  * @LastEditors: wuyifan 1208097313@qq.com
- * @LastEditTime: 2025-09-28 14:21:29
+ * @LastEditTime: 2025-09-29 11:10:12
  * @FilePath: \vf-studio\packages\vf-math\src\base\Vector4.ts
  * Copyright (c) 2025 by wuyifan email: 1208097313@qq.com, All Rights Reserved.
  */
@@ -20,7 +20,7 @@ type Vector4Like = {
     y: number;
     z: number;
     w: number;
-}
+} | Vector4;
 
 class Vector4 extends Vector<Vector4Like> {
     x: number = 0;
@@ -349,8 +349,15 @@ class Vector4 extends Vector<Vector4Like> {
     dump(): DumpResult<Vector4Like> {
         return { type: this.type, value: { x: this.x, y: this.y, z: this.z, w: this.w } }
     }
-}
 
+    *[Symbol.iterator]() {
+        yield this.x;
+        yield this.y;
+        yield this.z;
+        yield this.w;
+    }
+}   
+    
 const _v = new Vector4();
 
 export { Vector4 };

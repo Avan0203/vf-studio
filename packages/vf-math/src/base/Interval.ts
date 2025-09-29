@@ -2,7 +2,7 @@
  * @Author: wuyifan 1208097313@qq.com
  * @Date: 2025-01-27 10:00:00
  * @LastEditors: wuyifan 1208097313@qq.com
- * @LastEditTime: 2025-09-26 10:16:37
+ * @LastEditTime: 2025-09-29 10:03:31
  * @FilePath: \vf-studio\packages\vf-math\src\base\Interval.ts
  * Copyright (c) 2024 by wuyifan email: 1208097313@qq.com, All Rights Reserved.
  */
@@ -186,14 +186,6 @@ class Interval extends AbstractMathObject<IntervalLike> {
     translate(offset: number): this {
         this.min += offset;
         this.max += offset;
-        return this;
-    }
-
-    // 缩放区间
-    scale(factor: number, center?: number): this {
-        const centerPoint = center ?? this.getCenter();
-        this.min = centerPoint + (this.min - centerPoint) * factor;
-        this.max = centerPoint + (this.max - centerPoint) * factor;
         return this;
     }
 

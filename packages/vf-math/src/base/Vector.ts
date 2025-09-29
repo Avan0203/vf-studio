@@ -2,7 +2,7 @@
  * @Author: wuyifan 1208097313@qq.com
  * @Date: 2025-01-15 10:00:00
  * @LastEditors: wuyifan 1208097313@qq.com
- * @LastEditTime: 2025-09-28 14:10:01
+ * @LastEditTime: 2025-09-29 09:24:08
  * @FilePath: \vf-studio\packages\vf-math\src\base\Vector.ts
  * Copyright (c) 2024 by wuyifan email: 1208097313@qq.com, All Rights Reserved.
  */
@@ -16,15 +16,18 @@ interface VectorLike {
     clone(): any;
     copy(other: any): any;
     normalize(): any;
-    dot(other: any): number;
-    cross?(other: any): any;
     add(other: any): any;
     sub(other: any): any;
     multiplyScalar(scalar: number): any;
     equals(other: any, eps?: number): boolean;
-    set?(...args: number[]): any;
-    applyQuaternion?(q: any): any;
-    angle?(): number;
+    set(...args: number[]): any;
+    getLength(): number;
+    getSquareLength(): number;
+    distanceTo(v: any): number;
+    distanceToSquared(v: any): number;
+    max(v: any): any;
+    min(v: any): any;
+    multiply(v: any): any;
 }
 
 abstract class Vector<T> extends AbstractMathObject<T> {

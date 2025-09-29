@@ -2,7 +2,7 @@
  * @Author: wuyifan 1208097313@qq.com
  * @Date: 2025-01-27 10:00:00
  * @LastEditors: wuyifan 1208097313@qq.com
- * @LastEditTime: 2025-09-26 09:44:52
+ * @LastEditTime: 2025-09-29 11:06:04
  * @FilePath: \vf-studio\packages\vf-math\src\base\Coordinate3.ts
  * Copyright (c) 2024 by wuyifan email: 1208097313@qq.com, All Rights Reserved.
  */
@@ -81,7 +81,7 @@ class Coordinate3 extends Coordinate<Vector3, Coordinate3Like> {
         // 通过叉积重新计算dz轴
         this.dz = this._dx.cross(this._dy).normalize();
 
-        this.update();
+        this.orthogonalize();
         return this;
     }
 
@@ -304,8 +304,7 @@ class Coordinate3 extends Coordinate<Vector3, Coordinate3Like> {
     /**
      * 从四元数设置坐标系
      */
-    setFromQuaternion(origin: Vector3Like, quaternion: QuaternionLike): this {
-        this._origin.copy(origin);
+    setFromQuaternion(quaternion: QuaternionLike): this {
         this._dx.set(1, 0, 0).applyQuaternion(quaternion);
         this._dy.set(0, 1, 0).applyQuaternion(quaternion);
 
@@ -371,14 +370,6 @@ class Coordinate3 extends Coordinate<Vector3, Coordinate3Like> {
                 dy: this._dy
             }
         };
-    }
-
-    /**
-     * 更新坐标系（实现抽象方法）
-     */
-    protected update(): void {
-        // 重新计算dz轴
-        this.dz = this._dx.cross(this._dy).normalize();
     }
 }
 

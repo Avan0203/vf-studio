@@ -2,30 +2,30 @@
  * @Author: wuyifan 1208097313@qq.com
  * @Date: 2025-01-27 10:30:00
  * @LastEditors: wuyifan 1208097313@qq.com
- * @LastEditTime: 2025-09-26 10:25:32
- * @FilePath: \vf-studio\packages\vf-math\src\base\CircularInterval.ts
+ * @LastEditTime: 2025-09-29 10:00:59
+ * @FilePath: \vf-studio\packages\vf-math\src\base\PeriodInterval.ts
  * Copyright (c) 2024 by wuyifan email: 1208097313@qq.com, All Rights Reserved.
  */
 import { Interval, IntervalLike } from "./Interval";
 import { DEG2RAD, DOUBLE_PI, MathUtils, RAD2DEG, Tolerance } from "../utils";
 
-type CircularIntervalLike = IntervalLike & {
+type PeriodIntervalLike = IntervalLike & {
     period?: number;
 }
 
-class CircularInterval extends Interval {
+class PeriodInterval extends Interval {
     period: number;
 
     static FULL_CIRCLE(period = DOUBLE_PI) {
-        return new CircularInterval(0, period, period);
+        return new PeriodInterval(0, period, period);
     }
 
     static HALF_CIRCLE(period = DOUBLE_PI) {
-        return new CircularInterval(0, period / 2, period);
+        return new PeriodInterval(0, period / 2, period);
     }
 
     static QUARTER_CIRCLE(period = DOUBLE_PI) {
-        return new CircularInterval(0, period / 4, period);
+        return new PeriodInterval(0, period / 4, period);
     }
 
     constructor(min = 0, max = DOUBLE_PI, period = DOUBLE_PI) {
@@ -33,14 +33,14 @@ class CircularInterval extends Interval {
         this.period = period;
     }
 
-    copy(interval: CircularIntervalLike): this {
+    copy(interval: PeriodIntervalLike): this {
         super.copy(interval);
         this.period = interval.period ?? DOUBLE_PI;
         return this;
     }
 
-    clone(): CircularInterval {
-        return new CircularInterval(this.min, this.max, this.period);
+    clone(): PeriodInterval {
+        return new PeriodInterval(this.min, this.max, this.period);
     }
 
     set(min: number, max: number): this {
@@ -48,7 +48,7 @@ class CircularInterval extends Interval {
         return this;
     }
 
-    equals(interval: CircularIntervalLike, esp = Tolerance.LENGTH_EPS): boolean {
+    equals(interval: PeriodIntervalLike, esp = Tolerance.LENGTH_EPS): boolean {
         return super.equals(interval, esp) && 
                MathUtils.equals(this.period, interval.period ?? DOUBLE_PI, esp);
     }
@@ -192,8 +192,8 @@ class CircularInterval extends Interval {
     }
 
     // 转换为弧度
-    toRadians(): CircularInterval {
-        return new CircularInterval(
+    toRadians(): PeriodInterval {
+        return new PeriodInterval(
             this.min * DEG2RAD,
             this.max * DEG2RAD,
             this.period * DEG2RAD
@@ -201,8 +201,8 @@ class CircularInterval extends Interval {
     }
 
     // 转换为角度
-    toDegrees(): CircularInterval {
-        return new CircularInterval(
+    toDegrees(): PeriodInterval {
+        return new PeriodInterval(
             this.min * RAD2DEG,
             this.max * RAD2DEG,
             this.period * RAD2DEG
@@ -226,8 +226,8 @@ class CircularInterval extends Interval {
     }
 
     // 判断两个角度区间是否重叠（考虑周期）
-    overlapsAngle(interval: CircularIntervalLike): boolean {
-        const other = new CircularInterval(interval.min, interval.max, interval.period ?? DOUBLE_PI);
+    overlapsAngle(interval: PeriodIntervalLike): boolean {
+        const other = new PeriodInterval(interval.min, interval.max, interval.period ?? DOUBLE_PI);
         
         // 检查所有可能的周期重复
         for (let i = -1; i <= 1; i++) {
@@ -243,8 +243,8 @@ class CircularInterval extends Interval {
     }
 
     // 合并角度区间
-    unionAngle(interval: CircularIntervalLike): this {
-        const other = new CircularInterval(interval.min, interval.max, interval.period ?? DOUBLE_PI);
+    unionAngle(interval: PeriodIntervalLike): this {
+        const other = new PeriodInterval(interval.min, interval.max, interval.period ?? DOUBLE_PI);
         
         // 找到所有可能的边界点
         const points = [
@@ -288,4 +288,4 @@ class CircularInterval extends Interval {
     }
 }
 
-export { CircularInterval, CircularIntervalLike };
+export { PeriodInterval, PeriodIntervalLike };

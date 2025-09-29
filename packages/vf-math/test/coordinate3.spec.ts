@@ -2,7 +2,7 @@
  * @Author: wuyifan 1208097313@qq.com
  * @Date: 2025-01-27 11:00:00
  * @LastEditors: wuyifan 1208097313@qq.com
- * @LastEditTime: 2025-09-26 10:42:51
+ * @LastEditTime: 2025-09-29 11:11:50
  * @FilePath: \vf-studio\packages\vf-math\test\coordinate3.spec.ts
  * Copyright (c) 2024 by wuyifan email: 1208097313@qq.com, All Rights Reserved.
  */
@@ -305,7 +305,7 @@ describe('Coordinate3', () => {
         const origin = new Vector3(1, 2, 3);
         const quaternion = new Quaternion().setFromAxisAngle(new Vector3(0, 0, 1), Math.PI / 2);
         const cs = new Coordinate3();
-        cs.setFromQuaternion(origin, quaternion);
+        cs.setFromQuaternion(quaternion);
         expect(cs.origin.x).toBe(1);
         expect(cs.origin.y).toBe(2);
         expect(cs.origin.z).toBe(3);

@@ -2,7 +2,7 @@
  * @Author: wuyifan 1208097313@qq.com
  * @Date: 2025-08-20 17:14:03
  * @LastEditors: wuyifan 1208097313@qq.com
- * @LastEditTime: 2025-09-28 13:55:20
+ * @LastEditTime: 2025-09-29 11:10:20
  * @FilePath: \vf-studio\packages\vf-math\src\base\Vector2.ts
  * Copyright (c) 2024 by wuyifan email: 1208097313@qq.com, All Rights Reserved.
  */
@@ -14,7 +14,7 @@ import { DumpResult } from "./AbstractMathObject";
 type Vector2Like = {
     x: number;
     y: number;
-}
+} | Vector2;
 
 class Vector2 extends Vector<Vector2Like> {
     x: number;
@@ -120,7 +120,7 @@ class Vector2 extends Vector<Vector2Like> {
         return this.copy(v1).lerp(v2, t);
     }
 
-    toArray(target:any[] = [], offset = 0): any[] {
+    toArray(target: any[] = [], offset = 0): any[] {
         target[offset] = this.x;
         target[offset + 1] = this.y;
         return target;
@@ -146,10 +146,15 @@ class Vector2 extends Vector<Vector2Like> {
     }
 
     dump(): DumpResult<Vector2Like> {
-        return {  type: this.type, value: { x: this.x, y: this.y } }
+        return { type: this.type, value: { x: this.x, y: this.y } }
+    }
+
+    *[Symbol.iterator]() {
+        yield this.x;
+        yield this.y;
     }
 }
 
 const _v = new Vector2();
 
-export {Vector2,Vector2Like} 
+export { Vector2, Vector2Like } 

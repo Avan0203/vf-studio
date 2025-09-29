@@ -2,7 +2,7 @@
  * @Author: wuyifan 1208097313@qq.com
  * @Date: 2025-09-04 17:47:57
  * @LastEditors: wuyifan 1208097313@qq.com
- * @LastEditTime: 2025-09-28 13:53:46
+ * @LastEditTime: 2025-09-29 11:09:38
  * @FilePath: \vf-studio\packages\vf-math\src\base\Vector3.ts
  * Copyright (c) 2025 by wuyifan email: 1208097313@qq.com, All Rights Reserved.
  */
@@ -18,7 +18,7 @@ type Vector3Like = {
     x: number;
     y: number;
     z: number;
-}
+} | Vector3;
 
 class Vector3 extends Vector<Vector3Like> {
     x: number;
@@ -78,12 +78,12 @@ class Vector3 extends Vector<Vector3Like> {
         return new Vector3(this.x, this.y, this.z) as this;
     }
 
-    add(v: Vector3Like): this {
+    add(v: Vector3Like | Vector3): this {
         _v.copy(v);
         return this.addVectors(this, _v);
     }
 
-    sub(v: Vector3Like): this {
+    sub(v: Vector3Like | Vector3): this {
         _v.copy(v);
         return this.subVectors(this, _v);
     }
@@ -238,6 +238,12 @@ class Vector3 extends Vector<Vector3Like> {
 
     dump(): DumpResult<Vector3Like> {
         return { type: this.type, value: { x: this.x, y: this.y, z: this.z } }
+    }
+
+    *[Symbol.iterator]() {
+        yield this.x;
+        yield this.y;
+        yield this.z;
     }
 }
 
