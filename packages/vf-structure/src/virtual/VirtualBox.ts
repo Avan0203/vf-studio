@@ -6,7 +6,6 @@
  * @FilePath: \vf-studio\packages\vf-engine\src\geometry\VirtualBox.ts
  * Copyright (c) 2024 by wuyifan email: 1208097313@qq.com, All Rights Reserved.
  */
-import { defu } from "defu";
 import { VirtualGeometry } from "./VirtualGeometry";
 
 // 立方体参数接口
@@ -46,11 +45,6 @@ export class VirtualBox extends VirtualGeometry<BoxParams> {
     }
     public set depth(depth: number) {
         this.params.depth = depth;
-    }
-    
-    public deserialize(data: any): this {
-        this.params = defu(defaultParams, data as BoxParams);
-        return this;
     }
 }
 

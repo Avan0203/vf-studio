@@ -2,13 +2,12 @@
  * @Author: wuyifan 1208097313@qq.com
  * @Date: 2025-01-27 10:00:00
  * @LastEditors: wuyifan 1208097313@qq.com
- * @LastEditTime: 2025-09-23 16:12:25
- * @FilePath: \vf-studio\packages\vf-engine\src\geometry\VirtualTorus.ts
+ * @LastEditTime: 2025-10-11 15:51:51
+ * @FilePath: \vf-studio\packages\vf-structure\src\virtual\VirtualTorus.ts
  * Copyright (c) 2024 by wuyifan email: 1208097313@qq.com, All Rights Reserved.
  */
 
 import { VirtualGeometry } from "./VirtualGeometry";
-import defu from "defu";
 
 // 圆环参数接口
 export interface TorusParams {
@@ -55,9 +54,5 @@ export class VirtualTorus extends VirtualGeometry<TorusParams> {
     }
     public set tubularSegments(tubularSegments: number) {
         this.params.tubularSegments = tubularSegments;
-    }
-    public deserialize(data: Partial<TorusParams>): this {
-        this.params = defu(defaultParams, data);
-        return this;
     }
 }

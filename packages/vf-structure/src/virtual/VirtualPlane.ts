@@ -2,11 +2,10 @@
  * @Author: wuyifan 1208097313@qq.com
  * @Date: 2025-09-23 16:04:08
  * @LastEditors: wuyifan 1208097313@qq.com
- * @LastEditTime: 2025-09-23 16:09:56
- * @FilePath: \vf-studio\packages\vf-engine\src\geometry\VirtualPlane.ts
+ * @LastEditTime: 2025-10-11 15:51:30
+ * @FilePath: \vf-studio\packages\vf-structure\src\virtual\VirtualPlane.ts
  * Copyright (c) 2025 by wuyifan email: 1208097313@qq.com, All Rights Reserved.
  */
-import defu from "defu";
 import { VirtualGeometry } from "./VirtualGeometry";
 
 // 圆柱体参数接口
@@ -36,11 +35,6 @@ class VirtualPlane extends VirtualGeometry<PlaneParams> {
     }
     public set height(height: number) {
         this.params.height = height;
-    }
-
-    public deserialize(data: Partial<PlaneParams>): this {
-        this.params = defu(defaultParams, data);
-        return this;
     }
 }
 

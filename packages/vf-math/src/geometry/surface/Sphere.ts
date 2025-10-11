@@ -51,7 +51,7 @@ class SphereSurface extends CoordinateSurface {
     getNormalAt(uv: Vector2): Vector3 {
         // 球面上任意点的法向量都是从球心指向该点的单位向量
         const point = this.getPointAt(uv);
-        const normal = point.sub(this._center).normalize();
+        const normal = point.clone().sub(this._center).normalize();
         return normal;
     }
 

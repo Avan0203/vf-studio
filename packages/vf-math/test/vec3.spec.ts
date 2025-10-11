@@ -100,6 +100,78 @@ describe('Vector3', () => {
     expect(v3.z).toBe(-3);  // 1*5 - 2*4 = -3
   });
 
+  it('should handle cross product with self-modification correctly', () => {
+    const v1 = new Vector3(1, 0, 0);
+    const v2 = new Vector3(0, 1, 0);
+    
+    // v1.cross(v2) 应该修改 v1 并返回 v1
+    const result = v1.cross(v2);
+    
+    expect(result).toBe(v1);  // 应该返回自身
+    expect(v1.x).toBe(0);
+    expect(v1.y).toBe(0);
+    expect(v1.z).toBe(1);  // (1,0,0) × (0,1,0) = (0,0,1)
+  });
+
+  it('should handle cross product: X × Y = Z', () => {
+    const x = new Vector3(1, 0, 0);
+    const y = new Vector3(0, 1, 0);
+    x.cross(y);
+    
+    expect(x.x).toBeCloseTo(0);
+    expect(x.y).toBeCloseTo(0);
+    expect(x.z).toBeCloseTo(1);
+  });
+
+  it('should handle cross product: Y × Z = X', () => {
+    const y = new Vector3(0, 1, 0);
+    const z = new Vector3(0, 0, 1);
+    y.cross(z);
+    
+    expect(y.x).toBeCloseTo(1);
+    expect(y.y).toBeCloseTo(0);
+    expect(y.z).toBeCloseTo(0);
+  });
+
+  it('should handle cross product: Z × X = Y', () => {
+    const z = new Vector3(0, 0, 1);
+    const x = new Vector3(1, 0, 0);
+    z.cross(x);
+    
+    expect(z.x).toBeCloseTo(0);
+    expect(z.y).toBeCloseTo(1);
+    expect(z.z).toBeCloseTo(0);
+  });
+
+  it('should handle clone().cross() pattern used in Coordinate3', () => {
+    const dx = new Vector3(1, 0, 0);
+    const dy = new Vector3(0, 1, 0);
+    
+    // 这是 Coordinate3.orthogonalize() 中使用的模式
+    const dz = dx.clone().cross(dy);
+    
+    expect(dz.x).toBeCloseTo(0);
+    expect(dz.y).toBeCloseTo(0);
+    expect(dz.z).toBeCloseTo(1);
+    
+    // 确保原始向量没有被修改
+    expect(dx.x).toBe(1);
+    expect(dx.y).toBe(0);
+    expect(dx.z).toBe(0);
+  });
+
+  it('should handle crossVectors with this as first parameter', () => {
+    const v = new Vector3(1, 0, 0);
+    const other = new Vector3(0, 1, 0);
+    
+    // 直接调用 crossVectors(this, other)
+    v.crossVectors(v, other);
+    
+    expect(v.x).toBeCloseTo(0);
+    expect(v.y).toBeCloseTo(0);
+    expect(v.z).toBeCloseTo(1);
+  });
+
   it('should check equality of vectors correctly', () => {
     const v1 = new Vector3(1, 2, 3);
     const v2 = new Vector3(1, 2, 3);

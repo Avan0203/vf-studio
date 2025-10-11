@@ -2,8 +2,8 @@
  * @Author: wuyifan 1208097313@qq.com
  * @Date: 2025-01-27 10:00:00
  * @LastEditors: wuyifan 1208097313@qq.com
- * @LastEditTime: 2025-09-23 15:59:18
- * @FilePath: \vf-studio\packages\vf-engine\src\geometry\VirtualCone.ts
+ * @LastEditTime: 2025-10-11 15:51:12
+ * @FilePath: \vf-studio\packages\vf-structure\src\virtual\VirtualCone.ts
  * Copyright (c) 2024 by wuyifan email: 1208097313@qq.com, All Rights Reserved.
  */
 import defu from "defu";
@@ -53,11 +53,5 @@ export class VirtualCone extends VirtualGeometry<ConeParams> {
     }
     public set openEnded(openEnded: boolean) {
         this.params.openEnded = openEnded;
-    }
-
-
-    public deserialize(data: Partial<ConeParams>): this {
-        this.params = defu(defaultParams, data);
-        return this;
     }
 }

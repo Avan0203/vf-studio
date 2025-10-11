@@ -2,12 +2,11 @@
  * @Author: wuyifan 1208097313@qq.com
  * @Date: 2025-01-27 10:00:00
  * @LastEditors: wuyifan 1208097313@qq.com
- * @LastEditTime: 2025-09-23 16:10:23
- * @FilePath: \vf-studio\packages\vf-engine\src\geometry\VirtualSphere.ts
+ * @LastEditTime: 2025-10-11 15:51:38
+ * @FilePath: \vf-studio\packages\vf-structure\src\virtual\VirtualSphere.ts
  * Copyright (c) 2024 by wuyifan email: 1208097313@qq.com, All Rights Reserved.
  */
 
-import { defu } from "defu";
 import { VirtualGeometry } from "./VirtualGeometry";
 
 // 球体参数接口
@@ -31,11 +30,5 @@ export class VirtualSphere extends VirtualGeometry<SphereParams> {
 
     public set radius(radius: number) {
         this.params.radius = radius;
-    }
-    
-
-    public deserialize(data: Partial<SphereParams>): this {
-        this.params = defu(defaultParams, data);
-        return this;
     }
 }

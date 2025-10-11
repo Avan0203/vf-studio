@@ -6,7 +6,6 @@
  * @FilePath: \vf-studio\packages\vf-engine\src\geometry\VirtualCylinder.ts
  * Copyright (c) 2024 by wuyifan email: 1208097313@qq.com, All Rights Reserved.
  */
-import defu from "defu";
 import { VirtualGeometry } from "./VirtualGeometry";
 
 // 圆柱体参数接口
@@ -44,10 +43,5 @@ export class VirtualCylinder extends VirtualGeometry<CylinderParams> {
     }
     public set radialSegments(radialSegments: number) {
         this.params.radialSegments = radialSegments;
-    }
-
-    public deserialize(data: Partial<CylinderParams>): this {
-        this.params = defu(defaultParams, data);
-        return this;
     }
 }

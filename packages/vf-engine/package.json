@@ -9,8 +9,10 @@
     "dev": "vite"
   },
   "devDependencies": {
+    "@types/three": "^0.180.0",
     "@vf/cli": "workspace:*",
     "@vf/core": "workspace:*",
-    "@vf/math": "workspace:*"
+    "@vf/math": "workspace:*",
+    "three": "^0.180.0"
   }
 }

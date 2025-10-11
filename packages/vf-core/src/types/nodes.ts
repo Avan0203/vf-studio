@@ -2,7 +2,7 @@
  * @Author: wuyifan 1208097313@qq.com
  * @Date: 2025-09-22 15:31:00
  * @LastEditors: wuyifan 1208097313@qq.com
- * @LastEditTime: 2025-09-25 17:24:03
+ * @LastEditTime: 2025-10-11 16:05:58
  * @FilePath: \vf-studio\packages\vf-core\src\types\nodes.ts
  * Copyright (c) 2024 by wuyifan email: 1208097313@qq.com, All Rights Reserved.
  */
@@ -13,7 +13,6 @@
 import { Vector2, Vector3 } from "@vf/math";
 
 enum GNodeType {
-    Virtual = 'virtual',
     Curve = 'curve',
     Point = 'point',
     Text = 'text',
@@ -53,7 +52,7 @@ interface GSpriteOptions {
 }
 
 interface GMeshOptions {
-    vertices?: number[];
+    vertices: number[];
     indices?: number[];
     normals?: number[];
     uvs?: number[];

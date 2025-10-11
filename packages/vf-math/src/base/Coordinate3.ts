@@ -64,7 +64,7 @@ class Coordinate3 extends Coordinate<Vector3, Coordinate3Like> {
         );
 
         // 通过叉积计算dz轴，确保坐标系的正交性
-        this.dz = this._dx.cross(this._dy).normalize();
+        this.dz = this._dx.clone().cross(this._dy).normalize();
 
         // 确保坐标系正交（主要处理dx和dy可能不完全正交的情况）
         this.orthogonalize();
@@ -79,7 +79,7 @@ class Coordinate3 extends Coordinate<Vector3, Coordinate3Like> {
         this._dy.copy(cs.dy);
 
         // 通过叉积重新计算dz轴
-        this.dz = this._dx.cross(this._dy).normalize();
+        this.dz = this._dx.clone().cross(this._dy).normalize();
 
         this.orthogonalize();
         return this;
@@ -101,7 +101,7 @@ class Coordinate3 extends Coordinate<Vector3, Coordinate3Like> {
         this._dy.copy(dy).normalize();
 
         // 通过叉积计算dz轴
-        this.dz = this._dx.cross(this._dy).normalize();
+        this.dz = this._dx.clone().cross(this._dy).normalize();
 
         // 确保坐标系正交
         this.orthogonalize();
@@ -117,13 +117,8 @@ class Coordinate3 extends Coordinate<Vector3, Coordinate3Like> {
         const projectionY = this._dy.dot(this._dx);
         this._dy.sub(new Vector3().copy(this._dx).multiplyScalar(projectionY)).normalize();
 
-        // 正交化Dz轴
-        const projectionZX = this.dz.dot(this._dx);
-        const projectionZY = this.dz.dot(this._dy);
-        this.dz
-            .sub(new Vector3().copy(this._dx).multiplyScalar(projectionZX))
-            .sub(new Vector3().copy(this._dy).multiplyScalar(projectionZY))
-            .normalize();
+        // Dz轴通过叉积重新计算，确保正交
+        this.dz = this._dx.clone().cross(this._dy).normalize();
 
         return this;
     }
@@ -132,7 +127,7 @@ class Coordinate3 extends Coordinate<Vector3, Coordinate3Like> {
      * 检查坐标系是否为左手系
      */
     isLeftHanded(eps = Tolerance.CALCULATION_EPS): boolean {
-        const cross = this._dx.cross(this._dy);
+        const cross = this._dx.clone().cross(this._dy);
         return cross.dot(this.dz) < -eps;
     }
 
@@ -309,7 +304,7 @@ class Coordinate3 extends Coordinate<Vector3, Coordinate3Like> {
         this._dy.set(0, 1, 0).applyQuaternion(quaternion);
 
         // 通过叉积计算dz轴
-        this.dz = this._dx.cross(this._dy).normalize();
+        this.dz = this._dx.clone().cross(this._dy).normalize();
 
         return this;
     }
@@ -342,12 +337,12 @@ class Coordinate3 extends Coordinate<Vector3, Coordinate3Like> {
 
         // 重新计算Dx轴和Dy轴以保持正交
         if (Math.abs(this.dz.dot(Vector3.X())) < 0.9) {
-            this._dx = Vector3.X().cross(this.dz).normalize();
+            this._dx = Vector3.X().clone().cross(this.dz).normalize();
         } else {
-            this._dx = Vector3.Y().cross(this.dz).normalize();
+            this._dx = Vector3.Y().clone().cross(this.dz).normalize();
         }
 
-        this._dy = this.dz.cross(this._dx).normalize();
+        this._dy = this.dz.clone().cross(this._dx).normalize();
         return this;
     }
 

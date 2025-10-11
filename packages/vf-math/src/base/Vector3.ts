@@ -97,9 +97,13 @@ class Vector3 extends Vector<Vector3Like> {
     }
 
     crossVectors(v1: Vector3Like, v2: Vector3Like): this {
-        this.x = v1.y * v2.z - v1.z * v2.y;
-        this.y = v1.z * v2.x - v1.x * v2.z;
-        this.z = v1.x * v2.y - v1.y * v2.x;
+        // 先保存v1的值，因为如果v1===this，修改this会影响后续计算
+        const ax = v1.x, ay = v1.y, az = v1.z;
+        const bx = v2.x, by = v2.y, bz = v2.z;
+        
+        this.x = ay * bz - az * by;
+        this.y = az * bx - ax * bz;
+        this.z = ax * by - ay * bx;
         return this;
     }
 
