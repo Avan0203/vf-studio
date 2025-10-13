@@ -2,7 +2,7 @@
  * @Author: wuyifan 1208097313@qq.com
  * @Date: 2025-10-11
  * @LastEditors: wuyifan 1208097313@qq.com
- * @LastEditTime: 2025-10-11 17:22:21
+ * @LastEditTime: 2025-10-13 14:36:49
  * @FilePath: \vf-studio\packages\vf-math\src\geometry\surface\SurfaceMesh.ts
  * Copyright (c) 2025 by wuyifan email: 1208097313@qq.com, All Rights Reserved.
  */
@@ -49,11 +49,9 @@ export function subdivideSurface(
         for (let i = 0; i <= uSegments; i++) {
             const u = uMin + (uMax - uMin) * (i / uSegments);
             const uv = new Vector2(u, v);
-            console.log('uv: ', uv);
             
             // 获取点坐标
             const point = surface.getPointAt(uv);
-            console.log('point: ', point);
             positions.push(point.x, point.y, point.z);
             
             // 获取法向量
@@ -76,8 +74,9 @@ export function subdivideSurface(
             const d = (i + 1) + j * (uSegments + 1);
 
             // 每个四边形分成两个三角形
-            indices.push(a, b, d);
-            indices.push(b, c, d);
+            // 反转绕序以配合 V 方向反转后的顶点顺序
+            indices.push(a, d, b);
+            indices.push(b, d, c);
         }
     }
 

@@ -2,7 +2,7 @@
  * @Author: wuyifan 1208097313@qq.com
  * @Date: 2025-01-27 10:00:00
  * @LastEditors: wuyifan 1208097313@qq.com
- * @LastEditTime: 2025-09-29 10:03:31
+ * @LastEditTime: 2025-10-13 10:24:17
  * @FilePath: \vf-studio\packages\vf-math\src\base\Interval.ts
  * Copyright (c) 2024 by wuyifan email: 1208097313@qq.com, All Rights Reserved.
  */
@@ -190,8 +190,10 @@ class Interval extends AbstractMathObject<IntervalLike> {
     }
 
     // 将值限制在区间内
-    clamp(value: number): number {
-        return MathUtils.clamp(value, this.min, this.max);
+    clamp(interval: Interval): this {
+       this.min = MathUtils.clamp(this.min, interval.min, interval.max);
+       this.max = MathUtils.clamp(this.max, interval.min, interval.max);
+       return this;
     }
 
     // 获取区间内的随机值

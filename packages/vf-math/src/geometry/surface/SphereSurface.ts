@@ -5,6 +5,10 @@ class SphereSurface extends CoordinateSurface {
     private _center: Vector3;
     private _radius: number;
 
+    // 球面的自然参数域：经度 [0, 2π]，纬度 [0, π]
+    protected static override DefaultU = PeriodInterval.FULL_CIRCLE();
+    protected static override DefaultV = new Interval(0, Math.PI);
+
     constructor(center: Vector3, radius: number) {
         super();
         this._center = center.clone();
@@ -36,7 +40,7 @@ class SphereSurface extends CoordinateSurface {
     getPointAt(uv: Vector2): Vector3 {
         // 球面参数化：u 是经度 (0 到 2π)，v 是纬度 (0 到 π)
         const u = uv.x; // 经度
-        const v = uv.y; // 纬度
+        const v = Math.PI - uv.y; // 纬度，反转以修复UV上下颠倒
         
         // 球面参数方程
         const x = this._radius * Math.sin(v) * Math.cos(u);
@@ -49,7 +53,7 @@ class SphereSurface extends CoordinateSurface {
     }
 
     getNormalAt(uv: Vector2): Vector3 {
-        // 球面上任意点的法向量都是从球心指向该点的单位向量
+        // 球面上任意点的法向量都是从球心指向该点的单位向量（外法向量）
         const point = this.getPointAt(uv);
         const normal = point.clone().sub(this._center).normalize();
         return normal;
@@ -66,8 +70,8 @@ class SphereSurface extends CoordinateSurface {
             return new Vector2(0, 0);
         }
         
-        // 计算纬度 v (0 到 π)
-        const v = Math.acos(localPoint.z / r);
+        // 计算纬度 v (0 到 π)，反转以修复UV上下颠倒
+        const v = Math.PI - Math.acos(localPoint.z / r);
         
         // 计算经度 u (0 到 2π)
         let u = Math.atan2(localPoint.y, localPoint.x);
@@ -76,17 +80,6 @@ class SphereSurface extends CoordinateSurface {
         }
         
         return new Vector2(u, v);
-    }
-
-    getSurfaceBounds(): { u: PeriodInterval, v: Interval } {
-        return {
-            u: PeriodInterval.FULL_CIRCLE(), // 经度：0 到 2π
-            v: new Interval(0, Math.PI)      // 纬度：0 到 π
-        };
-    }
-
-    getUVBounds(): { u: PeriodInterval, v: Interval } {
-        return this.getSurfaceBounds();
     }
 
     reverse(): this {
