@@ -2,7 +2,7 @@
  * @Author: wuyifan 1208097313@qq.com
  * @Date: 2025-01-27 10:00:00
  * @LastEditors: wuyifan 1208097313@qq.com
- * @LastEditTime: 2025-09-29 11:06:04
+ * @LastEditTime: 2025-10-14 17:34:10
  * @FilePath: \vf-studio\packages\vf-math\src\base\Coordinate3.ts
  * Copyright (c) 2024 by wuyifan email: 1208097313@qq.com, All Rights Reserved.
  */
@@ -20,7 +20,7 @@ type Coordinate3Like = CoordinateLike<Vector3>;
  * 表示一个三维坐标系，包含原点、Dx、Dy和Dz方向向量
 */
 class Coordinate3 extends Coordinate<Vector3, Coordinate3Like> {
-    dz: Vector3;  // Z轴方向向量
+    _dz = new Vector3();  // Z轴方向向量
 
     /**
      * 创建标准坐标系（原点在(0,0,0)，Dx为(1,0,0)，Dy为(0,1,0)，Dz为(0,0,1)）
@@ -52,22 +52,25 @@ class Coordinate3 extends Coordinate<Vector3, Coordinate3Like> {
         return new Coordinate3(origin, dx, dy);
     }
 
-    constructor(
-        origin: Vector3Like = { x: 0, y: 0, z: 0 },
-        dx: Vector3Like = { x: 1, y: 0, z: 0 },
-        dy: Vector3Like = { x: 0, y: 1, z: 0 }
-    ) {
-        super(
-            new Vector3().copy(origin),
-            new Vector3().copy(dx).normalize(),
-            new Vector3().copy(dy).normalize()
-        );
+    constructor()
+    constructor(origin: Vector3Like, dz: Vector3Like)
+    constructor(origin: Vector3Like, dx: Vector3Like, dy: Vector3Like)
 
-        // 通过叉积计算dz轴，确保坐标系的正交性
-        this.dz = this._dx.clone().cross(this._dy).normalize();
+    constructor(origin?: Vector3Like, dx?: Vector3Like, dy?: Vector3Like) {
+        // 先调用父类构造函数，使用默认值
+        super(Vector3.ZERO(), Vector3.X(), Vector3.Y());
+        this._dz.copy(Vector3.Z());
 
-        // 确保坐标系正交（主要处理dx和dy可能不完全正交的情况）
-        this.orthogonalize();
+        // 如果提供了参数，则使用set方法设置
+        if (origin !== undefined && dx !== undefined) {
+            if (dy === undefined) {
+                // 从原点和dz方向构建坐标系
+                this.set(origin, dx);
+            } else {
+                // 从原点和dx、dy方向构建坐标系
+                this.set(origin, dx, dy);
+            }
+        }
     }
 
     /**
@@ -79,7 +82,7 @@ class Coordinate3 extends Coordinate<Vector3, Coordinate3Like> {
         this._dy.copy(cs.dy);
 
         // 通过叉积重新计算dz轴
-        this.dz = this._dx.clone().cross(this._dy).normalize();
+        this._dz.copy(this._dx.clone().cross(this._dy).normalize());
 
         this.orthogonalize();
         return this;
@@ -95,13 +98,37 @@ class Coordinate3 extends Coordinate<Vector3, Coordinate3Like> {
     /**
      * 设置坐标系
      */
-    set(origin: Vector3Like, dx: Vector3Like, dy: Vector3Like): this {
+    set(origin: Vector3Like, dz: Vector3Like): this;
+    set(origin: Vector3Like, dx: Vector3Like, dy: Vector3Like): this;
+    set(origin: Vector3Like, dx: Vector3Like, dy?: Vector3Like): this {
         this._origin.copy(origin);
-        this._dx.copy(dx).normalize();
-        this._dy.copy(dy).normalize();
+        if (dy === undefined) {
+            // 从原点和dz方向设置坐标系
+            this._dz.copy(dx).normalize(); // 这里dx实际是dz参数
+            
+            // 计算Dx轴：选择一个与Dz不共线的向量，然后通过叉积得到Dx
+            let dxVector: Vector3;
+            if (Math.abs(this._dz.dot(Vector3.X())) < 0.9) {
+                // 如果Dz与X轴不接近平行，使用X轴作为参考
+                dxVector = Vector3.X().clone().cross(this._dz).normalize();
+            } else {
+                // 如果Dz与X轴接近平行，使用Y轴作为参考
+                dxVector = Vector3.Y().clone().cross(this._dz).normalize();
+            }
+            
+            // 计算Dy轴：Dy = Dz × Dx
+            const dyVector = this._dz.clone().cross(dxVector).normalize();
+            
+            this._dx.copy(dxVector);
+            this._dy.copy(dyVector);
+        } else {
+            // 从原点、dx和dy方向设置坐标系
+            this._dx.copy(dx).normalize();
+            this._dy.copy(dy).normalize();
 
-        // 通过叉积计算dz轴
-        this.dz = this._dx.clone().cross(this._dy).normalize();
+            // 通过叉积计算dz轴
+            this._dz.copy(this._dx.clone().cross(this._dy).normalize());
+        }
 
         // 确保坐标系正交
         this.orthogonalize();
@@ -118,7 +145,7 @@ class Coordinate3 extends Coordinate<Vector3, Coordinate3Like> {
         this._dy.sub(new Vector3().copy(this._dx).multiplyScalar(projectionY)).normalize();
 
         // Dz轴通过叉积重新计算，确保正交
-        this.dz = this._dx.clone().cross(this._dy).normalize();
+        this._dz.copy(this._dx.clone().cross(this._dy).normalize());
 
         return this;
     }
@@ -128,7 +155,7 @@ class Coordinate3 extends Coordinate<Vector3, Coordinate3Like> {
      */
     isLeftHanded(eps = Tolerance.CALCULATION_EPS): boolean {
         const cross = this._dx.clone().cross(this._dy);
-        return cross.dot(this.dz) < -eps;
+        return cross.dot(this._dz) < -eps;
     }
 
     /**
@@ -139,7 +166,7 @@ class Coordinate3 extends Coordinate<Vector3, Coordinate3Like> {
         return new Vector3(
             localPoint.dot(this._dx),
             localPoint.dot(this._dy),
-            localPoint.dot(this.dz)
+            localPoint.dot(this._dz)
         );
     }
 
@@ -151,7 +178,7 @@ class Coordinate3 extends Coordinate<Vector3, Coordinate3Like> {
             .copy(this._origin)
             .add(new Vector3().copy(this._dx).multiplyScalar(localPoint.x))
             .add(new Vector3().copy(this._dy).multiplyScalar(localPoint.y))
-            .add(new Vector3().copy(this.dz).multiplyScalar(localPoint.z));
+            .add(new Vector3().copy(this._dz).multiplyScalar(localPoint.z));
     }
 
     /**
@@ -161,7 +188,7 @@ class Coordinate3 extends Coordinate<Vector3, Coordinate3Like> {
         return new Vector3(
             worldVector.x * this._dx.x + worldVector.y * this._dx.y + worldVector.z * this._dx.z,
             worldVector.x * this._dy.x + worldVector.y * this._dy.y + worldVector.z * this._dy.z,
-            worldVector.x * this.dz.x + worldVector.y * this.dz.y + worldVector.z * this.dz.z
+            worldVector.x * this._dz.x + worldVector.y * this._dz.y + worldVector.z * this._dz.z
         );
     }
 
@@ -172,7 +199,7 @@ class Coordinate3 extends Coordinate<Vector3, Coordinate3Like> {
         return new Vector3()
             .copy(this._dx).multiplyScalar(localVector.x)
             .add(new Vector3().copy(this._dy).multiplyScalar(localVector.y))
-            .add(new Vector3().copy(this.dz).multiplyScalar(localVector.z));
+            .add(new Vector3().copy(this._dz).multiplyScalar(localVector.z));
     }
 
     /**
@@ -189,13 +216,13 @@ class Coordinate3 extends Coordinate<Vector3, Coordinate3Like> {
         );
 
         const newDz = new Vector3(
-            this.dz.x,
-            this.dz.y * cos - this.dz.z * sin,
-            this.dz.y * sin + this.dz.z * cos
+            this._dz.x,
+            this._dz.y * cos - this._dz.z * sin,
+            this._dz.y * sin + this._dz.z * cos
         );
 
         this._dy.copy(newDy);
-        this.dz.copy(newDz);
+        this._dz.copy(newDz);
         return this;
     }
 
@@ -213,13 +240,13 @@ class Coordinate3 extends Coordinate<Vector3, Coordinate3Like> {
         );
 
         const newDz = new Vector3(
-            this.dz.x * cos + this.dz.z * sin,
-            this.dz.y,
-            -this.dz.x * sin + this.dz.z * cos
+            this._dz.x * cos + this._dz.z * sin,
+            this._dz.y,
+            -this._dz.x * sin + this._dz.z * cos
         );
 
         this._dx.copy(newDx);
-        this.dz.copy(newDz);
+        this._dz.copy(newDz);
         return this;
     }
 
@@ -253,7 +280,7 @@ class Coordinate3 extends Coordinate<Vector3, Coordinate3Like> {
     rotateByQuaternion(quaternion: QuaternionLike): this {
         this._dx.applyQuaternion(quaternion);
         this._dy.applyQuaternion(quaternion);
-        this.dz.applyQuaternion(quaternion);
+        this._dz.applyQuaternion(quaternion);
         return this;
     }
 
@@ -272,7 +299,7 @@ class Coordinate3 extends Coordinate<Vector3, Coordinate3Like> {
         return new Matrix4(
             this._dx.x, this._dx.y, this._dx.z, 0,
             this._dy.x, this._dy.y, this._dy.z, 0,
-            this.dz.x, this.dz.y, this.dz.z, 0,
+            this._dz.x, this._dz.y, this._dz.z, 0,
             this._origin.x, this._origin.y, this._origin.z, 1
         );
     }
@@ -284,7 +311,7 @@ class Coordinate3 extends Coordinate<Vector3, Coordinate3Like> {
         this._origin.set(matrix.elements[12], matrix.elements[13], matrix.elements[14]);
         this._dx.set(matrix.elements[0], matrix.elements[1], matrix.elements[2]).normalize();
         this._dy.set(matrix.elements[4], matrix.elements[5], matrix.elements[6]).normalize();
-        this.dz.set(matrix.elements[8], matrix.elements[9], matrix.elements[10]).normalize();
+        this._dz.set(matrix.elements[8], matrix.elements[9], matrix.elements[10]).normalize();
         return this;
     }
 
@@ -304,7 +331,7 @@ class Coordinate3 extends Coordinate<Vector3, Coordinate3Like> {
         this._dy.set(0, 1, 0).applyQuaternion(quaternion);
 
         // 通过叉积计算dz轴
-        this.dz = this._dx.clone().cross(this._dy).normalize();
+        this._dz.copy(this._dx.clone().cross(this._dy).normalize());
 
         return this;
     }
@@ -319,30 +346,30 @@ class Coordinate3 extends Coordinate<Vector3, Coordinate3Like> {
         return this._origin.equals(cs.origin, eps) &&
             this._dx.equals(cs.dx, eps) &&
             this._dy.equals(cs.dy, eps) &&
-            this.dz.equals(csDz, eps);
+            this._dz.equals(csDz, eps);
     }
 
     /**
      * 获取坐标系的法向量（Dz方向）
      */
     getNormal(): Vector3 {
-        return this.dz.clone();
+        return this._dz.clone();
     }
 
     /**
      * 设置坐标系的法向量（Dz方向）
      */
     setNormal(normal: Vector3Like): this {
-        this.dz.copy(normal).normalize();
+        this._dz.copy(normal).normalize();
 
         // 重新计算Dx轴和Dy轴以保持正交
-        if (Math.abs(this.dz.dot(Vector3.X())) < 0.9) {
-            this._dx = Vector3.X().clone().cross(this.dz).normalize();
+        if (Math.abs(this._dz.dot(Vector3.X())) < 0.9) {
+            this._dx = Vector3.X().clone().cross(this._dz).normalize();
         } else {
-            this._dx = Vector3.Y().clone().cross(this.dz).normalize();
+            this._dx = Vector3.Y().clone().cross(this._dz).normalize();
         }
 
-        this._dy = this.dz.clone().cross(this._dx).normalize();
+        this._dy = this._dz.clone().cross(this._dx).normalize();
         return this;
     }
 

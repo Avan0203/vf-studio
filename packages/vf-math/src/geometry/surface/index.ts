@@ -9,5 +9,6 @@
 export * from './Surface';
 export * from './CoordinateSurface';
 export * from './SphereSurface';
+export * from './ConeSurface';
 export * from './SurfaceMesh';
 
