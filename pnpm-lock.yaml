@@ -103,6 +103,9 @@ importers:
       '@vf/math':
         specifier: workspace:*
         version: link:../vf-math
+      '@vf/structure':
+        specifier: workspace:*
+        version: link:../vf-structure
       three:
         specifier: ^0.180.0
         version: 0.180.0
