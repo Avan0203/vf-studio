@@ -1,0 +1,17 @@
+{
+  "name": "@vf/template",
+  "version": "1.0.0",
+  "description": "template",
+  "main": "index.ts",
+  "scripts": {
+    "build": "tsc",
+    "dev": " vite"
+  },
+  "dependencies": {
+    "three": "^0.180.0"
+  },
+  "devDependencies": {
+    "@types/three": "^0.180.0",
+    "@vf/cli": "workspace:*"
+  }
+}

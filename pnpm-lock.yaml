@@ -125,6 +125,19 @@ importers:
         specifier: ^4.0.0-beta
         version: 4.0.0-beta.8(@types/node@22.13.15)(jiti@2.4.2)(sass-embedded@1.86.1)(yaml@2.8.1)
 
+  packages/vf-render:
+    dependencies:
+      three:
+        specifier: ^0.180.0
+        version: 0.180.0
+    devDependencies:
+      '@types/three':
+        specifier: ^0.180.0
+        version: 0.180.0
+      '@vf/cli':
+        specifier: workspace:*
+        version: link:../vf-cli
+
   packages/vf-structure:
     dependencies:
       defu:

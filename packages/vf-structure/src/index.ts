@@ -9,4 +9,5 @@
 export * from './virtual';
 export * from './types';
 export * from './tessellation';
+export * from './element';
 

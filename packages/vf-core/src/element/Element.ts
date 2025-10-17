@@ -2,7 +2,7 @@
  * @Author: wuyifan 1208097313@qq.com
  * @Date: 2025-09-02 17:15:03
  * @LastEditors: wuyifan 1208097313@qq.com
- * @LastEditTime: 2025-09-22 14:40:19
+ * @LastEditTime: 2025-10-16 13:43:34
  * @FilePath: \vf-studio\packages\vf-core\src\element\Element.ts
  * Copyright (c) 2024 by wuyifan email: 1208097313@qq.com, All Rights Reserved.
  */
@@ -55,7 +55,7 @@ class Element extends Base implements IElement  {
             if (!parentChildren.includes(this.id)) parentChildren.push(this.id);
         } else {
             this.parent = ObjectID.INVALID;
-            const rootChildren = (this.document.rootElement as Element).children;
+            const rootChildren = this.document.getRoot().children;
             if (!rootChildren.includes(this.id)) rootChildren.push(this.id);
         }
     }

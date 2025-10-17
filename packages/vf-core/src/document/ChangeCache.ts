@@ -2,7 +2,7 @@
  * @Author: wuyifan 1208097313@qq.com
  * @Date: 2025-09-22 11:11:31
  * @LastEditors: wuyifan 1208097313@qq.com
- * @LastEditTime: 2025-09-22 16:23:08
+ * @LastEditTime: 2025-10-16 13:52:12
  * @FilePath: \vf-studio\packages\vf-core\src\document\ChangeCache.ts
  * Copyright (c) 2024 by wuyifan email: 1208097313@qq.com, All Rights Reserved.
  */
@@ -25,32 +25,35 @@ class ChangeCache {
     addCache(type: CacheType, elements: IElement[]) {
         const { add, remove, update } = this.getCache();
 
-        if (type === CacheType.REMOVE) {
-            elements.forEach((element) => {
-                const id = element.id.valueOf();
-                add.delete(id);
-                update.delete(id);
-                remove.add(id);
-            })
-        } else if (type === CacheType.UPDATE) {
-            elements.forEach((element) => {
-                const id = element.id.valueOf();
-                if (remove.has(id)) {
-                    return
-                }
-                add.delete(id);
-                update.add(id);
-            })
-        } else if (type === CacheType.ADD) {
-            elements.forEach((element) => {
-                const id = element.id.valueOf();
-                if (update.has(id) || remove.has(id)) {
-                    return
-                }
-                add.add(id);
-            })
+        switch (type) {
+            case CacheType.REMOVE: {
+                elements.forEach((element) => {
+                    const id = element.id.valueOf();
+                    add.delete(id);
+                    update.delete(id);
+                    remove.add(id);
+                })
+                break;
+            }
+            case CacheType.UPDATE: {
+                elements.forEach((element) => {
+                    const id = element.id.valueOf();
+                    add.delete(id);
+                    remove.delete(id);
+                    update.add(id);
+                })
+                break;
+            }
+            case CacheType.ADD: {
+                elements.forEach((element) => {
+                    const id = element.id.valueOf();
+                    add.add(id);
+                    remove.delete(id);
+                    update.delete(id);
+                })
+                break;
+            }
         }
-
     }
 
     getCache() {

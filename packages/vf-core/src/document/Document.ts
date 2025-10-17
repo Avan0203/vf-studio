@@ -2,7 +2,7 @@
  * @Author: wuyifan 1208097313@qq.com
  * @Date: 2025-09-02 17:12:56
  * @LastEditors: wuyifan 1208097313@qq.com
- * @LastEditTime: 2025-09-22 14:55:49
+ * @LastEditTime: 2025-10-16 15:10:19
  * @FilePath: \vf-studio\packages\vf-core\src\document\Document.ts
  * Copyright (c) 2024 by wuyifan email: 1208097313@qq.com, All Rights Reserved.
  */
@@ -14,22 +14,31 @@ import { ChangeCache } from "./ChangeCache";
 class Document implements IDocument {
     private elementManager = new ElementManager();
     protected changeCache = new ChangeCache();
-    rootElement: GraphicElement;
+    private rootElement: GraphicElement;
     constructor() {
         this.rootElement = new GraphicElement(this);
+    }
+
+    public getRoot(): GraphicElement {
+        return this.rootElement;
     }
 
     public setChangeCache(type: CacheType, element: IElement[]) {
         this.changeCache.addCache(type, element);
     }
 
-    public build() {
+    public getChangeCache() {
+        return this.changeCache.getCache();
+    }
 
+    public clearChangeCache() {
+        this.changeCache.clear();
     }
 
     public create<T extends IElement>(elementClass: ElementClass<T>): T {
         const element = new elementClass(this);
         this.elementManager.addElement(element);
+        element.setParent(null);
         this.setChangeCache(CacheType.ADD, [element]);
         return element;
     }
@@ -58,7 +67,7 @@ class Document implements IDocument {
                     const idx = list.indexOf(node.id);
                     if (idx !== -1) list.splice(idx, 1);
                 } else {
-                    const rootChildren = (this.rootElement as any).children as ObjectID[];
+                    const rootChildren = (root as any).children as ObjectID[];
                     const idx = rootChildren.indexOf(node.id);
                     if (idx !== -1) rootChildren.splice(idx, 1);
                 }
@@ -73,8 +82,10 @@ class Document implements IDocument {
 
     public getGraphicElements(): IElement[] {
         const elements: IElement[] = [];
+        const root = this.rootElement;
+
         this.elementManager.traverse(this.rootElement.id, (element) => {
-            if(element.isGraphical()){
+            if (element.isGraphical()) {
                 elements.push(element)
             }
         })

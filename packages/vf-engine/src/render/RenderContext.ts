@@ -2,7 +2,7 @@
  * @Author: wuyifan 1208097313@qq.com
  * @Date: 2025-09-17 17:00:10
  * @LastEditors: wuyifan 1208097313@qq.com
- * @LastEditTime: 2025-09-23 17:23:04
+ * @LastEditTime: 2025-10-16 15:12:47
  * @FilePath: \vf-studio\packages\vf-engine\src\render\RenderContext.ts
  * Copyright (c) 2025 by wuyifan email: 1208097313@qq.com, All Rights Reserved.
  */
@@ -283,6 +283,21 @@ class RenderContext {
         this._cameraController.update();
         
         this._state = RenderContextState.READY;
+    }
+
+    build(): void {
+        this._document.getChangeCache();
+        const { add, remove, update } = this._document.getChangeCache();
+        for (const id of add) {
+            const element = this._document.getElementById(id);
+        
+        }
+        for (const id of remove) {
+            const element = this._document.getElementById(id);
+       
+        }
+
+
     }
 
     /**

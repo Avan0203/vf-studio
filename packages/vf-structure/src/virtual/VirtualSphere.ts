@@ -31,4 +31,6 @@ export class VirtualSphere extends VirtualGeometry<SphereParams> {
     public set radius(radius: number) {
         this.params.radius = radius;
     }
+
+    
 }
