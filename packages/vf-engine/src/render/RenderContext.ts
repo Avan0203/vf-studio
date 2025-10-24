@@ -2,13 +2,16 @@
  * @Author: wuyifan 1208097313@qq.com
  * @Date: 2025-09-17 17:00:10
  * @LastEditors: wuyifan 1208097313@qq.com
- * @LastEditTime: 2025-10-16 15:12:47
+ * @LastEditTime: 2025-10-24 11:31:34
  * @FilePath: \vf-studio\packages\vf-engine\src\render\RenderContext.ts
  * Copyright (c) 2025 by wuyifan email: 1208097313@qq.com, All Rights Reserved.
  */
-import { BrowserViewPort, Document, EventType, type ViewPort } from "@vf/core";
+import { BrowserViewPort, Document, EventType, DirtyFlags, type ViewPort } from "@vf/core";
 import { OrthographicCamera, PerspectiveCamera } from "../camera";
 import { CameraController } from "../controller";
+import { RenderNode, RenderMesh } from "../node";
+import { ThreeRenderer } from "./ThreeRenderer";
+import { GNodeType } from "@vf/core";
 
 /**
  * 渲染上下文配置接口
@@ -41,10 +44,14 @@ class RenderContext {
     private _camera: OrthographicCamera | PerspectiveCamera;
     private _cameraController!: CameraController;
     private _viewPort: ViewPort;
-    
+
     // 状态管理
     private _state: RenderContextState = RenderContextState.UNINITIALIZED;
     private _enabled: boolean = true;
+
+    // 渲染器
+    private _renderer!: ThreeRenderer;
+    private _canvas!: HTMLCanvasElement;
     
     // 事件处理
     private _resizeHandler: (() => void) | null = null;
@@ -55,35 +62,44 @@ class RenderContext {
         this._viewPort = config.viewPort;
         this._document = config.document || new Document();
         this._enabled = config.enabled ?? true;
+
+        // 同步初始化基础组件
+        this._cameraController = new CameraController(this._camera);
+        this._isInitialized = true;
+        this._state = RenderContextState.READY;
+
+        // 异步初始化视口相关功能
+        this._initializeViewPort();
         
-        this._initialize();
+        // 设置渲染器
+        this._setupRenderer();
     }
 
     /**
-     * 初始化渲染上下文
+     * 设置渲染器
      */
-    private async _initialize(): Promise<void> {
-        if (this._state !== RenderContextState.UNINITIALIZED) {
-            throw new Error('RenderContext has already been initialized');
+    private _setupRenderer(): void {
+        if (this._viewPort instanceof BrowserViewPort) {
+            // 使用 BrowserViewPort 已有的 canvas
+            const existingCanvas = this._viewPort.html();
+            const { width, height } = this._viewPort.getSize();
+            this._renderer = new ThreeRenderer(existingCanvas, width, height);
+            this._canvas = existingCanvas; // 保存引用
         }
-
-        this._state = RenderContextState.INITIALIZING;
-
+    }
+    
+    /**
+     * 异步初始化视口相关功能
+     */
+    private async _initializeViewPort(): Promise<void> {
         try {
-            // 1. 初始化相机控制器
-            this._cameraController = new CameraController(this._camera);
-            
-            // 2. 设置视口
+            // 1. 设置视口
             await this._setupViewPort();
-            
-            // 3. 初始化相机投影矩阵
+
+            // 2. 初始化相机投影矩阵
             this._updateCameraProjection();
-            
-            this._state = RenderContextState.READY;
-            this._isInitialized = true;
         } catch (error) {
-            this._state = RenderContextState.UNINITIALIZED;
-            throw new Error(`Failed to initialize RenderContext: ${error}`);
+            console.warn(`Failed to initialize ViewPort: ${error}`);
         }
     }
 
@@ -99,7 +115,7 @@ class RenderContext {
         if (this._viewPort instanceof BrowserViewPort) {
             // 添加相机控制器作为输入观察者
             this._viewPort.addObserver(this._cameraController);
-            
+
             // 绑定resize事件
             this._resizeHandler = this._handleResize.bind(this);
             this._viewPort.on(EventType.Resize, this._resizeHandler);
@@ -115,6 +131,12 @@ class RenderContext {
         }
 
         this._updateCameraProjection();
+        
+        // 更新渲染器尺寸
+        if (this._renderer) {
+            const { width, height } = this._viewPort.getSize();
+            this._renderer.setSize(width, height);
+        }
     }
 
     /**
@@ -126,7 +148,7 @@ class RenderContext {
         }
 
         const { width, height } = this._viewPort.getSize();
-        
+
         // 防止除零错误
         if (width <= 0 || height <= 0) {
             console.warn('Invalid viewport size:', { width, height });
@@ -134,13 +156,13 @@ class RenderContext {
         }
 
         const aspect = width / height;
-        
+
         if (this._camera instanceof OrthographicCamera) {
             this._updateOrthographicCamera(aspect);
         } else {
             this._updatePerspectiveCamera(aspect);
         }
-        
+
         this._camera.updateProjectionMatrix();
     }
 
@@ -206,7 +228,7 @@ class RenderContext {
         if (!camera) {
             throw new Error('Camera cannot be null or undefined');
         }
-        
+
         this._camera = camera;
         this._cameraController.setCamera(camera);
         this._updateCameraProjection();
@@ -235,7 +257,7 @@ class RenderContext {
         // 设置新的视口
         this._viewPort = viewPort;
         await this._setupViewPort();
-        
+
         // 更新相机投影
         this._updateCameraProjection();
     }
@@ -270,8 +292,19 @@ class RenderContext {
     }
 
     /**
-     * 更新渲染上下文
+     * 手动触发构建，用于在明确有修改后更新渲染数据
      */
+    public forceBuild(): void {
+        console.log('Manual build triggered');
+        
+        // 编译变更的元素
+        const renderNodes = this.build();
+        
+        // 处理渲染节点
+        for (const node of renderNodes) {
+            this._renderer.processRenderNode(node);
+        }
+    }
     update(delta: number): void {
         if (!this._enabled || this._state !== RenderContextState.READY) {
             return;
@@ -282,22 +315,88 @@ class RenderContext {
         // 更新相机控制器
         this._cameraController.update();
         
+        // 只在有变更时才编译和渲染
+        const { add, update } = this._document.getChangeCache();
+        if (add.size > 0 || update.size > 0) {
+            console.log('Changes detected, building render nodes...');
+            
+            // 编译变更的元素
+            const renderNodes = this.build();
+            
+            // 处理渲染节点
+            for (const node of renderNodes) {
+                this._renderer.processRenderNode(node);
+            }
+        }
+        
+        // 渲染（无论是否有变更都要渲染）
+        this._renderer.render(this._camera);
+        
         this._state = RenderContextState.READY;
     }
 
-    build(): void {
-        this._document.getChangeCache();
-        const { add, remove, update } = this._document.getChangeCache();
-        for (const id of add) {
-            const element = this._document.getElementById(id);
+    build(): RenderNode[] {
+        const { add, update } = this._document.getChangeCache();
+        const renderNodes: RenderNode[] = [];
         
+        // 处理新增和更新的元素
+        const allIds = new Set([...add, ...update]);
+        for (const id of allIds) {
+            const element = this._document.getElementById({ valueOf: () => id } as any);
+            
+            if (element && element.isGraphical()) {
+                const gnode = (element as any).toRenderNode();
+                
+                if (gnode) {
+                    // 创建 RenderMesh
+                    const renderMesh = new RenderMesh(id);
+                    renderMesh.transform = gnode.matrix.clone();
+                    renderMesh.visible = (element as any).isVisible();
+                    
+                    // 从 GNode 中提取几何数据
+                    const meshNodes = this._extractMeshNodes(gnode);
+                    
+                    if (meshNodes.length > 0) {
+                        const meshNode = meshNodes[0]; // 取第一个
+                        const options = meshNode.getOptions();
+                        
+                        renderMesh.geometry = {
+                            vertices: new Float32Array(options.vertices),
+                            indices: new Uint32Array(options.indices || []),
+                            normals: new Float32Array(options.normals || []),
+                            uvs: new Float32Array(options.uvs || [])
+                        };
+                    }
+                    
+                    renderNodes.push(renderMesh);
+                }
+            }
         }
-        for (const id of remove) {
-            const element = this._document.getElementById(id);
-       
+        
+        // 清空变更缓存
+        this._document.clearChangeCache();
+        
+        console.log('RenderContext.build(): Generated', renderNodes.length, 'render nodes');
+        return renderNodes;
+    }
+    
+    private _extractMeshNodes(gnode: any): any[] {
+        const meshNodes: any[] = [];
+        this._traverseGNode(gnode, (node: any) => {
+            if (node.baseType === GNodeType.Mesh) {
+                meshNodes.push(node);
+            }
+        });
+        return meshNodes;
+    }
+    
+    private _traverseGNode(node: any, callback: (node: any) => void): void {
+        callback(node);
+        if (node.children) {
+            for (const child of node.children) {
+                this._traverseGNode(child, callback);
+            }
         }
-
-
     }
 
     /**
@@ -307,7 +406,7 @@ class RenderContext {
         if (this._viewPort instanceof BrowserViewPort) {
             // 移除相机控制器观察者
             this._viewPort.removeObserver(this._cameraController);
-            
+
             // 移除resize事件监听器
             if (this._resizeHandler) {
                 this._viewPort.off(EventType.Resize, this._resizeHandler);
@@ -338,6 +437,13 @@ class RenderContext {
 
         // 清理视口资源
         await this._cleanupViewPort();
+
+        // 清理渲染器资源
+        if (this._renderer) {
+            this._renderer.dispose();
+        }
+        
+        // 注意：不要移除 BrowserViewPort 的 canvas，它有自己的生命周期管理
 
         // 清理其他资源
         this._document = null as any;

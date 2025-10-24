@@ -2,11 +2,11 @@
  * @Author: wuyifan 1208097313@qq.com
  * @Date: 2025-09-08 09:17:29
  * @LastEditors: wuyifan 1208097313@qq.com
- * @LastEditTime: 2025-09-19 16:13:13
+ * @LastEditTime: 2025-10-23 16:59:54
  * @FilePath: \vf-studio\packages\vf-core\src\view\BrowserViewPort.ts
  * Copyright (c) 2024 by wuyifan email: 1208097313@qq.com, All Rights Reserved.
  */
-import { EventType, IInputObserver, ViewPortEvents } from "../types";
+import { EventType, ViewPortEvents } from "../types";
 import { BrowserInputDispatch } from "../input/BrowserInputDispatch";
 import { ViewPort } from "./ViewPort";
 

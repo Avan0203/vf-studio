@@ -11,3 +11,5 @@ export * from './types';
 export * from './utils';
 export * from './controller';
 export * from './render';
+export * from './node';
+export * from './style';
