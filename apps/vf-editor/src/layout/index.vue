@@ -1,9 +1,9 @@
 <!--
  * @Author: wuyifan0203 1208097313@qq.com
  * @Date: 2025-04-01 18:13:15
- * @LastEditors: wuyifan0203 1208097313@qq.com
- * @LastEditTime: 2025-04-11 15:25:58
- * @FilePath: \VF-Editor\apps\vf-editor\src\layout\index.vue
+ * @LastEditors: wuyifan 1208097313@qq.com
+ * @LastEditTime: 2025-12-17 13:24:08
+ * @FilePath: \vf-studio\apps\vf-editor\src\layout\index.vue
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE>
 -->
 <template>
@@ -15,7 +15,7 @@
             <div class="main-wrap">
                 <side-bar />
                 <div class="layout">
-                    <!-- <layout-container ref="GLayoutRoot" class="GLayout"></layout-container> -->
+                    <layout-container ref="layoutRootRef" class="GLayout"></layout-container>
                 </div>
             </div>
         </main>
@@ -33,16 +33,12 @@ import SideBar from './Sidebar.vue';
 import RibbonMenu from './RibbonMenu.vue';
 
 
-const GLayoutRoot = ref(null);
+const layoutRootRef = ref(null);
 
 onMounted(() => {
-    if (GLayoutRoot.value) {
-        (GLayoutRoot.value as any).loadGLLayout(layoutConfig, componentMap)
+    if (layoutRootRef.value) {
+        (layoutRootRef.value as any).loadLayout(layoutConfig, componentMap)
     }
-})
-
-defineExpose({
-    GLayoutRoot: GLayoutRoot.value
 })
 </script>
 
