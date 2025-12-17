@@ -4,7 +4,7 @@
             <!-- Root dom for Golden-Layout manager -->
         </div>
         <div style="position: absolute; width: 100%; height: 100%">
-            <GLComponent v-for="[refId, component] in AllComponents" :key="refId" :ref="keyPrefix + refId">
+            <GLComponent v-for="[id, component] in AllComponents" :key="id" :ref="(el) => setComponentRef(id, el)">
                 <component :is="component"></component>
             </GLComponent>
         </div>
@@ -18,7 +18,10 @@ import {
     markRaw,
     nextTick,
     defineAsyncComponent,
-    getCurrentInstance,
+    type Component,
+    h,
+    onUnmounted,
+    shallowRef,
 } from "vue";
 import type {
     ComponentContainer,
@@ -32,70 +35,77 @@ import {
     VirtualLayout,
 } from "golden-layout";
 import GLComponent from "./GLComponent.vue";
-import { ContentType, ContentItemType } from './type'
+import { ContentType, ContentItemType, ComponentMap } from './type'
 
 
 let GLayout: VirtualLayout;
 
 const GLRoot = ref<null | HTMLElement>(null);
-const keyPrefix = 'GLComponent';
 
 const MapComponents = new Map<ComponentContainer, { refId: number; glc: InstanceType<typeof GLComponent> }>();
-const AllComponents = ref(new Map<number, any>());
+const AllComponents = shallowRef(new Map<number, Component>());
 const UnusedIndexes: number[] = [];
-let CurIndex = 0;
+let currentIndex = 0;
 let GLBoundingClientRect: DOMRect;
 
-const instance = getCurrentInstance();
+const componentRefs = new Map<number, any>();
 
-/**
- * @description: 从json 中获取组件类型 并导入
- * @param {*} componentType
- * @param {*} componentMap
- * @return {*}
- */
-const registerComponent = (componentType: string, componentMap: { [key: string]: any }) => {
-    // 从映射对象中获取动态导入函数
-    const importFn = componentMap[componentType];
-    if (!importFn) {
-        // 如果没有找到对应的动态导入函数，返回 null 或抛出错误
-        return null;
+const setComponentRef = (index: number, el: any) => {
+    if (el) {
+        componentRefs.set(index, el);
     } else {
-        // 使用动态导入函数来异步加载组件
-        return markRaw(defineAsyncComponent(importFn));
+        componentRefs.delete(index);
     }
 };
 
 
-const addComponent = (componentType: string, componentMap: any) => {
-    const component = registerComponent(componentType, componentMap)
+const defaultComponent = h('div', { style: { width: '100%', height: '100%' } }, 'Can not find the registered component');
+const registerComponent = (componentType: string, componentMap: { [key: string]: any }) => {
+    const importFn = componentMap[componentType];
+    return markRaw(importFn ? defineAsyncComponent(importFn) : defaultComponent);
+};
 
-    let index = CurIndex;
+
+const addComponent = (componentType: string, componentMap: any, updateImmediately: boolean = true): number => {
+    const component = registerComponent(componentType, componentMap)
+    console.log('component: ', component);
+
+    let index = currentIndex;
     if (UnusedIndexes.length > 0) {
-        index = UnusedIndexes.pop() ?? CurIndex
+        index = UnusedIndexes.pop() ?? currentIndex
     } else {
-        CurIndex++;
+        currentIndex++;
     }
 
     AllComponents.value.set(index, component);
+    // 如果需要立即更新，重新赋值整个 Map 以触发响应式更新
+    if (updateImmediately) {
+        updateAllComponents();
+    }
     return index;
 };
 
-const addGLComponent = async (componentType: string, title: string): Promise<void> => {
+// 统一更新 AllComponents，触发响应式更新
+const updateAllComponents = () => {
+    AllComponents.value = new Map(AllComponents.value);
+};
+
+const addGLComponent = async (componentType: string, title: string, componentMap: ComponentMap): Promise<void> => {
     if (componentType.length === 0) {
         throw new Error("addGLComponent: Component's type is empty");
     }
 
-    const refId = addComponent(componentType, title);
+    const refId = addComponent(componentType, componentMap);
     await nextTick(() => {
         GLayout.addComponent(componentType, { refId }, title);
     });
 };
 
 
-const loadGLLayout = async (layoutConfig: LayoutConfig | ResolvedLayoutConfig) => {
+const loadLayout = async (layoutConfig: LayoutConfig | ResolvedLayoutConfig, componentMap: ComponentMap) => {
     GLayout.clear();
-    AllComponents.value.clear();
+    AllComponents.value = new Map<number, Component>();
+    console.log('AllComponents: ', AllComponents.value);
 
     const config = (() => {
         if (Object.hasOwnProperty.call(layoutConfig, "resolved")) {
@@ -112,13 +122,14 @@ const loadGLLayout = async (layoutConfig: LayoutConfig | ResolvedLayoutConfig) =
     // 确保 content 不为 undefined 并进行类型断言
     const contents: ContentType = config.root?.content ? [config.root.content as ContentItemType] : [];
 
-    let refId = 0;
+    // 批量添加组件，不立即触发更新
     while (contents.length > 0) {
         const content = contents.shift();
         if (content) {
             for (let itemConfig of content) {
                 if (itemConfig.type == "component") {
-                    refId = addComponent(itemConfig.componentType as string, itemConfig.title as string);
+                    // 批量加载时不立即更新，最后统一更新
+                    const refId = addComponent(itemConfig.componentType as string, componentMap, false);
                     if (typeof itemConfig.componentState == "object") {
                         (itemConfig.componentState as Record<string, any>)["refId"] = refId;
                     } else {
@@ -129,15 +140,17 @@ const loadGLLayout = async (layoutConfig: LayoutConfig | ResolvedLayoutConfig) =
                 }
             }
         }
-
     }
+
+    // 所有组件添加完成后，统一更新一次
+    updateAllComponents();
 
     await nextTick(); // wait 1 tick for vue to add the dom
 
     GLayout.loadLayout(config);
 };
 
-const getLayoutConfig = () => {
+const saveLayout = () => {
     return GLayout.saveLayout();
 };
 
@@ -159,8 +172,8 @@ const bindComponent = (container: ComponentContainer, itemConfig: ResolvedCompon
         throw new Error("bindComponent: component's ref id is required");
     }
 
-    const ref = keyPrefix + refId;
-    const component = (instance?.refs[ref] as any)[0] as InstanceType<typeof GLComponent>;
+    const ref = refId;
+    const component = componentRefs.get(ref) as InstanceType<typeof GLComponent>;
 
     MapComponents.set(container, { refId: refId, glc: component });
 
@@ -179,6 +192,8 @@ const unbindComponent = (container: ComponentContainer): void => {
     if (component && component.glc) {
         MapComponents.delete(container);
         AllComponents.value.delete(component.refId);
+        // 重新赋值整个 Map 以触发响应式更新
+        AllComponents.value = new Map(AllComponents.value);
         UnusedIndexes.push(component.refId);
     } else {
         throw new Error("handleUnbindComponentEvent: Component not found");
@@ -230,20 +245,20 @@ onMounted(() => {
     GLayout.beforeVirtualRectingEvent = updateBoundingRect;
 });
 
-onMounted(() => {
+onUnmounted(() => {
     window.removeEventListener("resize", onResize);
 
     if (GLayout) {
         GLayout.clear();
         MapComponents.clear();
-        AllComponents.value.clear();
+        AllComponents.value = new Map<number, Component>();
     }
 })
 
 defineExpose({
     addGLComponent,
-    loadGLLayout,
-    getLayoutConfig,
+    loadLayout,
+    saveLayout,
 });
 </script>
 
@@ -251,6 +266,14 @@ defineExpose({
 @import 'golden-layout/dist/css/goldenlayout-base.css';
 @import 'golden-layout/dist/css/themes/goldenlayout-light-theme.css';
 @import 'golden-layout/dist/css/themes/goldenlayout-dark-theme.css';
+
+
+[data-theme="light"] {
+    @import 'golden-layout/dist/css/themes/goldenlayout-light-theme.css';
+}
+[data-theme="dark"] {
+    @import 'golden-layout/dist/css/themes/goldenlayout-dark-theme.css';
+}
 
 .lm_header .lm_tabs {
     margin-top: 2px;

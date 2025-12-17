@@ -1,9 +1,9 @@
 <!--
  * @Author: wuyifan0203 1208097313@qq.com
  * @Date: 2025-04-01 10:11:18
- * @LastEditors: wuyifan0203 1208097313@qq.com
- * @LastEditTime: 2025-04-01 10:33:41
- * @FilePath: \VF-Editor\packages\vf-component\src\Layout\glComponent.vue
+ * @LastEditors: wuyifan 1208097313@qq.com
+ * @LastEditTime: 2025-12-17 10:15:40
+ * @FilePath: \vf-studio\packages\vf-component\src\Layout\GLComponent.vue
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
 -->
 <template>
@@ -15,15 +15,13 @@
 <script lang="ts" setup>
 import { ref } from "vue";
 
-const GLComponent = ref(null);
+const GLComponent = ref<null | HTMLElement>(null);
 
-const numberToPixels = (value: Number) => {
-  return value.toString(10) + "px";
-};
+const numberToPixels = (value: number) => (`${value.toString(10)}px`);
 
-const setPosAndSize = (left: Number, top: Number, width: Number, height: Number) => {
+const setPosAndSize = (left: number, top: number, width: number, height: number) => {
   if (GLComponent.value) {
-    const el: HTMLElement = GLComponent.value;
+    const el = GLComponent.value;
     el.style.left = numberToPixels(left);
     el.style.top = numberToPixels(top);
     el.style.width = numberToPixels(width);
@@ -32,11 +30,11 @@ const setPosAndSize = (left: Number, top: Number, width: Number, height: Number)
 };
 
 
-const setVisibility = (visible: Boolean) => {
+const setVisibility = (visible: boolean) => {
   if (GLComponent.value) {
-    const el: HTMLElement = GLComponent.value;
+    const el = GLComponent.value;
     if (visible) {
-      el.style.display = "";
+      el.style.display = "block";
     } else {
       el.style.display = "none";
     }
@@ -45,7 +43,7 @@ const setVisibility = (visible: Boolean) => {
 
 const setZIndex = (value: string) => {
   if (GLComponent.value) {
-    const el: HTMLElement = GLComponent.value;
+    const el = GLComponent.value;
     el.style.zIndex = value;
   }
 };
