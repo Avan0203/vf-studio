@@ -1,5 +1,5 @@
 <template>
-    <div style="position: relative">
+    <div style="position: relative" class="vf-layout">
         <div ref="GLRoot" style="position: absolute; width: 100%; height: 100%">
             <!-- Root dom for Golden-Layout manager -->
         </div>
@@ -263,19 +263,6 @@ defineExpose({
 </script>
 
 <style>
+@import './index.css';
 @import 'golden-layout/dist/css/goldenlayout-base.css';
-@import 'golden-layout/dist/css/themes/goldenlayout-light-theme.css';
-@import 'golden-layout/dist/css/themes/goldenlayout-dark-theme.css';
-
-
-[data-theme="light"] {
-    @import 'golden-layout/dist/css/themes/goldenlayout-light-theme.css';
-}
-[data-theme="dark"] {
-    @import 'golden-layout/dist/css/themes/goldenlayout-dark-theme.css';
-}
-
-.lm_header .lm_tabs {
-    margin-top: 2px;
-}
 </style>
