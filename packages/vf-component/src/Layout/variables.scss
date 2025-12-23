@@ -1,0 +1,26 @@
+/* =========================
+   lm design tokens
+   ========================= */
+
+   $lm-color-primary: #1677ff;
+   $lm-color-primary-active: #0958d9;
+   $lm-color-text: #1f1f1f;
+   $lm-color-text-secondary: #8c8c8c;
+   $lm-color-border: #e5e6eb;
+   $lm-color-bg: #ffffff;
+   
+   /* tab */
+   $lm-tab-height: 44px;
+   $lm-tab-padding-x: 16px;
+   $lm-tab-radius: 8px;
+   
+   /* shadow */
+   $lm-tab-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+   $lm-tab-active-shadow: 0 6px 16px rgba(22, 119, 255, 0.35);
+   
+   /* motion */
+   $lm-transition-base: all 0.25s ease;
+   
+   /* z-index */
+   $lm-z-tab: 10;
+   

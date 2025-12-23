@@ -1,0 +1,104 @@
+@use './variables' as *;
+
+/* =========================
+   lm-tabs（结构层）
+   ========================= */
+.lm-tabs {
+  position: relative;
+  display: flex;
+  align-items: center;
+  height: $lm-tab-height;
+  padding: 4px;
+
+  background-color: $lm-color-bg;
+  border-radius: $lm-tab-radius;
+  box-shadow: $lm-tab-shadow;
+
+  z-index: $lm-z-tab;
+}
+
+/* =========================
+   lm-tab（基础单元）
+   ========================= */
+.lm-tab {
+  position: relative;
+  flex: 0 0 auto;
+  height: 100%;
+  padding: 0 $lm-tab-padding-x;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 14px;
+  color: $lm-color-text-secondary;
+
+  cursor: pointer;
+  user-select: none;
+
+  border-radius: $lm-tab-radius;
+  transition: $lm-transition-base;
+
+  &:hover {
+    color: $lm-color-text;
+    background-color: rgba($lm-color-primary, 0.06);
+  }
+}
+
+/* =========================
+   状态层（必须独立）
+   ========================= */
+.lm-tab--active {
+  color: $lm-color-primary;
+  font-weight: 500;
+
+  background-color: rgba($lm-color-primary, 0.12);
+  box-shadow: $lm-tab-active-shadow;
+
+  &::after {
+    content: '';
+    position: absolute;
+    left: 12px;
+    right: 12px;
+    bottom: 4px;
+
+    height: 2px;
+    border-radius: 1px;
+    background-color: $lm-color-primary;
+  }
+}
+
+/* =========================
+   业务特有样式（约定提取）
+   ========================= */
+
+/* 紧凑型 */
+.lm-tabs--compact {
+  height: 36px;
+
+  .lm-tab {
+    font-size: 13px;
+    padding: 0 12px;
+  }
+}
+
+/* 卡片型 */
+.lm-tabs--card {
+  background-color: transparent;
+  box-shadow: none;
+
+  .lm-tab {
+    background-color: $lm-color-bg;
+    border: 1px solid $lm-color-border;
+    margin-right: 8px;
+
+    &:last-child {
+      margin-right: 0;
+    }
+  }
+
+  .lm-tab--active {
+    border-color: $lm-color-primary;
+    box-shadow: $lm-tab-active-shadow;
+  }
+}

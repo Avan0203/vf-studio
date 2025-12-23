@@ -35,7 +35,10 @@ import {
     VirtualLayout,
 } from "golden-layout";
 import GLComponent from "./GLComponent.vue";
-import { ContentType, ContentItemType, ComponentMap } from './type'
+import { ContentType, ContentItemType, ComponentMap } from './type';
+// import 'golden-layout/dist/scss/goldenlayout-base.css';
+// import './variables.scss';
+// import './architecture.scss';
 
 
 let GLayout: VirtualLayout;
@@ -262,7 +265,9 @@ defineExpose({
 });
 </script>
 
-<style>
-@import './index.css';
-@import 'golden-layout/dist/css/goldenlayout-base.css';
+<style lang="scss">
+    @use 'golden-layout/dist/scss/goldenlayout-base' as *;
+    @use './architecture' as *;
+/* @import './index.css';
+@import 'golden-layout/dist/css/goldenlayout-base.css'; */
 </style>
